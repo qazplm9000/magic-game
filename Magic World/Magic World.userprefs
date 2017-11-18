@@ -1,12 +1,15 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Spells\BoltSpell.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Spells\AbilityBehaviors\AbilityBehavior.cs">
     <Files>
-      <File FileName="Assets\TestScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PlayerAttack.cs" Line="15" Column="18" />
-      <File FileName="Assets\Scripts\Spells\BoltSpell.cs" Line="14" Column="2" />
-      <File FileName="Assets\Scripts\Spells\BaseSpell.cs" Line="17" Column="30" />
-      <File FileName="Assets\Scripts\Spells\MobilityEnum.cs" Line="5" Column="10" />
+      <File FileName="Assets\Scripts\Spells\BaseSpell.cs" Line="35" Column="19" />
+      <File FileName="Assets\Scripts\CastSpell.cs" Line="60" Column="17" />
+      <File FileName="Assets\Scripts\Pooling System\ObjectPool.cs" Line="57" Column="1" />
+      <File FileName="Assets\Scripts\GameData.cs" Line="41" Column="24" />
+      <File FileName="Assets\Scripts\Spells\AbilityBehaviors\AbilityBehavior.cs" Line="25" Column="32" />
+      <File FileName="Assets\Scripts\Spells\AbilityBehaviors\MoveSpeedBehavior.cs" Line="34" Column="2" />
+      <File FileName="Assets\Scripts\CharacterStats.cs" Line="24" Column="36" />
+      <File FileName="Assets\Scripts\Spells\AbilityBehaviors\CastAnimationBehavior.cs" Line="11" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

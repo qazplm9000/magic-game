@@ -1,63 +1,113 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyAI : MonoBehaviour {
 
-	public Transform target;
-	public int moveSpeed = 5;
-	public int rotationSpeed = 10;
-	public int range = 5;
+    public Transform target;
+    public Targetable targetHealth;
 
-	private Transform myTransform;
+    private Animator anim;
 
-	void Awake(){
-		myTransform = transform;
-	}
+    public float despawnTime = 30f;
+    private float despawnTimer = 0f;
 
-	// Use this for initialization
-	void Start () {
-		findTarget();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		drawDebugLine();
-		lookAtTarget();
-		moveForward();
-	}
+    public float respawnTime = 100f;
+    private float respawnTimer = 0f;
+
+    private bool dead = false;
+
+    public Vector3 spawnPoint;
+
+    private NavMeshAgent agent;
+
+    public float maxDistanceFromTarget = 1f;
 
 
-	void findTarget(){
-		//finds a target with tag "player"
-		GameObject player = GameObject.FindGameObjectWithTag("player");
-		target = player.transform;
-	}
+    void Start()
+    {
+        agent = transform.GetComponent<NavMeshAgent>();
+        spawnPoint = transform.position;
 
-	void lookAtTarget(){
-		//turns object towards target
-
-		//sets the direction to look in
-		Vector3 lookVector = target.position - myTransform.position;
-		lookVector.y = 0; // sets y vector to 0 so that object doesn't rotate up or down
-
-		myTransform.rotation = Quaternion.Slerp(myTransform.rotation, 
-												Quaternion.LookRotation(lookVector), 
-												rotationSpeed * Time.deltaTime);
-	}
+        anim = GetComponentInChildren<Animator>();
+    }
 
 
-	void moveForward(){
-		//move object forward
-		if((myTransform.position - target.position).magnitude > range){
-			myTransform.position += myTransform.forward * moveSpeed * Time.deltaTime;
-		}
-	}
+    void Update()
+    {
+        if (target == null)
+        {
+            FindTarget();
+        }
 
-	void drawDebugLine(){
-		//draws a line from this object to its target
-		if(target != null){
-			Debug.DrawLine(myTransform.position, target.position, Color.yellow);
-		}
-	}
+        if (target != null) {
+            SetDestination();
+            DrawRayToTarget();
+            LookAtTarget();
+        }
+    }
+
+
+    public void FindTarget() {
+        
+        Targetable[] targets = GameObject.FindObjectsOfType<Targetable>();
+
+        foreach (Targetable t in targets) {
+            if (t.relation != Relation.Enemy) {
+                SetTarget(t);
+                break;
+            }
+        }
+    }
+
+    public void SetDestination() {
+        Vector3 distance = transform.position - target.position;
+
+        agent.SetDestination(target.position);
+        agent.stoppingDistance = maxDistanceFromTarget;
+    }
+
+
+    public void LookAtTarget() {
+        transform.LookAt(target.position);
+
+        transform.Rotate(new Vector3(-transform.rotation.eulerAngles.x, 0, -transform.rotation.eulerAngles.z));
+    }
+
+
+    public void DrawRayToTarget() {
+        Debug.DrawRay(transform.position, agent.destination, Color.blue);
+    }
+
+
+    public void SetTarget(Targetable targetHealth) {
+        target = targetHealth.transform;
+        this.targetHealth = targetHealth;
+    }
+
+
+    public void Die() {
+        agent.destination = transform.position;
+
+        dead = true;
+
+        if (anim != null) {
+            //play death animation
+        }
+    }
+
+
+    public void Despawn() {
+        if (despawnTimer > despawnTime) {
+            //coroutine: make object fade out
+        }
+    }
+
+    public void Respawn() {
+        if (respawnTimer > respawnTime) {
+            //coroutine: make object fade in
+        }
+    }
 }

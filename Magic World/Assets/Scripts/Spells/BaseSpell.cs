@@ -1,27 +1,26 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public interface BaseSpell{
+[CreateAssetMenu(menuName="Spells/Basic Spell")]
+public class BaseSpell : ScriptableObject{
 
-	string name { get; set; }
-	int rank { get; set; }
-	int distance { get; set; }
-	GameObject particleEffect { get; set; }
+    public string spellName;
+    public int spellpower;
+    public SpellElement element;
+    public float castTime;
+    public int mpCost;
+    public GameObject spellEffect;
+    public GameObject spellObject;
 
-	bool LineOfSight { get; set; }
-	Mobility mobile { get; set; }
-
-	float cooldown { get; set; }
-	float cooldownTimer { get; }
-	bool coolingDown { get; }
-
-	float castTime { get; set; }
-	float castTimer { get; }
-	bool casting { get; }
-
-	void Cast();
-
-	void Update();
-
+    
 
 
 }
+
+
+public enum SpellElement {
+    Fire,
+    Lightning,
+    Ice
+};

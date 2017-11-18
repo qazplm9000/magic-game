@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterStats : MonoBehaviour {
+public class MagicStats : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

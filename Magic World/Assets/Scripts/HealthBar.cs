@@ -7,7 +7,7 @@ public class HealthBar : MonoBehaviour {
 	public int maxHealth = 100;
 	public int curHealth = 100;
 
-
+    
 
 	// Use this for initialization
 	void Start () {
@@ -17,34 +17,50 @@ public class HealthBar : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//prevents invalid health values
-		verifyCurHealth();
-		maxHealthAlwaysPositive();
+		MaxHealthAlwaysPositive();
 	}
 
 	void OnGUI(){
-		float healthbarWidth = Screen.width/2 * (curHealth / (float)maxHealth);
-
-		Debug.Log(healthbarWidth);
-
-		GUI.Box(new Rect(10, 10, healthbarWidth / 2, 20), 
-			curHealth + "/" + maxHealth);
+        HealthBarGUI();
 	}
 
-	void verifyCurHealth(){
-		//makes sure the current health is never below 0 and never above maxHealth
-		if(curHealth < 0){
-			curHealth = 0;
-		}
 
-		if(curHealth > maxHealth){
-			curHealth = maxHealth;
-		}
-	}
-
-	void maxHealthAlwaysPositive(){
+	private void MaxHealthAlwaysPositive(){
 		//makes sure the maximum health is always at least 1
 		if(maxHealth < 1){
 			maxHealth = 1;
 		}
 	}
+
+    public void SetMaxHealth(int newMaxHealth) {
+        maxHealth = newMaxHealth;
+    }
+
+    public void TakeDamage(int damage) {
+        curHealth -= damage;
+
+        if (curHealth < 0) {
+            curHealth = 0;
+        }
+    }
+
+    public void HealHealth(int healing) {
+        curHealth += healing;
+
+        if (curHealth > maxHealth) {
+            curHealth = maxHealth;
+        }
+    }
+
+    public bool IsDead() {
+        return curHealth == 0;
+    }
+
+
+    public void HealthBarGUI() {
+        float healthbarWidth = Screen.width / 2 * (curHealth / (float)maxHealth);
+
+        GUI.Box(new Rect(10, 10, healthbarWidth / 2, 20),
+            curHealth + "/" + maxHealth);
+    }
 }
