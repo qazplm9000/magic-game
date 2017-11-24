@@ -28,12 +28,17 @@ public class Targetable : MonoBehaviour {
 	}
 
 
+    private void OnEnable()
+    {
+        currentHealth = maxHealth;
+        currentMana = maxMana;
+        dead = false;
+    }
+
     private void Update()
     {
 
         CheckIsDead();
-        
-
     }
 
 
@@ -47,13 +52,13 @@ public class Targetable : MonoBehaviour {
             return;
         }
 
+
         currentHealth -= totalDamage;
 
-        if (currentHealth < 0) {
+        if (currentHealth < 0)
+        {
             currentHealth = 0;
         }
-
-
     }
 
     public void ReceiveHealing(int healing) {
@@ -67,13 +72,41 @@ public class Targetable : MonoBehaviour {
 
         currentHealth += healing;
 
-        if (currentHealth >= maxHealth) {
+        if (currentHealth > maxHealth)
+        {
             currentHealth = maxHealth;
         }
     }
 
+    //Returns falst if not enough mana
+    public bool UseMana(int mana) {
+        bool result = true;
+
+        if (mana <= currentMana)
+        {
+            currentMana -= mana;
+        }
+        else {
+            result = false;
+        }
+
+        if (currentMana < 0)
+        {
+            currentMana = 0;
+        }
+        else if (currentMana > maxMana)
+        {
+            currentMana = maxMana;
+        }
+
+        return result;
+    }
+
+    
+
+
     public void CheckIsDead() {
-        if (!dead && currentHealth == 0)
+        if (!dead && currentHealth <= 0)
         {
             dead = true;
 
@@ -87,7 +120,7 @@ public class Targetable : MonoBehaviour {
             //deactivate movement script
             if (movement != null)
             {
-                movement.enabled = false;
+                movement.dead = true;
             }
         }
     }

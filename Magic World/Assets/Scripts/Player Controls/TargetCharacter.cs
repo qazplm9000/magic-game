@@ -81,10 +81,11 @@ public class TargetCharacter : MonoBehaviour {
 
         foreach (Targetable t in targets)
         {
-            if (t.relation == Relation.Enemy)
+            if (t.relation == Relation.Enemy && !t.dead)
             {
                 target = t.transform;
                 targetHealth = t;
+                break;
             }
         }
     }

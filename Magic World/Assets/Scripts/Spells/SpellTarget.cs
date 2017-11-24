@@ -27,7 +27,7 @@ public class SpellTarget : MonoBehaviour {
         if (collision.transform == target) {
             Targetable targetHealth = target.GetComponent<Targetable>();
             targetHealth.TakeDamage(10);
-            Destroy(transform.gameObject);
+            transform.gameObject.SetActive(false);
         }
     }
 

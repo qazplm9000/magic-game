@@ -14,12 +14,9 @@ public class EnemyAI : MonoBehaviour {
     public float despawnTime = 30f;
     private float despawnTimer = 0f;
 
-    public float respawnTime = 100f;
-    private float respawnTimer = 0f;
+    public bool dead = false;
 
-    private bool dead = false;
-
-    public Vector3 spawnPoint;
+    public GameObject spawnPoint;
 
     private NavMeshAgent agent;
 
@@ -29,24 +26,42 @@ public class EnemyAI : MonoBehaviour {
     void Start()
     {
         agent = transform.GetComponent<NavMeshAgent>();
-        spawnPoint = transform.position;
 
         anim = GetComponentInChildren<Animator>();
     }
 
 
+    private void OnEnable()
+    {
+        dead = false;
+    }
+
     void Update()
     {
-        if (target == null)
+
+        if (dead)
         {
-            FindTarget();
+            despawnTimer += Time.deltaTime;
+            Despawn();
+        }
+        else
+        {
+
+            if (target == null)
+            {
+                FindTarget();
+            }
+
+            if (target != null)
+            {
+                SetDestination();
+                DrawRayToTarget();
+                LookAtTarget();
+            }
+
         }
 
-        if (target != null) {
-            SetDestination();
-            DrawRayToTarget();
-            LookAtTarget();
-        }
+        
     }
 
 
@@ -101,13 +116,12 @@ public class EnemyAI : MonoBehaviour {
 
     public void Despawn() {
         if (despawnTimer > despawnTime) {
+            transform.gameObject.SetActive(false);
+            despawnTimer = 0f;
             //coroutine: make object fade out
         }
     }
+    
 
-    public void Respawn() {
-        if (respawnTimer > respawnTime) {
-            //coroutine: make object fade in
-        }
-    }
+    
 }

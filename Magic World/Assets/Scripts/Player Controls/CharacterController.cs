@@ -15,6 +15,7 @@ public class CharacterController : MonoBehaviour {
 
     private Rigidbody rb;
 
+    private Animator anim;
     private Camera camera;
 
     public GameObject characterModel;
@@ -22,6 +23,7 @@ public class CharacterController : MonoBehaviour {
     void Start()
     {
         camera = Camera.main;
+        anim = transform.GetComponentInChildren<Animator>();
         rb = transform.GetComponent<Rigidbody>();
     }
 
@@ -57,6 +59,11 @@ public class CharacterController : MonoBehaviour {
     public void Move()
     {
         transform.position += GetMovementVector() * speed * Time.deltaTime;
+        anim.SetFloat("Speed", GetMovementVector().magnitude * speed);
+
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            anim.SetFloat("Speed", 2 * GetMovementVector().magnitude);
+        }
     }
 
     public void Turn() {
