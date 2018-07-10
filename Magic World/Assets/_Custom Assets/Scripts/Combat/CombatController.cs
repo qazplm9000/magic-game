@@ -14,6 +14,16 @@ public class CombatController : MonoBehaviour {
     public List<CombatController> allFriendlyTargets = new List<CombatController>();
     public List<CombatController> allEnemyTargets = new List<CombatController>();
 
+    public delegate void OnAction();
+    public OnAction OnGuard;
+    public OnAction OnGuardEnd;
+    public OnAction OnDodge;
+    public OnAction OnDodgeEnd;
+    public OnAction OnKnockback;
+    public OnAction OnKnockbackEnd;
+
+    public ComboSystem.ComboHit combo;
+
     Animator animator;
 
 
@@ -31,6 +41,12 @@ public class CombatController : MonoBehaviour {
     //guard variables
     public bool guarding = false;
     public float guardMoveSpeed = 1f;
+
+    //knockback variables
+    private float knockback = 0f;
+    public float knockbackThreshold = 10f;
+    public float knockbackForceMultiplier = 1f;
+    public float knockbackMaxTime = 3f; //max time you can stay down before you automatically stand up
 
 
     // Use this for initialization
@@ -51,13 +67,15 @@ public class CombatController : MonoBehaviour {
         if (target != null) {
             Debug.DrawLine(transform.position, target.transform.position);
         }
+
+        
 	}
 
 
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Enter trigger");
+        //Debug.Log("Enter trigger");
         CombatController colliderTarget = other.transform.GetComponent<CombatController>();
 
         if (colliderTarget != null) {
@@ -177,9 +195,14 @@ public class CombatController : MonoBehaviour {
         }
 
         EnableIFrame();
+
+        //animation
         dodging = true;
         animator.SetBool("Dodge", dodging);
         animator.Play("Dodge");
+
+        //activates event OnDodge
+        OnDodge();
 
         while (dodgeSpeed < dodgeTargetSpeed) {
             characterAgent.velocity = dodgeDirection * dodgeSpeed;
@@ -204,6 +227,7 @@ public class CombatController : MonoBehaviour {
             {
                 dodging = false;
                 animator.SetBool("Dodge", dodging);
+                OnDodgeEnd();
                 yield break;
             }
 
@@ -213,14 +237,17 @@ public class CombatController : MonoBehaviour {
         dodging = false;
         animator.SetBool("Dodge", dodging);
         DisableIFrame();
+        OnDodgeEnd();
     }
 
     public void Guard() {
+        OnGuard();
         guarding = true;
         animator.SetBool("Block", guarding);
     }
 
     public void Unguard() {
+        OnGuardEnd();
         guarding = false;
         animator.SetBool("Block", guarding);
     }
@@ -235,6 +262,66 @@ public class CombatController : MonoBehaviour {
 
     public void Interrupt() {
         interrupted = true;
-        Unguard();
+        if (guarding)
+        {
+            Unguard();
+        }
+    }
+
+    /// <summary>
+    /// Will knock back the target if amount of knockback received exceeds a certain threshold
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="amount"></param>
+    public IEnumerator Knockback(Vector3 direction, float amount) {
+        knockback += amount;
+        float knockbackTimer = 0f;
+
+        //only knocks back if the total knockback is beyond the threshold
+        if (knockback >= knockbackThreshold) {
+
+            ResetKnockback();
+
+            //play knockback animation
+            //animator.Play("Knocked Back");
+
+            EnableIFrame();
+
+            while (knockbackTimer < knockbackMaxTime) {
+                //push back the character based on amount of knockback
+                //if you press a certain key after landing, you break out
+                yield return null;
+            }
+
+            //play standing up animation
+            //animator.Play("Stand Up");
+            DisableIFrame();
+
+            //lock movement while character stands up
+
+        }
+
+        
+    }
+
+    /// <summary>
+    /// Adds knockback to the threshold without triggering a knockback
+    /// </summary>
+    /// <param name="amount"></param>
+    public void AddKnockback(float amount) {
+        knockback += amount;
+    }
+
+    /// <summary>
+    /// Resets the knockback
+    /// </summary>
+    public void ResetKnockback() {
+        knockback = 0;
+    }
+
+
+
+    public void TakeDamage(int damage) {
+        //decrease HP by damage
     }
 }

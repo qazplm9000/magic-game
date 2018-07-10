@@ -7,6 +7,12 @@ public class CameraController : MonoBehaviour {
     public Transform target;
     //private PlayerMovement targetController;
 
+    private Vector3 velocity = Vector3.zero;
+    public float targetDistance = 3f;
+    public float height = 2f;
+
+    public float smoothTime = 0.3f;
+
     //used to shift what part of the target to look for (head as opposed to center)
     public Vector3 targetOffset = new Vector3(0, 1.8f, 0);
 
@@ -16,30 +22,38 @@ public class CameraController : MonoBehaviour {
 
     public float rotateSpeed = 20f;
 
-    public delegate void OnDirectionChange();
-    public event OnDirectionChange ChangeDirection;
 
 	// Use this for initialization
 	void Start () {
         if (target == null) {
             
         }
-        //targetController = target.GetComponent<PlayerMovement>();
-        //ChangeDirection += targetController.UpdateForwardDirection;
+        _initCameraPosition();
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
         Move();
         RotateCamera();
-        ChangeDirection();
 	}
 
     //move the camera with the player
     public void Move()
     {
-        transform.position = target.position + targetOffset + (transform.forward * -1 * currentZoom);
+        Vector3 newPosition = Vector3.SmoothDamp(transform.position, CalculateCameraPosition(), ref velocity, smoothTime);
+        transform.position = newPosition;
+
+        TurnTowards();
     }
+
+
+
+    //turn towards the target
+    public void TurnTowards() {
+        transform.LookAt(target.position + target.up*1.8f);
+    }
+
+
 
     //rotate camera around target
     public void RotateCamera() {
@@ -55,6 +69,37 @@ public class CameraController : MonoBehaviour {
     public void ZoomCamera() {
 
     }
+
+
+    //Init the position of the camera
+    public void _initCameraPosition() {
+        float tempDistance = targetDistance * targetDistance;
+        tempDistance -= height * height;
+        tempDistance = Mathf.Sqrt(tempDistance);
+
+        Vector3 cameraLocation = target.position - (target.forward * tempDistance) + (target.up * height);
+        transform.position = cameraLocation;
+    }
+
+
+    //calculates where the camera should be located
+    public Vector3 CalculateCameraPosition() {
+        //get the vector from the camera to the target without the y axis
+        Vector3 directionVector = transform.position - target.position;
+        directionVector = directionVector - new Vector3(0, directionVector.y, 0);
+
+        float distance = targetDistance * targetDistance;
+        distance -= height * height;
+        distance = Mathf.Sqrt(distance);
+
+        directionVector /= directionVector.magnitude;
+        directionVector *= distance;
+        directionVector += new Vector3(0, height, 0) + target.transform.position;
+
+        return directionVector;
+
+    }
+
 
 
 }

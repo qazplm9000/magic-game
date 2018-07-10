@@ -92,6 +92,13 @@ public class CharacterController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.T)) {
             spellCaster.CastSpell(spellCaster.currentSpell);
         }
+
+
+        //Attack with G
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            StartCoroutine(combatController.combo.Attack(combatController));
+        }
     }
 
 
