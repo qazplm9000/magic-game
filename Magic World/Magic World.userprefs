@@ -1,15 +1,8 @@
-﻿<Properties StartupItem="Assembly-CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Spells\AbilityBehaviors\AbilityBehavior.cs">
+﻿<Properties StartupItem="Magic World.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_Custom Assets\Scripts\Visual Novel System\DialogueTree.cs">
     <Files>
-      <File FileName="Assets\Scripts\Spells\BaseSpell.cs" Line="35" Column="19" />
-      <File FileName="Assets\Scripts\CastSpell.cs" Line="60" Column="17" />
-      <File FileName="Assets\Scripts\Pooling System\ObjectPool.cs" Line="57" Column="1" />
-      <File FileName="Assets\Scripts\GameData.cs" Line="41" Column="24" />
-      <File FileName="Assets\Scripts\Spells\AbilityBehaviors\AbilityBehavior.cs" Line="25" Column="32" />
-      <File FileName="Assets\Scripts\Spells\AbilityBehaviors\MoveSpeedBehavior.cs" Line="34" Column="2" />
-      <File FileName="Assets\Scripts\CharacterStats.cs" Line="24" Column="36" />
-      <File FileName="Assets\Scripts\Spells\AbilityBehaviors\CastAnimationBehavior.cs" Line="11" Column="3" />
+      <File FileName="Assets\_Custom Assets\Scripts\Visual Novel System\DialogueTree.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
