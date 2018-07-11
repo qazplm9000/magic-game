@@ -11,7 +11,6 @@ namespace SpellSystem
 
 
         public int spellpower = 10;
-        public Element element;
         public float castTime = 1f;
         public int manaCost = 10;
         public GameObject spellObject;

@@ -21,8 +21,7 @@ public class CombatController : MonoBehaviour {
     public OnAction OnDodgeEnd;
     public OnAction OnKnockback;
     public OnAction OnKnockbackEnd;
-
-    public ComboSystem.ComboHit combo;
+    
 
     Animator animator;
 
@@ -30,6 +29,7 @@ public class CombatController : MonoBehaviour {
     public bool interrupted = false;
     public bool invincible = false;
     public bool dodging = false;
+    public bool lockedMovement = false;
 
     //dodge variables
     public float dodgeInitialSpeed = 5f;
@@ -202,7 +202,12 @@ public class CombatController : MonoBehaviour {
         animator.Play("Dodge");
 
         //activates event OnDodge
-        OnDodge();
+        if (OnDodge != null)
+        {
+            OnDodge();
+        }
+
+        LockMovement();
 
         while (dodgeSpeed < dodgeTargetSpeed) {
             characterAgent.velocity = dodgeDirection * dodgeSpeed;
@@ -227,7 +232,12 @@ public class CombatController : MonoBehaviour {
             {
                 dodging = false;
                 animator.SetBool("Dodge", dodging);
-                OnDodgeEnd();
+
+                if (OnDodgeEnd != null)
+                {
+                    OnDodgeEnd();
+                }
+
                 yield break;
             }
 
@@ -237,17 +247,29 @@ public class CombatController : MonoBehaviour {
         dodging = false;
         animator.SetBool("Dodge", dodging);
         DisableIFrame();
-        OnDodgeEnd();
+
+        if (OnDodgeEnd != null)
+        {
+            OnDodgeEnd();
+        }
+
+        UnlockMovement();
     }
 
     public void Guard() {
-        OnGuard();
+        if (OnGuard != null)
+        {
+            OnGuard();
+        }
         guarding = true;
         animator.SetBool("Block", guarding);
     }
 
     public void Unguard() {
-        OnGuardEnd();
+        if (OnGuardEnd != null)
+        {
+            OnGuardEnd();
+        }
         guarding = false;
         animator.SetBool("Block", guarding);
     }
@@ -303,6 +325,16 @@ public class CombatController : MonoBehaviour {
 
         
     }
+
+
+    public void LockMovement() {
+        lockedMovement = true;
+    }
+
+    public void UnlockMovement() {
+        lockedMovement = false;
+    }
+
 
     /// <summary>
     /// Adds knockback to the threshold without triggering a knockback

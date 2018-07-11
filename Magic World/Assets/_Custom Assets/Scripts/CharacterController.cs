@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SpellSystem;
+using UnityEngine.AI;
+using ComboSystem;
 
 public class CharacterController : MonoBehaviour {
 
@@ -10,6 +12,8 @@ public class CharacterController : MonoBehaviour {
     SpellCaster spellCaster;
     new Camera camera;
     Animator animator;
+    NavMeshAgent agent;
+    CharacterCombos combos;
 
     public enum Action
     {
@@ -22,7 +26,6 @@ public class CharacterController : MonoBehaviour {
     float movementSpeed = 5f;
     Action lastAction = Action.None;
     bool movementLocked = false;
-    private float lockTimer = 0f;
     Camera mainCamera;
 
     // Use this for initialization
@@ -31,42 +34,31 @@ public class CharacterController : MonoBehaviour {
         combatController = transform.GetComponent<CombatController>();
         spellCaster = transform.GetComponent<SpellCaster>();
         animator = transform.GetComponentInChildren<Animator>();
+        agent = transform.GetComponent<NavMeshAgent>();
+        combos = transform.GetComponent<CharacterCombos>();
         camera = Camera.main;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        
-        //lock and unlock movement with dodging
-        if (combatController.dodging)
-        {
-            LockMovement();
-        }
-        if(movementLocked){
-            if (!combatController.dodging)
-            {
-                UnlockMovement();
-            }
-        }
 
-        //guard with E
-        if (!movementLocked)
+        movementLocked = combatController.lockedMovement;
+
+        
+
+        //guard when not moving
+        if (!movementLocked && agent.velocity.magnitude == 0 && !combatController.guarding)
         {
-            if (Input.GetKey(KeyCode.E))
+            if ((Input.GetButton("Dodge") || Input.GetKey(ControllerInputManager.controllerInput.dodgeButton)))
             {
                 combatController.Guard();
             }
-
-            if (Input.GetKeyUp(KeyCode.E))
-            {
-                combatController.Unguard();
-            }
         }
 
-        //dodge with Q
-        if (Input.GetKeyDown(KeyCode.Q) && !movementLocked) {
+        //unguard when you let go of button
+        if(combatController.guarding && (Input.GetButtonUp("Dodge") || Input.GetKeyUp(ControllerInputManager.controllerInput.dodgeButton)))
+        {
             combatController.Unguard();
-            StartCoroutine(combatController.Dodge(DirectionFromInput()));
         }
 
         //movement
@@ -94,10 +86,25 @@ public class CharacterController : MonoBehaviour {
         }
 
 
-        //Attack with G
-        if (Input.GetKeyDown(KeyCode.G))
+        //Attack with left mouse or Square
+        if ((Input.GetButtonDown("Attack") || Input.GetKeyDown(ControllerInputManager.controllerInput.attackButton)) && !movementLocked)
         {
-            StartCoroutine(combatController.combo.Attack(combatController));
+            combos.Attack();
+        }
+    }
+
+
+    public void FixedUpdate()
+    {
+        //dodge with Q
+        if ((Input.GetButtonDown("Dodge") || Input.GetKeyDown(ControllerInputManager.controllerInput.dodgeButton)) && !movementLocked && agent.velocity.magnitude != 0)
+        {
+            if (combatController.guarding)
+            {
+                combatController.Unguard();
+            }
+
+            StartCoroutine(combatController.Dodge(DirectionFromInput()));
         }
     }
 
@@ -121,6 +128,9 @@ public class CharacterController : MonoBehaviour {
         movementLocked = true;
     }
 
+
+
+    /*
     /// <summary>
     /// Locks movement for lockTime. Returns false if movement is already locked.
     /// </summary>
@@ -141,12 +151,12 @@ public class CharacterController : MonoBehaviour {
 
         return lockWorked;
     }
-
+    
+    */
     public void UnlockMovement() {
         movementLocked = false;
     }
 
 
-    
 
 }

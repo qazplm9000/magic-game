@@ -22,8 +22,9 @@ public class Stat {
     public int totalValue;
 
     public Stat() {
-        value = 1;
+        value = 10;
         Init();
+        CalculateTotalValue();
     }
 
     public Stat(int newValue) {

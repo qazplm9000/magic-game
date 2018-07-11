@@ -6,15 +6,7 @@ using UnityEngine.AI;
 //Script used for containing all movement functions
 public class CharacterMovement : MonoBehaviour {
 
-    public enum Action{
-        Attack,
-        Guard,
-        Movement,
-        None
-    }
-
     float movementSpeed = 5f;
-    Action lastAction = Action.None;
     bool movementLocked = false;
     new Camera camera;
     NavMeshAgent agent;
@@ -57,7 +49,6 @@ public class CharacterMovement : MonoBehaviour {
         //do nothing if direction vector is 0
         if (trueDirection.magnitude == 0) {
             agent.velocity = Vector3.zero;
-            lastAction = Action.None;
             animator.SetFloat("Speed", 0);
             return;
         }
@@ -67,7 +58,6 @@ public class CharacterMovement : MonoBehaviour {
         //rotate character towards direction and change speed
         Rotate(trueDirection);
         agent.velocity = trueDirection * movementSpeed;
-        lastAction = Action.Movement;
 
     }
 
@@ -99,44 +89,6 @@ public class CharacterMovement : MonoBehaviour {
         return direction;
 
     }
-
-
-
-
-
-
-    public void LockMovement()
-    {
-        movementLocked = true;
-    }
-
-    /// <summary>
-    /// Locks movement for lockTime. Returns false if movement is already locked.
-    /// </summary>
-    /// <param name="lockTime"></param>
-    /// <returns></returns>
-    public bool TimedLockedMovement(float lockTime)
-    {
-
-        bool lockWorked = true;
-
-        if (!movementLocked)
-        {
-            lockTimer = lockTime;
-            movementLocked = true;
-        }
-        else
-        {
-            lockWorked = false;
-        }
-
-        return lockWorked;
-    }
-
-    public void UnlockMovement()
-    {
-        movementLocked = false;
-    }
-
+    
 
 }
