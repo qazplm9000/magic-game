@@ -49,11 +49,8 @@ public class CharacterMovement : MonoBehaviour {
         //do nothing if direction vector is 0
         if (trueDirection.magnitude == 0) {
             agent.velocity = Vector3.zero;
-            animator.SetFloat("Speed", 0);
             return;
         }
-
-        animator.SetFloat("Speed", movementSpeed);
 
         //rotate character towards direction and change speed
         Rotate(trueDirection);

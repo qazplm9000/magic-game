@@ -300,26 +300,30 @@
     <Reference Include="Unity.PackageManagerUI.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="GETween">
+      <HintPath>Assets\GUI Animator\Common\Plugins\GETween.dll</HintPath>
+    </Reference>
+    <Reference Include="GUIAnimatorFREE">
+      <HintPath>Assets\GUI Animator\GUI Animator FREE\Plugins\GUIAnimatorFREE.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\_Custom Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterMovement.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Combat\AttackType.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Combat\CharacterCombos.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\CombatController.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Combat\ComboHit.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Combat\Hitbox.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\ControllerInputManager.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Pooling\ObjectPool.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Spells\AttackType.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Spells\CharacterCombos.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Spells\ComboHit.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Spells\Hitbox.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Spells\Spell.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Spells\SpellCaster.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Spells\SpellEffect.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Spells\SpellModifier.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\CharacterStats.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Stats\Element.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\HealthStat.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Stats\MagicLevel.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Stats\ManaStat.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\Stat.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Visual Novel System\DialogueTree.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Visual Novel System\TextNode.cs" />
@@ -375,6 +379,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Baker House\Readme.txt" />
+    <None Include="Assets\BuildingShed\BuildingShedInfo.txt" />
     <None Include="Assets\Custom Character_Vol1\Read Me(En,Jp).txt" />
     <None Include="Assets\Elemental Free\Readme.txt" />
     <None Include="Assets\Environment\Particles\Shaders\PriorityParticleAdd.shader" />

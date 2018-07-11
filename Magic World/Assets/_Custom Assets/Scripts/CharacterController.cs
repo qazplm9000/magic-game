@@ -28,6 +28,8 @@ public class CharacterController : MonoBehaviour {
     bool movementLocked = false;
     Camera mainCamera;
 
+    private Vector3 lastPosition;
+
     // Use this for initialization
     void Start () {
         controller = transform.GetComponentInChildren<CharacterMovement>();
@@ -37,6 +39,8 @@ public class CharacterController : MonoBehaviour {
         agent = transform.GetComponent<NavMeshAgent>();
         combos = transform.GetComponent<CharacterCombos>();
         camera = Camera.main;
+
+        lastPosition = CopyVector(transform.position);
 	}
 	
 	// Update is called once per frame
@@ -49,14 +53,14 @@ public class CharacterController : MonoBehaviour {
         //guard when not moving
         if (!movementLocked && agent.velocity.magnitude == 0 && !combatController.guarding)
         {
-            if ((Input.GetButton("Dodge") || Input.GetKey(ControllerInputManager.controllerInput.dodgeButton)))
+            if ((Input.GetButton("Dodge") || Input.GetKey(ControllerInputManager.input.dodgeButton)))
             {
                 combatController.Guard();
             }
         }
 
         //unguard when you let go of button
-        if(combatController.guarding && (Input.GetButtonUp("Dodge") || Input.GetKeyUp(ControllerInputManager.controllerInput.dodgeButton)))
+        if(combatController.guarding && (Input.GetButtonUp("Dodge") || Input.GetKeyUp(ControllerInputManager.input.dodgeButton)))
         {
             combatController.Unguard();
         }
@@ -75,10 +79,6 @@ public class CharacterController : MonoBehaviour {
                 controller.Move(direction, combatController.guardMoveSpeed);
             }
         }
-        else
-        {
-            animator.SetFloat("Speed", 0);
-        }
 
         //Cast spells
         if (Input.GetKeyDown(KeyCode.T)) {
@@ -87,17 +87,22 @@ public class CharacterController : MonoBehaviour {
 
 
         //Attack with left mouse or Square
-        if ((Input.GetButtonDown("Attack") || Input.GetKeyDown(ControllerInputManager.controllerInput.attackButton)) && !movementLocked)
+        if ((Input.GetButtonDown("Attack") || Input.GetKeyDown(ControllerInputManager.input.attackButton)) && !movementLocked)
         {
             combos.Attack();
         }
+
+        //sets variables for movement animation
+        float speed = CharacterSpeed();
+        animator.SetFloat("Speed", speed);
+        animator.SetBool("Moving", IsCharacterMoving());
     }
 
 
     public void FixedUpdate()
     {
         //dodge with Q
-        if ((Input.GetButtonDown("Dodge") || Input.GetKeyDown(ControllerInputManager.controllerInput.dodgeButton)) && !movementLocked && agent.velocity.magnitude != 0)
+        if ((Input.GetButtonDown("Dodge") || Input.GetKeyDown(ControllerInputManager.input.dodgeButton)) && !movementLocked && agent.velocity.magnitude != 0)
         {
             if (combatController.guarding)
             {
@@ -158,5 +163,27 @@ public class CharacterController : MonoBehaviour {
     }
 
 
+    //determines whether a character is moving for animation purposes
+    private bool IsCharacterMoving() {
+        bool result = false;
+
+        if (!movementLocked && DirectionFromInput().magnitude != 0)
+        {
+            result = true;
+        }
+
+        return result;
+    }
+
+    //calculate a character's speed
+    private float CharacterSpeed() {
+        float speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
+        lastPosition = CopyVector(transform.position);
+        return speed;
+    }
+
+    private Vector3 CopyVector(Vector3 newVector) {
+        return new Vector3(newVector.x, newVector.y, newVector.z);
+    }
 
 }
