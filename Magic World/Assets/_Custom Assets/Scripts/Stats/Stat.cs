@@ -10,11 +10,11 @@ public class Stat {
 
     //temporary and permanent stat boosts
     private List<int> statModifiers;
-    public int totalModifier;
+    public int totalModifier = 0;
 
     //temporary and permanent stat multipliers
     private List<float> statMultipliers;
-    public float totalMultiplier;
+    public float totalMultiplier = 1;
 
     public delegate void TotalValueChanged();
     public event TotalValueChanged OnTotalValueChanged;
@@ -97,7 +97,8 @@ public class Stat {
 
     //calculates what the total value of the stat is after boosts
     public void CalculateTotalValue() {
-        totalValue = (int)((value + totalModifier) * totalMultiplier);
+        //totalValue = (int)((value + totalModifier) * totalMultiplier);
+        totalValue = value;
     }
 
 

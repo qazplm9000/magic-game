@@ -20,9 +20,13 @@ public class CharacterStats : MonoBehaviour{
     private void Start()
     {
         healthBar = healthBarObject.GetComponent<Slider>();
-        UpdateHealthBar();
     }
 
+
+    private void Update()
+    {
+        UpdateHealthBar();
+    }
 
     /// <summary>
     /// Character takes damage
@@ -31,13 +35,15 @@ public class CharacterStats : MonoBehaviour{
     /// <param name="enemyStats"></param>
     public void TakeDamage(int damage) {
         health.TakeDamage(damage);
-        UpdateHealthBar();
     }
 
 
     public void UpdateHealthBar()
     {
-        healthBar.value = health.value / health.totalValue;
+        if (healthBar != null)
+        {
+            healthBar.value = (float)health.value / health.totalValue;
+        }
     }
     
 }

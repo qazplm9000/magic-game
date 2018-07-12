@@ -9,7 +9,9 @@ public class CameraController : MonoBehaviour {
 
     private Vector3 velocity = Vector3.zero;
     public float targetDistance = 3f;
-    public float height = 2f;
+    public float height = 0f;
+    private GameObject cameraMarker;
+    private Vector3 distanceVector;
 
     public float smoothTime = 0.3f;
 
@@ -18,8 +20,11 @@ public class CameraController : MonoBehaviour {
 
     public float maxZoom = 10f;
     public float minZoom = 2f;
-    public float currentZoom = 3f;
+    public float zoomSpeed = 2f;
 
+
+    public float minAngle = -60;
+    public float maxAngle = 60f;
     public float rotateSpeed = 20f;
 
 
@@ -28,19 +33,24 @@ public class CameraController : MonoBehaviour {
         if (target == null) {
             
         }
+        //creates a new empty game object as the camera's position marker
+        cameraMarker = new GameObject();
         _initCameraPosition();
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
+        MoveCameraMarker();
         Move();
         RotateCamera();
+
+        ZoomCamera(Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime);
 	}
 
     //move the camera with the player
     public void Move()
     {
-        Vector3 newPosition = Vector3.SmoothDamp(transform.position, CalculateCameraPosition(), ref velocity, smoothTime);
+        Vector3 newPosition = Vector3.SmoothDamp(transform.position, cameraMarker.transform.position, ref velocity, smoothTime);
         transform.position = newPosition;
 
         TurnTowards();
@@ -57,49 +67,79 @@ public class CameraController : MonoBehaviour {
 
     //rotate camera around target
     public void RotateCamera() {
-        if (Input.GetMouseButton(0))
+
+        float xAngle = Input.GetAxis("Mouse X") * Time.deltaTime * rotateSpeed;
+        float yAngle = Input.GetAxis("Mouse Y") * Time.deltaTime * rotateSpeed;
+
+        float angle = Vector3.Angle(distanceVector, Vector3.up) + yAngle;
+
+        if (angle > maxAngle)
         {
-            float rotationAmount = Input.GetAxis("Mouse X");
-            transform.RotateAround(target.position + targetOffset, target.up, rotateSpeed * rotationAmount);
+            yAngle += angle - maxAngle;
         }
+        else if (angle < minAngle) {
+            yAngle -= minAngle - angle;
+        }
+        
+
+        distanceVector = Quaternion.Euler(0, xAngle, 0) * distanceVector;
+        distanceVector = Quaternion.Euler(0, 0, yAngle) * distanceVector;
+
     }
 
 
     //change camera zoom
-    public void ZoomCamera() {
+    public void ZoomCamera(float zoom) {
+        targetDistance += zoom;
 
+        if (targetDistance > maxZoom)
+        {
+            targetDistance = maxZoom;
+        }
+        else if (targetDistance < minZoom) {
+            targetDistance = minZoom;
+        }
+
+        float ratio = targetDistance / distanceVector.magnitude;
+
+        distanceVector *= ratio;
     }
 
 
-    //Init the position of the camera
-    public void _initCameraPosition() {
-        float tempDistance = targetDistance * targetDistance;
-        tempDistance -= height * height;
-        tempDistance = Mathf.Sqrt(tempDistance);
 
-        Vector3 cameraLocation = target.position - (target.forward * tempDistance) + (target.up * height);
+
+    //Init the position of the camera and the marker
+    public void _initCameraPosition() {
+
+        float tempDistance = targetDistance;
+
+        height = height > targetDistance ? targetDistance : height;
+        tempDistance = Mathf.Sqrt(targetDistance * targetDistance - height * height);
+
+        //sets the camera's initial starting location
+        Vector3 cameraLocation = (target.transform.position + targetOffset) + (height*target.transform.up) - (target.forward * tempDistance);
         transform.position = cameraLocation;
+
+        //sets the camera marker to the designated position behind the character
+        cameraMarker.transform.position = cameraLocation;
+        distanceVector = (target.position + targetOffset) - cameraMarker.transform.position;
     }
 
 
     //calculates where the camera should be located
-    public Vector3 CalculateCameraPosition() {
-        //get the vector from the camera to the target without the y axis
-        Vector3 directionVector = transform.position - target.position;
-        directionVector = directionVector - new Vector3(0, directionVector.y, 0);
-
-        float distance = targetDistance * targetDistance;
-        distance -= height * height;
-        distance = Mathf.Sqrt(distance);
-
-        directionVector /= directionVector.magnitude;
-        directionVector *= distance;
-        directionVector += new Vector3(0, height, 0) + target.transform.position;
-
-        return directionVector;
-
+    public void MoveCameraMarker() {
+        cameraMarker.transform.position = (target.position + targetOffset) - distanceVector;
     }
 
+    /*
+    public void RecalculateDistanceVector() {
+        distanceVector = (target.position + targetOffset) - cameraMarker.transform.position;
+        
+    }*/
+    
+
+
+    
 
 
 }

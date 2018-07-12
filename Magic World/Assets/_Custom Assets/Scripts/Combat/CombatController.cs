@@ -98,7 +98,6 @@ public class CombatController : MonoBehaviour {
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Exit trigger");
         CombatController colliderTarget = other.transform.GetComponent<CombatController>();
 
         if (colliderTarget != null)
@@ -190,8 +189,12 @@ public class CombatController : MonoBehaviour {
         float dodgeSpeed = dodgeInitialSpeed;
         float dodgeTimer = 0f;
 
-        if (dodgeDirection.magnitude == 0) {
+        if (dodgeDirection.magnitude == 0)
+        {
             dodgeDirection = transform.forward;
+        }
+        else if (dodgeDirection.magnitude > 1) {
+            dodgeDirection /= dodgeDirection.magnitude;
         }
 
         EnableIFrame();
