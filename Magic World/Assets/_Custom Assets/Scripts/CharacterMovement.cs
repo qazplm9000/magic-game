@@ -22,15 +22,33 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
     
-
-    public void Rotate(Vector3 direction) {
+    /// <summary>
+    /// Smoothly rotate character
+    /// </summary>
+    /// <param name="direction"></param>
+    public void SmoothRotate(Vector3 direction) {
         //get direction based on direction and camera direction
         //Vector3 cameraDirection = mainCamera.transform.forward;
         //cameraDirection.y = 0;
 
-        float angle = Vector3.SignedAngle(transform.forward, direction, Vector3.up);
-        angle = Mathf.LerpAngle(0, angle, 0.5f);
-        transform.Rotate(transform.up, angle);
+        if (direction.magnitude != 0)
+        {
+            float angle = Vector3.SignedAngle(transform.forward, direction, Vector3.up);
+            angle = Mathf.LerpAngle(0, angle, 0.5f);
+            transform.Rotate(transform.up, angle);
+        }
+    }
+
+    /// <summary>
+    /// Rotate without smoothing
+    /// </summary>
+    /// <param name="direction"></param>
+    public void Rotate(Vector3 direction) {
+        if (direction.magnitude != 0)
+        {
+            float angle = Vector3.SignedAngle(transform.forward, direction, Vector3.up);
+            transform.Rotate(transform.up, angle);
+        }
     }
 
     //take a direction and move towards it
@@ -53,7 +71,7 @@ public class CharacterMovement : MonoBehaviour {
         }
 
         //rotate character towards direction and change speed
-        Rotate(trueDirection);
+        SmoothRotate(trueDirection);
         agent.velocity = trueDirection * movementSpeed;
 
     }
@@ -64,7 +82,7 @@ public class CharacterMovement : MonoBehaviour {
         {
             //moves the character in the direction
             transform.position += direction * movementPercent * movementSpeed * Time.deltaTime;
-            Rotate(direction);
+            SmoothRotate(direction);
         }
     }
 

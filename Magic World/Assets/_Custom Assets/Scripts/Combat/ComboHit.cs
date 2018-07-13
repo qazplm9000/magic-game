@@ -10,10 +10,12 @@ namespace ComboSystem
     {
 
         //name and points
-        public string comboName = "Combo 1";
+        public string comboName = "Combo";
+        public string animationName = "";
         public int comboPoints = 1;
         public float lifetime = 0.5f;
         public float lifeTimer = 0f;
+        public float openQueueTime = .3f;
 
         //damage variables
         public AttackType attackType = AttackType.Physical;
@@ -34,6 +36,7 @@ namespace ComboSystem
 
         public virtual void DealDamage(CombatController target) {
             target.TakeDamage(attackPower);
+            Debug.Log("DealDamage in ComboHit.cs");
         }
 
         public IEnumerator Attack(CombatController user) {
@@ -43,6 +46,10 @@ namespace ComboSystem
             lifeTimer = 0;
             int numOfHitboxes = hitboxes.Count;
             int currentIndex = 0;
+
+            user.StartCoroutine(user.OpenBuffer(openQueueTime > lifetime ? lifetime : openQueueTime));
+
+            user.PlayAnimation(animationName);
 
             while (lifeTimer < lifetime) {
                 float newTime = lifeTimer + Time.deltaTime;

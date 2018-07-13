@@ -10,8 +10,8 @@ namespace ComboSystem
 
         public GameObject hitboxObject;
         private GameObject hitbox;
-        private float lifetime = 0.3f;
-        public float timer = 0f;
+        public float lifetime = 0.3f;
+        private float timer = 0f;
         public List<CombatController> targets = new List<CombatController>();
         private Vector3 positionOffset;
         private CombatController user;
@@ -37,11 +37,10 @@ namespace ComboSystem
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerStay(Collider other)
         {
             CombatController target = other.transform.GetComponent<CombatController>();
-
-            if (target != null && !targets.Contains(target))
+            if (target != null && !targets.Contains(target) && target != user)
             {
                 targets.Add(target);
                 HitTarget(target);

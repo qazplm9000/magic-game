@@ -64,6 +64,7 @@
     <Compile Include="Assets\_Custom Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterMovement.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Combat\Action.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\AttackType.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\CharacterCombos.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\CombatController.cs" />

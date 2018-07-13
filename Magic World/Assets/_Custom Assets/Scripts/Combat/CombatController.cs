@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using CombatSystem;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CombatController : MonoBehaviour {
 
+
     private CharacterStats userStats;
     private NavMeshAgent characterAgent;
     private SphereCollider targettingCollider;
+    public Action currentState = Action.None;
 
     public CombatController target;
     public List<CombatController> allFriendlyTargets = new List<CombatController>();
@@ -47,6 +50,11 @@ public class CombatController : MonoBehaviour {
     public float knockbackThreshold = 10f;
     public float knockbackForceMultiplier = 1f;
     public float knockbackMaxTime = 3f; //max time you can stay down before you automatically stand up
+    public float knockbackMinTime = 1f;
+    private bool knockbackCancel = false;
+
+    public Action bufferedAction = Action.None;
+    public bool bufferOpen = false;
 
 
     // Use this for initialization
@@ -188,6 +196,7 @@ public class CombatController : MonoBehaviour {
 
         float dodgeSpeed = dodgeInitialSpeed;
         float dodgeTimer = 0f;
+        StartCoroutine(OpenBuffer(0.5f));
 
         if (dodgeDirection.magnitude == 0)
         {
@@ -198,6 +207,7 @@ public class CombatController : MonoBehaviour {
         }
 
         EnableIFrame();
+        currentState = Action.Dodge;
 
         //animation
         dodging = true;
@@ -250,6 +260,7 @@ public class CombatController : MonoBehaviour {
         dodging = false;
         animator.SetBool("Dodge", dodging);
         DisableIFrame();
+        currentState = Action.None;
 
         if (OnDodgeEnd != null)
         {
@@ -264,6 +275,7 @@ public class CombatController : MonoBehaviour {
         {
             OnGuard();
         }
+        currentState = Action.Guard;
         guarding = true;
         animator.SetBool("Block", guarding);
     }
@@ -274,6 +286,7 @@ public class CombatController : MonoBehaviour {
             OnGuardEnd();
         }
         guarding = false;
+        currentState = Action.None;
         animator.SetBool("Block", guarding);
     }
 
@@ -304,7 +317,7 @@ public class CombatController : MonoBehaviour {
 
         //only knocks back if the total knockback is beyond the threshold
         if (knockback >= knockbackThreshold) {
-
+            currentState = Action.Knockback;
             ResetKnockback();
 
             //play knockback animation
@@ -315,12 +328,20 @@ public class CombatController : MonoBehaviour {
             while (knockbackTimer < knockbackMaxTime) {
                 //push back the character based on amount of knockback
                 //if you press a certain key after landing, you break out
+
+                if (knockbackTimer > knockbackMinTime && knockbackCancel) {
+                    break;
+                }
+
+                knockbackCancel = false;
+
                 yield return null;
             }
 
             //play standing up animation
             //animator.Play("Stand Up");
             DisableIFrame();
+            currentState = Action.None;
 
             //lock movement while character stands up
 
@@ -355,8 +376,45 @@ public class CombatController : MonoBehaviour {
     }
 
 
+    /// <summary>
+    /// Call to cancel knockback animation
+    /// Will only work if the minimum time has passed
+    /// </summary>
+    public void CancelKnockback() {
+
+    }
+
+    /// <summary>
+    /// Opens action queue immediately
+    /// </summary>
+    public void OpenBuffer() {
+        bufferOpen = true;
+    }
+
+    /// <summary>
+    /// Opens action queue after time
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    public IEnumerator OpenBuffer(float time) {
+        float timer = 0f;
+
+        while (timer < time) {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        bufferOpen = true;
+    }
+
 
     public void TakeDamage(int damage) {
         //decrease HP by damage
+        userStats.TakeDamage(damage);
+    }
+
+
+    public void PlayAnimation(string animationName, int layer = 0) {
+        animator.Play(animationName);
     }
 }

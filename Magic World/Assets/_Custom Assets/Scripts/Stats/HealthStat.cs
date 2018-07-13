@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class HealthStat : Stat {
 
-    int currentValue;
+    public int currentValue;
 
 
     public HealthStat() {
@@ -26,27 +26,16 @@ public class HealthStat : Stat {
 
     public void TakeDamage(int damage) {
         currentValue -= damage;
-
-        if (currentValue < 0) {
-            currentValue = 0;
-        }
+        ValidateCurrentHealth();
     }
 
     public void RestoreHealth(int healing) {
         currentValue += healing;
-
-        if (currentValue > totalValue) {
-            currentValue = totalValue;
-        }
+        ValidateCurrentHealth();
     }
 
     private void ValidateCurrentHealth() {
-        if (currentValue > totalValue)
-        {
-            currentValue = totalValue;
-        }
-        else if (currentValue < 0) {
-            currentValue = 0;
-        }
+        currentValue = currentValue > totalValue ? totalValue : currentValue;
+        currentValue = currentValue < 0 ? 0 : currentValue;
     }
 }

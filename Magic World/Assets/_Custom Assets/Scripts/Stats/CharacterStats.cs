@@ -19,7 +19,13 @@ public class CharacterStats : MonoBehaviour{
 
     private void Start()
     {
-        healthBar = healthBarObject.GetComponent<Slider>();
+        try
+        {
+            healthBar = healthBarObject.GetComponent<Slider>();
+        }
+        catch {
+            Debug.Log("Health bar not found");
+        }
     }
 
 
@@ -42,7 +48,7 @@ public class CharacterStats : MonoBehaviour{
     {
         if (healthBar != null)
         {
-            healthBar.value = (float)health.value / health.totalValue;
+            healthBar.value = (float)health.currentValue / health.totalValue;
         }
     }
     

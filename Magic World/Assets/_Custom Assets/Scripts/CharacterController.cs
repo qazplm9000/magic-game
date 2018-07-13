@@ -4,6 +4,7 @@ using UnityEngine;
 using SpellSystem;
 using UnityEngine.AI;
 using ComboSystem;
+using CombatSystem;
 
 public class CharacterController : MonoBehaviour {
 
@@ -15,16 +16,7 @@ public class CharacterController : MonoBehaviour {
     NavMeshAgent agent;
     CharacterCombos combos;
 
-    public enum Action
-    {
-        Attack,
-        Guard,
-        Movement,
-        None
-    }
-
     float movementSpeed = 5f;
-    Action lastAction = Action.None;
     bool movementLocked = false;
     Camera mainCamera;
 
@@ -48,7 +40,10 @@ public class CharacterController : MonoBehaviour {
 
         movementLocked = combatController.lockedMovement;
 
-        
+        //sets variables for movement animation
+        float speed = CharacterSpeed();
+        animator.SetFloat("Speed", speed);
+        animator.SetBool("Moving", IsCharacterMoving());
 
         //guard when not moving
         if (!movementLocked && agent.velocity.magnitude == 0 && !combatController.guarding)
@@ -87,29 +82,68 @@ public class CharacterController : MonoBehaviour {
 
 
         //Attack with left mouse or Square
-        if ((Input.GetButtonDown("Attack") || Input.GetKeyDown(ControllerInputManager.input.attackButton)) && !movementLocked)
+        if ((Input.GetButtonDown("Attack") || Input.GetKeyDown(ControllerInputManager.input.attackButton)))
         {
-            combos.Attack();
+            if (!movementLocked)
+            {
+                combos.Attack();
+            }
+            else {
+                if (combatController.bufferOpen) {
+                    combatController.bufferedAction = Action.Attack;
+                }
+            }
         }
 
-        //sets variables for movement animation
-        float speed = CharacterSpeed();
-        animator.SetFloat("Speed", speed);
-        animator.SetBool("Moving", IsCharacterMoving());
+        //doesn't work
+        if (Input.GetKeyDown(KeyCode.Y)) {
+            combatController.TakeDamage(10);
+        }
+
+        if (combatController.bufferedAction != Action.None && !combatController.lockedMovement) {
+            switch (combatController.bufferedAction) {
+                case Action.Attack:
+                    //controller.Rotate(DirectionFromInput());
+                    combos.Attack();
+                    break;
+                case Action.Dodge:
+                    controller.Rotate(DirectionFromInput());
+                    StartCoroutine(combatController.Dodge(DirectionFromInput()));
+                    break;
+                case Action.Skill:
+                    break;
+            }
+            combatController.bufferedAction = Action.None;
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.H)) {
+            animator.Play("Flinch", 2);
+        }
+
     }
 
 
     public void FixedUpdate()
     {
         //dodge with Q
-        if ((Input.GetButtonDown("Dodge") || Input.GetKeyDown(ControllerInputManager.input.dodgeButton)) && !movementLocked && agent.velocity.magnitude != 0)
+        if ((Input.GetButtonDown("Dodge") || Input.GetKeyDown(ControllerInputManager.input.dodgeButton)) && agent.velocity.magnitude != 0)
         {
-            if (combatController.guarding)
+            if (combatController.currentState == Action.Guard)
             {
                 combatController.Unguard();
             }
 
-            StartCoroutine(combatController.Dodge(DirectionFromInput()));
+            if (!movementLocked)
+            {
+                StartCoroutine(combatController.Dodge(DirectionFromInput()));
+            }
+            else {
+                if (combatController.bufferOpen)
+                {
+                    combatController.bufferedAction = Action.Dodge;
+                }
+            }
         }
     }
 
@@ -120,7 +154,7 @@ public class CharacterController : MonoBehaviour {
         Vector3 direction = camera.transform.forward * Input.GetAxis("Vertical");
         direction += camera.transform.right * Input.GetAxis("Horizontal");
 
-        if (direction.magnitude != 0) {
+        if (direction.magnitude > 1) {
             direction /= direction.magnitude;
         }
 
@@ -167,7 +201,7 @@ public class CharacterController : MonoBehaviour {
     private bool IsCharacterMoving() {
         bool result = false;
 
-        if (!movementLocked && DirectionFromInput().magnitude != 0)
+        if (DirectionFromInput().magnitude != 0)
         {
             result = true;
         }

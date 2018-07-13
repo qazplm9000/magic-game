@@ -97,8 +97,7 @@ public class Stat {
 
     //calculates what the total value of the stat is after boosts
     public void CalculateTotalValue() {
-        //totalValue = (int)((value + totalModifier) * totalMultiplier);
-        totalValue = value;
+        totalValue = (int)((value + totalModifier) * totalMultiplier);
     }
 
 
