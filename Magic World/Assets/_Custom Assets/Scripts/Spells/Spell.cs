@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace SpellSystem
+namespace SkillSystem
 {
-    [System.Serializable]
-    public class Spell
+    [CreateAssetMenu(menuName ="Skills/Spell",fileName ="Spell")]
+    public class Spell : Skill
     {
 
-
-        public int spellpower = 10;
-        public float castTime = 1f;
-        public int manaCost = 10;
+        
         public GameObject spellObject;
-
-        public CharacterStats casterStats;
+        public MonoBehaviour spellBehaviour;
 
         public Spell() {
             

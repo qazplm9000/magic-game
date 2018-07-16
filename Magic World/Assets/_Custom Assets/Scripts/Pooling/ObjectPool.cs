@@ -83,4 +83,23 @@ public class ObjectPool : MonoBehaviour {
     }
 
 
+    public static Behaviour GetComponentFromObject<Behaviour>(GameObject gameObject, Behaviour behaviour) where Behaviour : MonoBehaviour{
+        Behaviour component = null;
+
+        Component[] behaviours = gameObject.GetComponents(behaviour.GetType());
+
+        for (int i = 0; i < behaviours.Length; i++) {
+            if (behaviours[i] == behaviour) {
+                component = (Behaviour)behaviours[i];
+                break;
+            }
+        }
+
+        if (component == null) {
+            component = (Behaviour)gameObject.AddComponent(behaviour.GetType());
+        }
+
+        return component;
+    }
+
 }

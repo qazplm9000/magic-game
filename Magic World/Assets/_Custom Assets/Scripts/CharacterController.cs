@@ -5,12 +5,13 @@ using SpellSystem;
 using UnityEngine.AI;
 using ComboSystem;
 using CombatSystem;
+using SkillSystem;
 
 public class CharacterController : MonoBehaviour {
 
     CharacterMovement controller;
     CombatController combatController;
-    SpellCaster spellCaster;
+    SkillUser spellCaster;
     new Camera camera;
     Animator animator;
     NavMeshAgent agent;
@@ -26,7 +27,7 @@ public class CharacterController : MonoBehaviour {
     void Start () {
         controller = transform.GetComponentInChildren<CharacterMovement>();
         combatController = transform.GetComponent<CombatController>();
-        spellCaster = transform.GetComponent<SpellCaster>();
+        spellCaster = transform.GetComponent<SkillUser>();
         animator = transform.GetComponentInChildren<Animator>();
         agent = transform.GetComponent<NavMeshAgent>();
         combos = transform.GetComponent<CharacterCombos>();
@@ -48,16 +49,16 @@ public class CharacterController : MonoBehaviour {
         //guard when not moving
         if (!movementLocked && agent.velocity.magnitude == 0 && !combatController.guarding)
         {
-            if ((Input.GetButton("Dodge") || Input.GetKey(ControllerInputManager.input.dodgeButton)))
+            if (InputManager.manager.GetKeyDown("Dodge"))
             {
                 combatController.Guard();
             }
         }
 
-        //unguard when you let go of button
-        if(combatController.guarding && (Input.GetButtonUp("Dodge") || Input.GetKeyUp(ControllerInputManager.input.dodgeButton)))
-        {
-            combatController.Unguard();
+        if (combatController.guarding) {
+            if (InputManager.manager.GetKeyUp("Block")) {
+                combatController.Unguard();
+            }
         }
 
         //movement
@@ -76,13 +77,13 @@ public class CharacterController : MonoBehaviour {
         }
 
         //Cast spells
-        if (Input.GetKeyDown(KeyCode.T)) {
-            spellCaster.CastSpell(spellCaster.currentSpell);
+        if (InputManager.manager.GetKeyDown("Cast")) {
+            //spellCaster.CastSpell(spellCaster.currentSpell);
         }
 
 
         //Attack with left mouse or Square
-        if ((Input.GetButtonDown("Attack") || Input.GetKeyDown(ControllerInputManager.input.attackButton)))
+        if (InputManager.manager.GetKeyDown("Attack"))
         {
             if (!movementLocked)
             {
@@ -94,32 +95,12 @@ public class CharacterController : MonoBehaviour {
                 }
             }
         }
+        
 
-        //doesn't work
-        if (Input.GetKeyDown(KeyCode.Y)) {
-            combatController.TakeDamage(10);
-        }
-
-        if (combatController.bufferedAction != Action.None && !combatController.lockedMovement) {
-            switch (combatController.bufferedAction) {
-                case Action.Attack:
-                    //controller.Rotate(DirectionFromInput());
-                    combos.Attack();
-                    break;
-                case Action.Dodge:
-                    controller.Rotate(DirectionFromInput());
-                    StartCoroutine(combatController.Dodge(DirectionFromInput()));
-                    break;
-                case Action.Skill:
-                    break;
-            }
-            combatController.bufferedAction = Action.None;
-        }
-
-
+        /*
         if (Input.GetKeyDown(KeyCode.H)) {
             animator.Play("Flinch", 2);
-        }
+        }*/
 
     }
 
@@ -127,7 +108,7 @@ public class CharacterController : MonoBehaviour {
     public void FixedUpdate()
     {
         //dodge with Q
-        if ((Input.GetButtonDown("Dodge") || Input.GetKeyDown(ControllerInputManager.input.dodgeButton)) && agent.velocity.magnitude != 0)
+        if (InputManager.manager.GetKeyDown("Dodge") && agent.velocity.magnitude != 0)
         {
             if (combatController.currentState == Action.Guard)
             {
@@ -144,6 +125,26 @@ public class CharacterController : MonoBehaviour {
                     combatController.bufferedAction = Action.Dodge;
                 }
             }
+        }
+
+
+        //calls buffered action
+        if (combatController.bufferedAction != Action.None && !combatController.lockedMovement)
+        {
+            switch (combatController.bufferedAction)
+            {
+                case Action.Attack:
+                    //controller.Rotate(DirectionFromInput());
+                    combos.Attack();
+                    break;
+                case Action.Dodge:
+                    controller.Rotate(DirectionFromInput());
+                    StartCoroutine(combatController.Dodge(DirectionFromInput()));
+                    break;
+                case Action.Skill:
+                    break;
+            }
+            combatController.bufferedAction = Action.None;
         }
     }
 
