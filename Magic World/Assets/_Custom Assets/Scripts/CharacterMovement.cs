@@ -12,12 +12,16 @@ public class CharacterMovement : MonoBehaviour {
     NavMeshAgent agent;
     public float lockTimer = 0f;
     Animator animator;
+    private Rigidbody rb;
+
+    public float smoothing = 0.7f;
 
     // Use this for initialization
     void Start () {
         camera = Camera.main;
         agent = transform.GetComponent<NavMeshAgent>();
         animator = transform.GetComponentInChildren<Animator>();
+        rb = transform.GetComponent<Rigidbody>();
         agent.updateRotation = false;
 	}
 
@@ -76,14 +80,28 @@ public class CharacterMovement : MonoBehaviour {
 
     }
 
-    public void MoveWithoutNavMesh(Vector3 direction, float movementPercent = 1.0f) {
+    public void MoveWithoutNavMesh(Vector3 direction, float movementSpeed) {
+        //moves the character in the direction
+        //transform.position += direction * movementPercent * movementSpeed * Time.deltaTime;
+        transform.position = Vector3.Lerp(transform.position, transform.position + direction * movementSpeed * Time.deltaTime, smoothing);
+        SmoothRotate(direction);
+    }
 
-        if (!movementLocked && direction.magnitude != 0)
-        {
-            //moves the character in the direction
-            transform.position += direction * movementPercent * movementSpeed * Time.deltaTime;
-            SmoothRotate(direction);
+
+    public void OnCollisionStay(Collision collision)
+    {
+        Vector3 normal = Vector3.zero;
+        foreach (ContactPoint contact in collision.contacts) {
+            normal = contact.normal;
         }
+
+        float angleBetween = 0;
+
+        if (normal.magnitude != 0) {
+            angleBetween = Vector3.Angle(normal, Vector3.down);
+        }
+
+        rb.AddForce(-normal * Mathf.Sin(angleBetween));
     }
 
     /// <summary>
@@ -92,11 +110,14 @@ public class CharacterMovement : MonoBehaviour {
     /// <returns></returns>
     public Vector3 DirectionFromInput()
     {
+        Vector3 cameraForward = camera.transform.forward;
+        cameraForward /= cameraForward.magnitude;
+        Vector3 cameraRight = camera.transform.right;
+        cameraRight /= cameraRight.magnitude;
+        Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical");
+        direction += cameraRight * InputManager.manager.GetAxis("Horizontal");
 
-        Vector3 direction = camera.transform.forward * Input.GetAxis("Vertical");
-        direction += camera.transform.right * Input.GetAxis("Horizontal");
-
-        if (direction.magnitude != 0)
+        if (direction.magnitude > 1)
         {
             direction /= direction.magnitude;
         }

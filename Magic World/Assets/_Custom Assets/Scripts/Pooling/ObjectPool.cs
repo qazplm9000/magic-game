@@ -83,6 +83,16 @@ public class ObjectPool : MonoBehaviour {
     }
 
 
+
+    public GameObject PullObject(GameObject thisObject, Transform parent) {
+        GameObject result = PullObject(thisObject);
+        result.transform.position = parent.position;
+        result.transform.parent = parent;
+
+        return result;
+    }
+
+
     public static Behaviour GetComponentFromObject<Behaviour>(GameObject gameObject, Behaviour behaviour) where Behaviour : MonoBehaviour{
         Behaviour component = null;
 

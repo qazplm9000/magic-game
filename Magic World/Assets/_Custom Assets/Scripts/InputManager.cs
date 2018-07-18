@@ -10,6 +10,16 @@ public class InputManager : MonoBehaviour {
     public List<InputCodes> inputs = new List<InputCodes>();
     private Dictionary<string, InputCodes> inputDict = new Dictionary<string, InputCodes>();
 
+    public bool invertKeyboardXAxis = false;
+    public bool invertKeyboardYAxis = false;
+    public bool invertMouseXAxis = false;
+    public bool invertMouseYAxis = false;
+    
+    public bool invertLeftStickXAxis = false;
+    public bool invertLeftStickYAxis = false;
+    public bool invertRightStickXAxis = false;
+    public bool invertRightStickYAxis = false;
+
     private RuntimePlatform platform;
     
 
@@ -248,6 +258,75 @@ public class InputManager : MonoBehaviour {
             //make sure neither keybind is still being held down
             result = (onControllerUp || onComputerUp) &&
                         (!controllerDown && !computerDown);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Returns the value of the axis
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public float GetAxis(string name) {
+        float result = 0;
+
+        switch (name.ToLower()) {
+            case "horizontal":
+                if (Mathf.Abs(Input.GetAxis("Horizontal")) > Mathf.Abs(Input.GetAxis("Controller Horizontal")))
+                {
+                    //computer
+                    result = Input.GetAxis("Horizontal");
+                    result = invertKeyboardXAxis ? -result : result;
+                }
+                else {
+                    //controller
+                    result = Input.GetAxis("Controller Horizontal");
+                    result = invertLeftStickXAxis ? -result : result;
+                }
+                break;
+            case "vertical":
+                if (Mathf.Abs(Input.GetAxis("Vertical")) > Mathf.Abs(Input.GetAxis("Controller Vertical")))
+                {
+                    //computer
+                    result = Input.GetAxis("Vertical");
+                    result = invertKeyboardYAxis ? -result : result;
+                }
+                else
+                {
+                    //controller
+                    result = Input.GetAxis("Controller Vertical");
+                    result = invertLeftStickYAxis ? -result : result;
+                }
+                break;
+            case "mouse x":
+                if (Mathf.Abs(Input.GetAxis("Mouse X")) > Mathf.Abs(Input.GetAxis("Controller X")))
+                {
+                    //computer
+                    result = Input.GetAxis("Mouse X");
+                    result = invertMouseXAxis ? -result : result;
+                }
+                else
+                {
+                    //controller
+                    result = Input.GetAxis("Controller X");
+                    result = invertRightStickXAxis ? -result : result;
+                }
+                break;
+            case "mouse y":
+                if (Mathf.Abs(Input.GetAxis("Mouse Y")) > Mathf.Abs(Input.GetAxis("Controller Y")))
+                {
+                    //computer
+                    result = Input.GetAxis("Mouse Y");
+                    result = invertMouseYAxis ? -result : result;
+                }
+                else
+                {
+                    //controller
+                    result = Input.GetAxis("Controller Y");
+                    result = invertRightStickXAxis ? -result : result;
+                }
+                break;
         }
 
         return result;

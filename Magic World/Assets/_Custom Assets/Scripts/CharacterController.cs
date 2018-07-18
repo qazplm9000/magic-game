@@ -11,7 +11,7 @@ public class CharacterController : MonoBehaviour {
 
     CharacterMovement controller;
     CombatController combatController;
-    SkillUser spellCaster;
+    SkillCaster spellCaster;
     new Camera camera;
     Animator animator;
     NavMeshAgent agent;
@@ -27,7 +27,7 @@ public class CharacterController : MonoBehaviour {
     void Start () {
         controller = transform.GetComponentInChildren<CharacterMovement>();
         combatController = transform.GetComponent<CombatController>();
-        spellCaster = transform.GetComponent<SkillUser>();
+        spellCaster = transform.GetComponent<SkillCaster>();
         animator = transform.GetComponentInChildren<Animator>();
         agent = transform.GetComponent<NavMeshAgent>();
         combos = transform.GetComponent<CharacterCombos>();
@@ -66,6 +66,7 @@ public class CharacterController : MonoBehaviour {
         {
             Vector3 direction = DirectionFromInput();
             //checks whether player is guarding or not when moving
+            
             if (!combatController.guarding)
             {
                 controller.Move(direction, movementSpeed);
@@ -150,18 +151,30 @@ public class CharacterController : MonoBehaviour {
 
 
 
-    public Vector3 DirectionFromInput() {
+    /// <summary>
+    /// Gets a direction from the input
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 DirectionFromInput()
+    {
+        Vector3 cameraForward = camera.transform.forward;
+        cameraForward = new Vector3(cameraForward.x, 0, cameraForward.z);
+        cameraForward /= cameraForward.magnitude;
+        Vector3 cameraRight = camera.transform.right;
+        cameraRight = new Vector3(cameraRight.x, 0, cameraRight.z);
+        cameraRight /= cameraRight.magnitude;
+        Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical");
+        direction += cameraRight * InputManager.manager.GetAxis("Horizontal");
 
-        Vector3 direction = camera.transform.forward * Input.GetAxis("Vertical");
-        direction += camera.transform.right * Input.GetAxis("Horizontal");
-
-        if (direction.magnitude > 1) {
+        if (direction.magnitude > 1)
+        {
             direction /= direction.magnitude;
         }
 
         return direction;
 
     }
+
 
 
     public void LockMovement() {
@@ -200,14 +213,7 @@ public class CharacterController : MonoBehaviour {
 
     //determines whether a character is moving for animation purposes
     private bool IsCharacterMoving() {
-        bool result = false;
-
-        if (DirectionFromInput().magnitude != 0)
-        {
-            result = true;
-        }
-
-        return result;
+        return DirectionFromInput().magnitude != 0;
     }
 
     //calculate a character's speed

@@ -9,19 +9,18 @@ namespace SkillSystem
     {
 
         public GameObject effect;
-        public EffectBehaviour effectBehaviour;
-        //public Transform castLocation;
+        public MonoBehaviour effectBehaviour;
+        public CastLocation castLocation;
 
-        public void CreateEffect() {
-            GameObject effectObject = ObjectPool.pool.PullObject(effect);
-            EffectBehaviour objectBehaviour = ObjectPool.GetComponentFromObject<EffectBehaviour>(effectObject, effectBehaviour);
+        public void CreateEffect(SkillCaster user) {
+            Transform location = user.GetCastLocation(castLocation);
+            GameObject effectObject = ObjectPool.pool.PullObject(effect, location);
+            EffectBehaviour objectBehaviour = (EffectBehaviour)ObjectPool.GetComponentFromObject<MonoBehaviour>(effectObject, effectBehaviour);
             
-
             //Add the component effectBehaviour 
             if (objectBehaviour != effectBehaviour) {
                 effectObject.AddComponent(effectBehaviour.GetType());
             }
-            
         }
 
     }

@@ -68,11 +68,18 @@ public class CameraController : MonoBehaviour {
     //rotate camera around target
     public void RotateCamera() {
 
-        float xAngle = Input.GetAxis("Mouse X") * Time.deltaTime * rotateSpeed;
-        float yAngle = Input.GetAxis("Mouse Y") * Time.deltaTime * rotateSpeed;
+        float xAngle = InputManager.manager.GetAxis("Mouse X") * Time.deltaTime * rotateSpeed;
+        float yAngle = InputManager.manager.GetAxis("Mouse Y") * Time.deltaTime * rotateSpeed;
 
-        float angle = Vector3.Angle(distanceVector, Vector3.up) + yAngle;
+        Vector3 perpendicular = new Vector3(-distanceVector.z, 0, distanceVector.x);
 
+        float angle = Vector3.SignedAngle(distanceVector, 
+                                            new Vector3(distanceVector.x, 0, distanceVector.z), 
+                                            perpendicular) + yAngle;
+
+        //Debug.DrawLine(target.transform.position + targetOffset, distanceVector, Color.blue);
+        //Debug.DrawLine(target.transform.position + targetOffset, new Vector3(distanceVector.x, 0, distanceVector.z), Color.green);
+        //Debug.DrawLine(target.transform.position + targetOffset, perpendicular, Color.red);
         if (angle > maxAngle)
         {
             yAngle += angle - maxAngle;
@@ -80,10 +87,13 @@ public class CameraController : MonoBehaviour {
         else if (angle < minAngle) {
             yAngle -= minAngle - angle;
         }
-        
+
+        //Debug.Log(angle);
 
         distanceVector = Quaternion.Euler(0, xAngle, 0) * distanceVector;
-        distanceVector = Quaternion.Euler(0, 0, yAngle) * distanceVector;
+        Vector3 temp = perpendicular / perpendicular.magnitude * yAngle;
+        distanceVector = Quaternion.Euler(temp.x, 0, temp.z) * distanceVector;
+        
 
     }
 
