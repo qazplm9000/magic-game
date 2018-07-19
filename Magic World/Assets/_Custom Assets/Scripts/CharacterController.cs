@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using ComboSystem;
 using CombatSystem;
 using SkillSystem;
+using InputSystem;
 
 public class CharacterController : MonoBehaviour {
 
@@ -16,6 +17,7 @@ public class CharacterController : MonoBehaviour {
     Animator animator;
     NavMeshAgent agent;
     CharacterCombos combos;
+    CharacterManager manager;
 
     float movementSpeed = 5f;
     bool movementLocked = false;
@@ -31,6 +33,7 @@ public class CharacterController : MonoBehaviour {
         animator = transform.GetComponentInChildren<Animator>();
         agent = transform.GetComponent<NavMeshAgent>();
         combos = transform.GetComponent<CharacterCombos>();
+        manager = transform.GetComponent<CharacterManager>();
         camera = Camera.main;
 
         lastPosition = CopyVector(transform.position);
@@ -56,7 +59,7 @@ public class CharacterController : MonoBehaviour {
         }
 
         if (combatController.guarding) {
-            if (InputManager.manager.GetKeyUp("Block")) {
+            if (InputManager.manager.GetKeyUp("Dodge")) {
                 combatController.Unguard();
             }
         }
@@ -79,7 +82,7 @@ public class CharacterController : MonoBehaviour {
 
         //Cast spells
         if (InputManager.manager.GetKeyDown("Cast")) {
-            //spellCaster.CastSpell(spellCaster.currentSpell);
+            manager.caster.CastSpell();
         }
 
 
@@ -163,8 +166,8 @@ public class CharacterController : MonoBehaviour {
         Vector3 cameraRight = camera.transform.right;
         cameraRight = new Vector3(cameraRight.x, 0, cameraRight.z);
         cameraRight /= cameraRight.magnitude;
-        Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical");
-        direction += cameraRight * InputManager.manager.GetAxis("Horizontal");
+        Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical Left");
+        direction += cameraRight * InputManager.manager.GetAxis("Horizontal Left");
 
         if (direction.magnitude > 1)
         {

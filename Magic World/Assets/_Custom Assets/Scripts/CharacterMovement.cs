@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using InputSystem;
 
 //Script used for containing all movement functions
 public class CharacterMovement : MonoBehaviour {
@@ -114,8 +115,8 @@ public class CharacterMovement : MonoBehaviour {
         cameraForward /= cameraForward.magnitude;
         Vector3 cameraRight = camera.transform.right;
         cameraRight /= cameraRight.magnitude;
-        Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical");
-        direction += cameraRight * InputManager.manager.GetAxis("Horizontal");
+        Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical Left");
+        direction += cameraRight * InputManager.manager.GetAxis("Horizontal Left");
 
         if (direction.magnitude > 1)
         {

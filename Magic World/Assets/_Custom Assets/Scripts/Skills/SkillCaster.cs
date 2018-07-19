@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InputSystem;
 
 namespace SkillSystem
 {
@@ -12,8 +13,8 @@ namespace SkillSystem
         public Skill currentSkill = null;
         private float castTimer = 0f;
         private bool interrupted = false;
-        public Transform target;
-        private CombatController combatController;
+        public CharacterManager target;
+        private CharacterManager user;
 
         public List<Skill> skills = new List<Skill>();
         public int skillIndex = 0;
@@ -27,7 +28,7 @@ namespace SkillSystem
         void Start()
         {
             animator = transform.GetComponent<Animator>();
-            combatController = transform.GetComponent<CombatController>();
+            user = transform.GetComponent<CharacterManager>();
             InitCastLocations();
         }
 
@@ -35,12 +36,15 @@ namespace SkillSystem
         {
             if (casting) {
                 castTimer += Time.deltaTime;
+
+                if (castTimer > currentSkill.castTime)
+                {
+                    currentSkill.CastSkill(user, target);
+                    ResetCast();
+                }
             }
 
-            if (castTimer > currentSkill.castTime) {
-                currentSkill.CastSkill(combatController, this);
-                ResetCast();
-            }
+            
 
             if (InputManager.manager.GetKeyDown("Cast")) {
                 CastStart(skills[skillIndex]);
@@ -54,7 +58,7 @@ namespace SkillSystem
         public void CastStart(Skill skill)
         {
             //instantiate spell effect
-            skill.StartCast(combatController, this);
+            skill.StartCast(user);
             castTimer = 0;
             casting = true;
             currentSkill = skill;
@@ -98,20 +102,24 @@ namespace SkillSystem
         }
 
 
-        public bool CastSpell(Spell spell)
+        public bool CastSpell(Skill skill)
         {
             bool casted = false;
 
             if (!IsCasting())
             {
 
-                currentSkill = spell;
+                currentSkill = skill;
                 casting = true;
                 //StartCoroutine(CastStart());
                 casted = true;
             }
 
             return casted;
+        }
+
+        public bool CastSpell() {
+            return CastSpell(skills[skillIndex]);
         }
 
         public bool IsCasting()
@@ -183,7 +191,7 @@ namespace SkillSystem
 
         public void PlayAnimation(string animationName)
         {
-            combatController.PlayAnimation(animationName);
+            user.combat.PlayAnimation(animationName);
         }
 
 

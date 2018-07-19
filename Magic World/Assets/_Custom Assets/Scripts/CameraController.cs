@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InputSystem;
 
 public class CameraController : MonoBehaviour {
 
@@ -68,8 +69,8 @@ public class CameraController : MonoBehaviour {
     //rotate camera around target
     public void RotateCamera() {
 
-        float xAngle = InputManager.manager.GetAxis("Mouse X") * Time.deltaTime * rotateSpeed;
-        float yAngle = InputManager.manager.GetAxis("Mouse Y") * Time.deltaTime * rotateSpeed;
+        float xAngle = InputManager.manager.GetAxis("Horizontal Right") * Time.deltaTime * rotateSpeed;
+        float yAngle = InputManager.manager.GetAxis("Vertical Right") * Time.deltaTime * rotateSpeed;
 
         Vector3 perpendicular = new Vector3(-distanceVector.z, 0, distanceVector.x);
 
