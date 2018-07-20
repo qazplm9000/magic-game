@@ -45,11 +45,11 @@ namespace SkillSystem
             }
 
             
-
+            /*
             if (InputManager.manager.GetKeyDown("Cast")) {
                 CastStart(skills[skillIndex]);
             }
-
+            */
 
 
         }
@@ -112,7 +112,7 @@ namespace SkillSystem
                 currentSkill = skill;
                 casting = true;
                 //StartCoroutine(CastStart());
-                casted = true;
+                //casted = true;
             }
 
             return casted;
@@ -274,8 +274,12 @@ namespace SkillSystem
 
         public Transform GetCastLocation(CastLocation location) {
             Transform result = null;
-            if (castLocationDict.ContainsKey(location)) {
+            if (castLocationDict.ContainsKey(location))
+            {
                 result = castLocationDict[location];
+            }
+            else {
+                result = transform;
             }
 
             return result;

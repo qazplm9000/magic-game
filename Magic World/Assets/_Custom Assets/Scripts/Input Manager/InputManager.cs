@@ -11,6 +11,7 @@ namespace InputSystem
         public List<InputKey> keys = new List<InputKey>();
         private Dictionary<string, InputKey> keyDict = new Dictionary<string, InputKey>();
 
+        [Space(10)]
         public ControllerKeys controllerKeys;
 
         private RuntimePlatform platform;

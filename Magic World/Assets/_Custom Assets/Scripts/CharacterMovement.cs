@@ -6,27 +6,22 @@ using InputSystem;
 
 //Script used for containing all movement functions
 public class CharacterMovement : MonoBehaviour {
-
-    float movementSpeed = 5f;
-    bool movementLocked = false;
-    new Camera camera;
-    NavMeshAgent agent;
-    public float lockTimer = 0f;
-    Animator animator;
-    private Rigidbody rb;
-
+    
+    CharacterManager characterManager;
+    [Range(0,1)]
     public float smoothing = 0.7f;
 
     // Use this for initialization
     void Start () {
-        camera = Camera.main;
-        agent = transform.GetComponent<NavMeshAgent>();
-        animator = transform.GetComponentInChildren<Animator>();
-        rb = transform.GetComponent<Rigidbody>();
-        agent.updateRotation = false;
+        characterManager = transform.GetComponent<CharacterManager>();
+        characterManager.agent.updateRotation = false;
 	}
 
-    
+    private void Update()
+    {
+    }
+
+
     /// <summary>
     /// Smoothly rotate character
     /// </summary>
@@ -56,76 +51,74 @@ public class CharacterMovement : MonoBehaviour {
         }
     }
 
-    //take a direction and move towards it
-    //movementPercent depends on how far joystick is held
-    public void Move(Vector3 direction, float movementSpeed) {
-
-        //don't do anything if movement is locked
-        if (movementLocked) {
-            return;
-        }
-        
-        //direction with Y movement removed
-        Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
-
-        
+    private void _MoveFunction(Vector3 direction, float movementSpeed) {
         //do nothing if direction vector is 0
-        if (trueDirection.magnitude == 0) {
-            agent.velocity = Vector3.zero;
+        if (direction.magnitude == 0)
+        {
+            characterManager.agent.velocity = Vector3.zero;
             return;
         }
 
         //rotate character towards direction and change speed
+        characterManager.agent.velocity = direction * movementSpeed;
+    }
+
+    //take a direction and move towards it
+    //movementPercent depends on how far joystick is held
+    public void Move(Vector3 direction, float movementSpeed) {
+        //direction with Y movement removed
+        Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
+
+        if (trueDirection.magnitude == 0)
+        {
+            return;
+        }
+
+        _MoveFunction(trueDirection, movementSpeed);
+        
         SmoothRotate(trueDirection);
-        agent.velocity = trueDirection * movementSpeed;
 
     }
+
+    /// <summary>
+    /// Moves while facing the target
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="movementSpeed"></param>
+    public void Strafe(Vector3 direction, float movementSpeed) {
+        //direction with Y movement removed
+        Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
+
+        if (trueDirection.magnitude == 0) {
+            return;
+        }
+
+        _MoveFunction(trueDirection, movementSpeed);
+
+        Vector3 turnDirection = characterManager.target.transform.position - transform.position;
+        turnDirection = new Vector3(turnDirection.x, 0, turnDirection.z);
+
+        SmoothRotate(turnDirection);
+    }
+
+
+    /// <summary>
+    /// Halt all movement
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="movementSpeed"></param>
+    public void HaltMovement() {
+        characterManager.agent.velocity = Vector3.zero;
+    }
+
 
     public void MoveWithoutNavMesh(Vector3 direction, float movementSpeed) {
         //moves the character in the direction
         //transform.position += direction * movementPercent * movementSpeed * Time.deltaTime;
-        transform.position = Vector3.Lerp(transform.position, transform.position + direction * movementSpeed * Time.deltaTime, smoothing);
-        SmoothRotate(direction);
+        Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
+        characterManager.rb.velocity = trueDirection * movementSpeed + Physics.gravity;
     }
-
-
-    public void OnCollisionStay(Collision collision)
-    {
-        Vector3 normal = Vector3.zero;
-        foreach (ContactPoint contact in collision.contacts) {
-            normal = contact.normal;
-        }
-
-        float angleBetween = 0;
-
-        if (normal.magnitude != 0) {
-            angleBetween = Vector3.Angle(normal, Vector3.down);
-        }
-
-        rb.AddForce(-normal * Mathf.Sin(angleBetween));
-    }
-
-    /// <summary>
-    /// Gets a direction from the input
-    /// </summary>
-    /// <returns></returns>
-    public Vector3 DirectionFromInput()
-    {
-        Vector3 cameraForward = camera.transform.forward;
-        cameraForward /= cameraForward.magnitude;
-        Vector3 cameraRight = camera.transform.right;
-        cameraRight /= cameraRight.magnitude;
-        Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical Left");
-        direction += cameraRight * InputManager.manager.GetAxis("Horizontal Left");
-
-        if (direction.magnitude > 1)
-        {
-            direction /= direction.magnitude;
-        }
-
-        return direction;
-
-    }
+    
     
 
 }

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using CombatSystem;
+using InputSystem;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CombatController : MonoBehaviour {
 
-
-    private CharacterStats userStats;
-    private NavMeshAgent characterAgent;
-    private SphereCollider targettingCollider;
+    CharacterManager characterManager;
     public Action currentState = Action.None;
 
     public CombatController target;
@@ -24,9 +22,6 @@ public class CombatController : MonoBehaviour {
     public OnAction OnDodgeEnd;
     public OnAction OnKnockback;
     public OnAction OnKnockbackEnd;
-    
-
-    Animator animator;
 
 
     public bool interrupted = false;
@@ -59,10 +54,7 @@ public class CombatController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        characterAgent = transform.GetComponent<NavMeshAgent>();
-        userStats = transform.GetComponent<CharacterStats>();
-        animator = transform.GetComponentInChildren<Animator>();
-        InitTargettingCollider();
+        characterManager = GetComponent<CharacterManager>();
 	}
 	
 	// Update is called once per frame
@@ -76,6 +68,8 @@ public class CombatController : MonoBehaviour {
             Debug.DrawLine(transform.position, target.transform.position);
         }
 
+        characterManager.anim.SetFloat("Vertical", InputManager.manager.GetAxis("Vertical Left"));
+        characterManager.anim.SetFloat("Horizontal", InputManager.manager.GetAxis("Horizontal Left"));
         
 	}
 
@@ -154,12 +148,7 @@ public class CombatController : MonoBehaviour {
         return result;
     }
 
-
-    private void InitTargettingCollider() {
-        targettingCollider = transform.gameObject.AddComponent<SphereCollider>();
-        targettingCollider.radius = 10f;
-        targettingCollider.isTrigger = true;
-    }
+    
 
 
     private bool IsEnemy(Transform target) {
@@ -211,8 +200,8 @@ public class CombatController : MonoBehaviour {
 
         //animation
         dodging = true;
-        animator.SetBool("Dodge", dodging);
-        animator.Play("Dodge");
+        //animator.SetBool("Dodge", dodging);
+        characterManager.anim.CrossFade("Dodge", 0.2f);
 
         //activates event OnDodge
         if (OnDodge != null)
@@ -220,17 +209,17 @@ public class CombatController : MonoBehaviour {
             OnDodge();
         }
 
-        LockMovement();
+        //LockMovement();
 
         while (dodgeSpeed < dodgeTargetSpeed) {
-            characterAgent.velocity = dodgeDirection * dodgeSpeed;
+            characterManager.agent.velocity = dodgeDirection * dodgeSpeed;
             dodgeSpeed += dodgeAcceleration * Time.deltaTime;
             dodgeTimer += Time.deltaTime;
             yield return null;
         }
 
         while (dodgeSpeed > 0) {
-            characterAgent.velocity = dodgeDirection * dodgeSpeed;
+            characterManager.agent.velocity = dodgeDirection * dodgeSpeed;
             dodgeSpeed -= dodgeDeacceleration * Time.deltaTime;
 
             //checks if invincibility frames need to be disabled
@@ -244,7 +233,7 @@ public class CombatController : MonoBehaviour {
             if (interrupted)
             {
                 dodging = false;
-                animator.SetBool("Dodge", dodging);
+                //animator.SetBool("Dodge", dodging);
 
                 if (OnDodgeEnd != null)
                 {
@@ -258,7 +247,7 @@ public class CombatController : MonoBehaviour {
         }
 
         dodging = false;
-        animator.SetBool("Dodge", dodging);
+        //animator.SetBool("Dodge", dodging);
         DisableIFrame();
         currentState = Action.None;
 
@@ -267,7 +256,7 @@ public class CombatController : MonoBehaviour {
             OnDodgeEnd();
         }
 
-        UnlockMovement();
+        //UnlockMovement();
     }
 
     public void Guard() {
@@ -276,8 +265,8 @@ public class CombatController : MonoBehaviour {
             OnGuard();
         }
         currentState = Action.Guard;
-        guarding = true;
-        animator.SetBool("Block", guarding);
+        characterManager.isGuarding = true;
+        characterManager.anim.SetBool("isGuarding", true);
     }
 
     public void Unguard() {
@@ -285,13 +274,13 @@ public class CombatController : MonoBehaviour {
         {
             OnGuardEnd();
         }
-        guarding = false;
+        characterManager.isGuarding = false;
         currentState = Action.None;
-        animator.SetBool("Block", guarding);
+        characterManager.anim.SetBool("isGuarding", false);
     }
 
     public void EnableIFrame() {
-        invincible = true;
+        characterManager.isInvincible = true;
     }
 
     public void DisableIFrame() {
@@ -352,11 +341,11 @@ public class CombatController : MonoBehaviour {
 
 
     public void LockMovement() {
-        lockedMovement = true;
+        //lockedMovement = true;
     }
 
     public void UnlockMovement() {
-        lockedMovement = false;
+        //lockedMovement = false;
     }
 
 
@@ -410,11 +399,11 @@ public class CombatController : MonoBehaviour {
 
     public void TakeDamage(int damage) {
         //decrease HP by damage
-        userStats.TakeDamage(damage);
+        characterManager.stats.TakeDamage(damage);
     }
 
 
     public void PlayAnimation(string animationName, int layer = 0) {
-        animator.Play(animationName);
+        characterManager.anim.CrossFade(animationName, 0.2f);
     }
 }

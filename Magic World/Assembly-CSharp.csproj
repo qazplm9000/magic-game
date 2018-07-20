@@ -61,8 +61,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\InputHandler.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\PlayerInputHandler.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Animator States\SetBool.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CameraController.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\CharacterController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterManager.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterMovement.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\Action.cs" />
