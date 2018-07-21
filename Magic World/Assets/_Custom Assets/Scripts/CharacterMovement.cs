@@ -116,7 +116,9 @@ public class CharacterMovement : MonoBehaviour {
         //moves the character in the direction
         //transform.position += direction * movementPercent * movementSpeed * Time.deltaTime;
         Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
-        characterManager.rb.velocity = trueDirection * movementSpeed + Physics.gravity;
+        characterManager.rb.velocity = trueDirection * movementSpeed + 
+                                            (characterManager.rb.velocity.y * Vector3.down + 
+                                            Physics.gravity * Time.deltaTime);
     }
     
     

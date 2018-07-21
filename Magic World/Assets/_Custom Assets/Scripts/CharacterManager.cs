@@ -49,6 +49,7 @@ public class CharacterManager : MonoBehaviour {
     [Header("Combat")]
     public bool bufferOpen = true;
     public Action bufferedAction = Action.None;
+    public bool isCasting = false;
     public bool isDead = false;
     public bool isInvincible = false;
     public bool isGuarding = false;

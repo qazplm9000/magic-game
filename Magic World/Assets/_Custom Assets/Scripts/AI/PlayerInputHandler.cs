@@ -44,7 +44,7 @@ namespace ControlSystem
             characterManager.anim.SetBool("lockOn", characterManager.isLockingOnTarget);
             #endregion
 
-
+            Debug.Log(characterManager.rb.velocity);
             //guard when not moving
             if (!characterManager.movementLocked && characterManager.agent.velocity.magnitude == 0 && !characterManager.isGuarding)
             {

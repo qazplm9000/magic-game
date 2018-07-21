@@ -84,10 +84,10 @@ public class ObjectPool : MonoBehaviour {
 
 
 
-    public GameObject PullObject(GameObject thisObject, Transform parent) {
+    public GameObject PullObject(GameObject thisObject, Transform location) {
         GameObject result = PullObject(thisObject);
-        result.transform.position = parent.position;
-        result.transform.parent = parent;
+        result.transform.position = location.position;
+        result.transform.rotation = location.rotation;
 
         return result;
     }

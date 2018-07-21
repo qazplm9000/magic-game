@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\EnemyAIHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\InputHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\PlayerInputHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Animator States\SetBool.cs" />
@@ -73,6 +74,8 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\CombatController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\ComboHit.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\Hitbox.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Condition.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\ConditionData.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\EnemyAI.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\ControllerKeys.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputAxis.cs" />
@@ -82,10 +85,15 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\CastLocation.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\Effect Behaviours\BoltSpellBehaviour.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\Effect Behaviours\EffectBehaviour.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill Effects\InstantiateEffect.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill Effects\InstantiateEffectData.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill Effects\PlayAnimationEffect.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill Effects\PlayAnimationEffectData.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill Effects\SkillEffect.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill Effects\SkillEffectContainer.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill Effects\SkillEffectData.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\Skill.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\SkillCaster.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Skills\SkillEffect.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Skills\SkillEffectData.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\SkillType.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\Spell.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Skills\SpellModifier.cs" />

@@ -4,12 +4,8 @@ using UnityEngine;
 
 namespace SkillSystem
 {
-    public class SkillEffectData : ScriptableObject
+    public abstract class SkillEffectData : ScriptableObject
     {
-
-
-
-
-
+        
     }
 }
