@@ -11,9 +11,9 @@ public class CombatController : MonoBehaviour {
     CharacterManager characterManager;
     public Action currentState = Action.None;
 
-    public CombatController target;
-    public List<CombatController> allFriendlyTargets = new List<CombatController>();
-    public List<CombatController> allEnemyTargets = new List<CombatController>();
+    public TargetPoint target;
+    public List<TargetPoint> allFriendlyTargets = new List<TargetPoint>();
+    public List<TargetPoint> allEnemyTargets = new List<TargetPoint>();
 
     public delegate void OnAction();
     public OnAction OnGuard;
@@ -59,17 +59,11 @@ public class CombatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetButtonDown("Target")) {
-            Debug.Log("Targetting nearest enemy");
-            GetNearestEnemy();
-        }
+        
 
         if (target != null) {
             Debug.DrawLine(transform.position, target.transform.position);
         }
-
-        characterManager.anim.SetFloat("Vertical", InputManager.manager.GetAxis("Vertical Left"));
-        characterManager.anim.SetFloat("Horizontal", InputManager.manager.GetAxis("Horizontal Left"));
         
 	}
 
@@ -78,7 +72,7 @@ public class CombatController : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Enter trigger");
-        CombatController colliderTarget = other.transform.GetComponent<CombatController>();
+        TargetPoint colliderTarget = other.transform.GetComponent<TargetPoint>();
 
         if (colliderTarget != null) {
             if (IsEnemy(other.transform))
@@ -100,7 +94,7 @@ public class CombatController : MonoBehaviour {
 
     private void OnTriggerExit(Collider other)
     {
-        CombatController colliderTarget = other.transform.GetComponent<CombatController>();
+        TargetPoint colliderTarget = other.transform.GetComponent<TargetPoint>();
 
         if (colliderTarget != null)
         {
@@ -118,29 +112,30 @@ public class CombatController : MonoBehaviour {
 
 
     public void GetNearestEnemy() {
-        CombatController nearestTarget = null;
+        TargetPoint nearestTarget = null;
         float targetProximity = 0;
 
-        foreach (CombatController controller in allEnemyTargets) {
+        foreach (TargetPoint tp in allEnemyTargets) {
             if (nearestTarget == null)
             {
-                nearestTarget = controller;
-                targetProximity = TargetProximity(controller);
+                nearestTarget = tp;
+                targetProximity = TargetProximity(tp);
             }
             else {
-                if (TargetProximity(controller) < targetProximity)
+                if (TargetProximity(tp) < targetProximity)
                 {
-                    nearestTarget = controller;
-                    targetProximity = TargetProximity(controller);
+                    nearestTarget = tp;
+                    targetProximity = TargetProximity(tp);
                 }
             }
         }
 
         target = nearestTarget;
+        characterManager.target = nearestTarget;
     }
 
 
-    private float TargetProximity(CombatController controller) {
+    private float TargetProximity(TargetPoint controller) {
         float result = 0;
 
         result = (controller.transform.position - transform.position).magnitude;
@@ -165,7 +160,7 @@ public class CombatController : MonoBehaviour {
                 result = true;
             }
         }
-        else if (transform.tag == "ally") {
+        else{
             if (target.tag == "ally") {
                 result = false;
             }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ComboSystem
+namespace CombatSystem
 {
     [System.Serializable]
     public class Hitbox : MonoBehaviour
@@ -14,7 +14,7 @@ namespace ComboSystem
         private float timer = 0f;
         public List<CombatController> targets = new List<CombatController>();
         private Vector3 positionOffset;
-        private CombatController user;
+        private Transform user;
 
         public delegate void OnTarget(CombatController target);
         public event OnTarget HitTarget;
@@ -47,7 +47,7 @@ namespace ComboSystem
             }
         }
 
-        public void CreateHitbox(CombatController newUser, float lifetime, Vector3 offset, OnTarget damageFormula)
+        public void CreateHitbox(Transform newUser, float lifetime, Vector3 offset, OnTarget damageFormula)
         {
             //sets the position of the hitbox relative to the player and parents it
             user = newUser;

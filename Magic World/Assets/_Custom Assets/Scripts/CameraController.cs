@@ -6,6 +6,8 @@ using InputSystem;
 public class CameraController : MonoBehaviour {
 
     public Transform target;
+    private CharacterManager targetManager;
+    public TargetPoint playerTarget;
     //private PlayerMovement targetController;
 
     private Vector3 velocity = Vector3.zero;
@@ -34,13 +36,20 @@ public class CameraController : MonoBehaviour {
         if (target == null) {
             
         }
+        targetManager = target.GetComponent<CharacterManager>();
+
         //creates a new empty game object as the camera's position marker
         cameraMarker = new GameObject();
         _initCameraPosition();
 	}
-	
-	// Update is called once per frame
-	void LateUpdate () {
+
+    private void Update()
+    {
+        playerTarget = targetManager.target;
+    }
+
+    // Update is called once per frame
+    void LateUpdate () {
         MoveCameraMarker();
         Move();
         RotateCamera();
@@ -61,7 +70,19 @@ public class CameraController : MonoBehaviour {
 
     //turn towards the target
     public void TurnTowards() {
-        transform.LookAt(target.position + target.up*1.8f);
+        Vector3 targetPosition = Vector3.zero;
+
+        if (playerTarget == null)
+        {
+            targetPosition = target.position + target.up * 1.8f;
+        }
+        else {
+            targetPosition = target.position + target.up * 1.8f;
+            //targetPosition += playerTarget.transform.position;
+            //targetPosition /= 2;
+        }
+
+        transform.LookAt(targetPosition);
     }
 
 

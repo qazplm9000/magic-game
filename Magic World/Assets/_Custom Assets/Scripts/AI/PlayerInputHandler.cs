@@ -4,13 +4,11 @@ using UnityEngine;
 using InputSystem;
 using ComboSystem;
 using CombatSystem;
-using SkillSystem;
 
 namespace ControlSystem
 {
     public class PlayerInputHandler : InputHandler
     {
-        //CharacterManager characterState
         float horizontal;
         float vertical;
 
@@ -35,7 +33,7 @@ namespace ControlSystem
 
             //sets variables for movement animation
             float speed = CharacterSpeed();
-            characterManager.anim.SetFloat("Speed", speed);
+            characterManager.anim.SetFloat("Speed", characterManager.agent.velocity.magnitude);
             characterManager.anim.SetBool("isMoving", IsCharacterMoving());
 
             GetAxesValue();
@@ -44,7 +42,7 @@ namespace ControlSystem
             characterManager.anim.SetBool("lockOn", characterManager.isLockingOnTarget);
             #endregion
 
-            Debug.Log(characterManager.rb.velocity);
+            //Debug.Log(characterManager.rb.velocity);
             //guard when not moving
             if (!characterManager.movementLocked && characterManager.agent.velocity.magnitude == 0 && !characterManager.isGuarding)
             {
@@ -89,32 +87,49 @@ namespace ControlSystem
             //Cast spells
             if (InputManager.manager.GetKeyDown("Cast"))
             {
-                characterManager.caster.CastSpell();
+                //characterManager.caster.Cast();
+                characterManager.comboUser.UseCombo(false);
+            }
+            if (Input.GetKeyDown(KeyCode.K)) {
+                characterManager.caster.ChangeIndex(1);
             }
 
 
             //Attack with left mouse or Square
             if (InputManager.manager.GetKeyDown("Attack"))
             {
+                /*if (characterManager.target != null) {
+                    characterManager.target.manager.stats.TakeDamage(5);
+                }*/
+
                 if (!characterManager.movementLocked)
                 {
-                    //characterManager.controller.combos.Attack();
+                    characterManager.comboUser.UseCombo();
                 }
                 else
                 {
-                    if (characterManager.bufferOpen)
+                    /*if (characterManager.bufferOpen)
                     {
                         characterManager.bufferedAction = Action.Attack;
-                    }
+                    }*/
                 }
             }
 
 
             //locks and unlocks onto target
             if (InputManager.manager.GetKeyDown("Target")) {
-                characterManager.isLockingOnTarget = !characterManager.isLockingOnTarget;
+                Debug.Log("Targetting nearest enemy");
+                characterManager.combat.GetNearestEnemy();
+
+                if (characterManager.target != null)
+                {
+                    characterManager.isLockingOnTarget = true;
+                }
             }
 
+            if (characterManager.target == null) {
+                characterManager.isLockingOnTarget = false;
+            }
 
             /*
             if (Input.GetKeyDown(KeyCode.H)) {

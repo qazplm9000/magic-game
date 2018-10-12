@@ -4,52 +4,83 @@ using UnityEngine;
 using SpellSystem;
 using UnityEngine.UI;
 
-
-public class CharacterStats : MonoBehaviour{
-
-
-    public HealthStat health;
-
-    public Stat strength;
-    public Stat magic;
-    public Stat defense;
-
-    public Transform healthBarObject;
-    private Slider healthBar;
-
-    private void Start()
+namespace StatSystem
+{
+    public class CharacterStats : MonoBehaviour
     {
-        try
+
+        public SlidingStat health;
+        public SlidingStat mana;
+        public Stat strength;
+        public Stat magic;
+        public Stat defense;
+
+        public Slider healthBar;
+
+        public bool isDead = false;
+
+        public delegate void CharacterDeath();
+        public event CharacterDeath OnDeath;
+
+        private void Start()
         {
-            healthBar = healthBarObject.GetComponent<Slider>();
+            health.Init();
+            mana.Init();
+            strength.Init();
+            magic.Init();
+            defense.Init();
+            UpdateHealth();
         }
-        catch {
-            Debug.Log("Health bar not found");
-        }
-    }
 
 
-    private void Update()
-    {
-        UpdateHealthBar();
-    }
-
-    /// <summary>
-    /// Character takes damage
-    /// </summary>
-    /// <param name="spell"></param>
-    /// <param name="enemyStats"></param>
-    public void TakeDamage(int damage) {
-        health.TakeDamage(damage);
-    }
-
-
-    public void UpdateHealthBar()
-    {
-        if (healthBar != null)
+        /// <summary>
+        /// Character takes damage
+        /// Also checks if character has died
+        /// </summary>
+        /// <param name="spell"></param>
+        /// <param name="enemyStats"></param>
+        public void TakeDamage(int damage)
         {
-            healthBar.value = (float)health.currentValue / health.totalValue;
+            health.ReduceValue(damage);
+            CheckIsDead();
+            UpdateHealth();
         }
+
+        /// <summary>
+        /// Character has health healed
+        /// </summary>
+        /// <param name="healAmount"></param>
+        public void HealDamage(int healAmount) {
+            health.IncreaseValue(healAmount);
+            UpdateHealth();
+        }
+
+        /// <summary>
+        /// Returns true if the target has 0 HP.
+        /// Calls OnDeath event when character dies.
+        /// </summary>
+        /// <returns></returns>
+        public void CheckIsDead() {
+            if (health.currentValue == 0 && !isDead) {
+                isDead = true;
+
+                if (OnDeath != null) {
+                    OnDeath();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Updates the healthbar
+        /// </summary>
+        public void UpdateHealth() {
+            if (healthBar != null)
+            {
+                healthBar.value = health.currentValue / (float)health.totalValue;
+            }
+        }
+        
+
     }
-    
 }

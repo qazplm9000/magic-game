@@ -92,6 +92,10 @@ public class ObjectPool : MonoBehaviour {
         return result;
     }
 
+    public void RemoveObject(GameObject thisObject) {
+        thisObject.SetActive(false);
+        thisObject.transform.position = transform.position;
+    }
 
     public static Behaviour GetComponentFromObject<Behaviour>(GameObject gameObject, Behaviour behaviour) where Behaviour : MonoBehaviour{
         Behaviour component = null;

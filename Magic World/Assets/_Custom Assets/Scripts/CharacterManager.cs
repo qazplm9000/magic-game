@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using SkillSystem;
+using AbilitySystem;
 using InputSystem;
 using CombatSystem;
+using StatSystem;
 
 public class CharacterManager : MonoBehaviour {
 
@@ -23,7 +24,9 @@ public class CharacterManager : MonoBehaviour {
     [HideInInspector]
     public CharacterStats stats;
     [HideInInspector]
-    public SkillCaster caster;
+    public AbilityCaster caster;
+    [HideInInspector]
+    public ComboUser comboUser;
 
     //used for allowing different character models
     public GameObject activeModel;
@@ -36,6 +39,7 @@ public class CharacterManager : MonoBehaviour {
     public NavMeshAgent agent;
     [HideInInspector]
     public Vector3 direction;
+    public CharacterState state;
 
     [Header("Movement")]
     public float movementSpeed = 5;
@@ -54,7 +58,7 @@ public class CharacterManager : MonoBehaviour {
     public bool isInvincible = false;
     public bool isGuarding = false;
     public bool isLockingOnTarget = false;
-    public CharacterManager target;
+    public TargetPoint target;
 
     [HideInInspector]
     public float delta;
@@ -71,17 +75,23 @@ public class CharacterManager : MonoBehaviour {
         combat = transform.GetComponent<CombatController>();
         movement = transform.GetComponent<CharacterMovement>();
         stats = transform.GetComponent<CharacterStats>();
-        caster = transform.GetComponent<SkillCaster>();
+        caster = transform.GetComponent<AbilityCaster>();
         anim = transform.GetComponentInChildren<Animator>();
         rb = transform.GetComponent<Rigidbody>();
         agent = transform.GetComponent<NavMeshAgent>();
+        comboUser = transform.GetComponent<ComboUser>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         SetAnimationMovement();
         SetDelta();
-        
+        SetTrueSpeed();
+
+
+        if (Input.GetKeyDown(KeyCode.K)) {
+            stats.TakeDamage(5);
+        }
 	}
 
 
@@ -93,14 +103,21 @@ public class CharacterManager : MonoBehaviour {
     }
 
     private void SetAnimationMovement() {
-        anim.SetFloat("Horizontal", horizontal);
-        anim.SetFloat("Vertical", vertical);
+        if (anim != null)
+        {
+            anim.SetFloat("Horizontal", horizontal);
+            anim.SetFloat("Vertical", vertical);
+        }
     }
 
 
     public void SetTimeScale(float newTimescale) {
         timeScale = newTimescale;
         anim.speed = timeScale;
+    }
+
+    public void SetTrueSpeed() {
+        trueSpeed = agent.velocity.magnitude;
     }
 
     
