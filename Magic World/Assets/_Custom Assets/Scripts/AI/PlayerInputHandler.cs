@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using InputSystem;
-using ComboSystem;
+//using ComboSystem;
 using CombatSystem;
 
 namespace ControlSystem
@@ -104,7 +104,8 @@ namespace ControlSystem
 
                 if (!characterManager.movementLocked)
                 {
-                    characterManager.comboUser.UseCombo();
+                    //characterManager.comboUser.UseCombo();
+                    characterManager.caster.Cast();
                 }
                 else
                 {

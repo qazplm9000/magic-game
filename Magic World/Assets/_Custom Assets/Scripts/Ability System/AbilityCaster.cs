@@ -116,7 +116,7 @@ namespace AbilitySystem
             casting = false;
         }
 
-
+        /*
         //readjust these functions so that BehaviourData is only for data
         public bool Execute(AbilityCaster caster, GameObject go, float previousFrame, float currentFrame)
         {
@@ -169,7 +169,7 @@ namespace AbilitySystem
             return previousFrame <= (startTime + runTime) && currentFrame >= (startTime + runTime);
         }
 
-
+    */
 
     }
 }
