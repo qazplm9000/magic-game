@@ -8,7 +8,9 @@ namespace AbilitySystem
     public class AbilityObject
     {
 
-        public GameObject go;
+        public GameObject gameObject;
+        public float startTime;
+        public float endTime;
         public List<BehaviourData> behaviours;
 
     }

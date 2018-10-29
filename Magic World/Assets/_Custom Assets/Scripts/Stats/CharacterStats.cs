@@ -15,7 +15,9 @@ namespace StatSystem
         public Stat magic;
         public Stat defense;
 
-        public Slider healthBar;
+        public delegate void HealthUpdate();
+        public event HealthUpdate healthUpdate;
+
 
         public bool isDead = false;
 
@@ -29,7 +31,6 @@ namespace StatSystem
             strength.Init();
             magic.Init();
             defense.Init();
-            UpdateHealth();
         }
 
 
@@ -43,7 +44,6 @@ namespace StatSystem
         {
             health.ReduceValue(damage);
             CheckIsDead();
-            UpdateHealth();
         }
 
         /// <summary>
@@ -52,7 +52,6 @@ namespace StatSystem
         /// <param name="healAmount"></param>
         public void HealDamage(int healAmount) {
             health.IncreaseValue(healAmount);
-            UpdateHealth();
         }
 
         /// <summary>
@@ -70,16 +69,7 @@ namespace StatSystem
             }
         }
 
-
-        /// <summary>
-        /// Updates the healthbar
-        /// </summary>
-        public void UpdateHealth() {
-            if (healthBar != null)
-            {
-                healthBar.value = health.currentValue / (float)health.totalValue;
-            }
-        }
+        
         
 
     }

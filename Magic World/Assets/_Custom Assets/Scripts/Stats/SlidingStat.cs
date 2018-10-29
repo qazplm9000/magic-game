@@ -7,7 +7,22 @@ namespace StatSystem
     [System.Serializable]
     public class SlidingStat : Stat
     {
-        public int currentValue;
+        //[HideInInspector]
+        public int currentValue {
+            get { return _currentValue; }
+            set {
+                if (valueUpdate != null) {
+                    valueUpdate();
+                }
+                _currentValue = value;
+            }
+        }
+
+        [SerializeField]
+        private int _currentValue;
+
+        public delegate void ValueUpdate();
+        public event ValueUpdate valueUpdate;
 
         /// <summary>
         /// Returns true if the amount is greater than the current value

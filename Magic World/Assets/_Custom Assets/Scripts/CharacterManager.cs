@@ -7,6 +7,7 @@ using InputSystem;
 using CombatSystem;
 using StatSystem;
 
+
 public class CharacterManager : MonoBehaviour {
 
 
@@ -24,9 +25,9 @@ public class CharacterManager : MonoBehaviour {
     [HideInInspector]
     public CharacterStats stats;
     [HideInInspector]
-    public AbilityCaster caster;
+    public SimpleCaster caster;
     [HideInInspector]
-    public ComboUser comboUser;
+    //public ComboUser comboUser;
 
     //used for allowing different character models
     public GameObject activeModel;
@@ -49,7 +50,7 @@ public class CharacterManager : MonoBehaviour {
     public float guardSpeedMultiplier = 0.2f;
     [Range(0,1)]
     public float strafeSpeedMultiplier = 0.7f;
-
+    
     [Header("Combat")]
     public bool bufferOpen = true;
     public Action bufferedAction = Action.None;
@@ -75,11 +76,11 @@ public class CharacterManager : MonoBehaviour {
         combat = transform.GetComponent<CombatController>();
         movement = transform.GetComponent<CharacterMovement>();
         stats = transform.GetComponent<CharacterStats>();
-        caster = transform.GetComponent<AbilityCaster>();
+        caster = transform.GetComponent<SimpleCaster>();
         anim = transform.GetComponentInChildren<Animator>();
         rb = transform.GetComponent<Rigidbody>();
         agent = transform.GetComponent<NavMeshAgent>();
-        comboUser = transform.GetComponent<ComboUser>();
+        //comboUser = transform.GetComponent<ComboUser>();
 	}
 	
 	// Update is called once per frame

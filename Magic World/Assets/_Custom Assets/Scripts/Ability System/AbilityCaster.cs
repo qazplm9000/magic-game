@@ -16,12 +16,18 @@ namespace AbilitySystem
 
         public Ability currentAbility;
         public Dictionary<int, GameObject> _instantiatedObjects = new Dictionary<int, GameObject>();
+        private List<GameObject> castObjects = new List<GameObject>();
         
 
         // Use this for initialization
         void Start()
         {
             manager = transform.GetComponent<CharacterManager>();
+
+            //Make castObjects a list of 10 null objects
+            for (int i = 0; i < 10; i++) {
+                castObjects.Add(null);
+            }
         }
 
         // Update is called once per frame
@@ -85,27 +91,48 @@ namespace AbilitySystem
             }
             */
             for (int i = 0; i < currentAbility.characterBehaviours.Count; i++) {
-                currentAbility.characterBehaviours[i].Execute(  manager.caster, 
+                /*currentAbility.characterBehaviours[i].Execute(  manager.caster, 
                                                                 manager.transform.gameObject, 
-                                                                previousFrame, currentFrame);
+                                                                previousFrame, currentFrame);*/
             }
 
             for (int i = 0; i < currentAbility.abilityObjects.Count; i++) {
                 AbilityObject currentObject = currentAbility.abilityObjects[i];
                 //Insert the initial transform for the object
-                GameObject go = ObjectPool.pool.PullObject(currentObject.go);
+                if (previousFrame < currentObject.startTime && currentFrame > currentObject.startTime) {
+                    castObjects[i] = ObjectPool.pool.PullObject(currentObject.gameObject);
+                }
 
+                //checks if the animation has ended or not
+                if (castObjects[i] != null)
+                {
+                    if (previousFrame > currentObject.endTime)
+                    {
+                        ObjectPool.pool.RemoveObject(castObjects[i]);
+                        castObjects[i] = null;
+                        continue;
+                    }
+                }
+                else {
+
+                }
+
+                //loop through all behaviours
                 for (int j = 0; j < currentObject.behaviours.Count; j++) {
                     BehaviourData behaviour = currentObject.behaviours[j];
 
                     if (!behaviour.HasExecuted(previousFrame, currentFrame))
                     {
-                        behaviour.Execute(manager.caster, go, previousFrame, currentFrame);
+                        //behaviour.Execute(manager.caster, castObjects[i], previousFrame, currentFrame);
                     }
                 }
             }
 
             return result;
+        }
+
+        private void InitCast() {
+
         }
 
 
@@ -116,60 +143,6 @@ namespace AbilitySystem
             casting = false;
         }
 
-        /*
-        //readjust these functions so that BehaviourData is only for data
-        public bool Execute(AbilityCaster caster, GameObject go, float previousFrame, float currentFrame)
-        {
-            bool result = true;
-            float adjustedPrevious = previousFrame - startTime;
-            float adjustedCurrent = currentFrame - startTime;
-
-            //runs on the first frame
-            if (IsStarting(previousFrame, currentFrame))
-            {
-                behaviour.Init(caster, go, this);
-                behaviour.Execute(caster, go, this, 0, adjustedCurrent);
-            }
-            //runs in the middle frames
-            else if (IsRunning(previousFrame, currentFrame))
-            {
-                behaviour.Execute(caster, go, this, adjustedPrevious, adjustedCurrent);
-            }
-            //runs on the last frame
-            else if (IsEnding(previousFrame, currentFrame))
-            {
-                behaviour.Execute(caster, go, this, adjustedPrevious, runTime);
-                behaviour.End(caster, go, this);
-            }
-
-            return result;
-        }
-
-        //Returns true once the previous frame is outside the effect duration
-        public bool HasExecuted(float previousFrame, float currentFrame)
-        {
-            return previousFrame > (startTime + runTime);
-        }
-
-        //Returns true while current frame and previous frame are inside the effect duration
-        public bool IsRunning(float previousFrame, float currentFrame)
-        {
-            return (currentFrame > startTime && currentFrame < startTime + runTime) && (previousFrame > startTime && previousFrame < startTime + runTime);
-        }
-
-        //Returns true as soon as the behaviour starts
-        public bool IsStarting(float previousFrame, float currentFrame)
-        {
-            return previousFrame <= startTime && currentFrame >= startTime;
-        }
-
-        //Returns true as soon as behaviour ends
-        public bool IsEnding(float previousFrame, float currentFrame)
-        {
-            return previousFrame <= (startTime + runTime) && currentFrame >= (startTime + runTime);
-        }
-
-    */
-
+        
     }
 }

@@ -8,8 +8,16 @@ public class SpellBehaviour : MonoBehaviour {
     public float speed = 5f;
 
 	// Use this for initialization
-	void Start () {
-		
+	void OnEnable () {
+        TargetPoint[] targets = FindObjectsOfType<TargetPoint>();
+
+        for(int i = 0; i < targets.Length; i++)
+        {
+            if (targets[i].tag == "enemy") {
+                target = targets[i];
+                break;
+            }
+        }
 	}
 	
 	// Update is called once per frame

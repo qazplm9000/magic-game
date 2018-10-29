@@ -88,10 +88,13 @@ namespace ControlSystem
             if (InputManager.manager.GetKeyDown("Cast"))
             {
                 //characterManager.caster.Cast();
-                characterManager.comboUser.UseCombo(false);
+                //characterManager.comboUser.UseCombo();
+                characterManager.caster.CastSpell();
+                Debug.Log("Casting spell");
             }
-            if (Input.GetKeyDown(KeyCode.K)) {
-                characterManager.caster.ChangeIndex(1);
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                //characterManager.caster.ChangeIndex(1);
+                characterManager.caster.IncrementIndex();
             }
 
 
@@ -105,7 +108,7 @@ namespace ControlSystem
                 if (!characterManager.movementLocked)
                 {
                     //characterManager.comboUser.UseCombo();
-                    characterManager.caster.Cast();
+                    //characterManager.caster.Cast();
                 }
                 else
                 {
