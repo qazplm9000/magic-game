@@ -10,11 +10,11 @@ public class CombatController : MonoBehaviour {
 
     CharacterManager characterManager;
     public Action currentState = Action.None;
-
+    /*
     public TargetPoint target;
     public List<TargetPoint> allFriendlyTargets = new List<TargetPoint>();
     public List<TargetPoint> allEnemyTargets = new List<TargetPoint>();
-
+    */
     public delegate void OnAction();
     public OnAction OnGuard;
     public OnAction OnGuardEnd;
@@ -60,15 +60,15 @@ public class CombatController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         
-
+        /*
         if (target != null) {
             Debug.DrawLine(transform.position, target.transform.position);
         }
-        
+        */
 	}
 
 
-
+    /*
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Enter trigger");
@@ -90,8 +90,8 @@ public class CombatController : MonoBehaviour {
             }
         }
     }
-
-
+    */
+    /*
     private void OnTriggerExit(Collider other)
     {
         TargetPoint colliderTarget = other.transform.GetComponent<TargetPoint>();
@@ -109,8 +109,8 @@ public class CombatController : MonoBehaviour {
         }
     }
 
-
-
+    */
+    /*
     public void GetNearestEnemy() {
         TargetPoint nearestTarget = null;
         float targetProximity = 0;
@@ -133,7 +133,7 @@ public class CombatController : MonoBehaviour {
         target = nearestTarget;
         characterManager.target = nearestTarget;
     }
-
+    
 
     private float TargetProximity(TargetPoint controller) {
         float result = 0;
@@ -172,7 +172,7 @@ public class CombatController : MonoBehaviour {
 
         return result;
     }
-
+    */
 
     public IEnumerator Dodge(Vector3 direction) {
 

@@ -24,7 +24,7 @@ namespace StatSystem
         public delegate void CharacterDeath();
         public event CharacterDeath OnDeath;
 
-        private void Start()
+        private void Awake()
         {
             health.Init();
             mana.Init();

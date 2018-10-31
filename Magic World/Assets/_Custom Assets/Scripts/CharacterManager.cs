@@ -21,6 +21,8 @@ public class CharacterManager : MonoBehaviour {
     [HideInInspector]
     public CombatController combat;
     [HideInInspector]
+    public PlayerTargetter targetter;
+    [HideInInspector]
     public CharacterMovement movement;
     [HideInInspector]
     public CharacterStats stats;
@@ -81,6 +83,7 @@ public class CharacterManager : MonoBehaviour {
         rb = transform.GetComponent<Rigidbody>();
         agent = transform.GetComponent<NavMeshAgent>();
         //comboUser = transform.GetComponent<ComboUser>();
+        targetter = transform.GetComponent<PlayerTargetter>();
 	}
 	
 	// Update is called once per frame
@@ -121,5 +124,12 @@ public class CharacterManager : MonoBehaviour {
         trueSpeed = agent.velocity.magnitude;
     }
 
+    public void LockMovement() {
+        movementLocked = true;
+    }
+
+    public void UnlockMovement() {
+        movementLocked = false;
+    }
     
 }

@@ -90,12 +90,15 @@ namespace AbilitySystem
                 Reset();
             }
             */
+
+            //animate player
             for (int i = 0; i < currentAbility.characterBehaviours.Count; i++) {
                 /*currentAbility.characterBehaviours[i].Execute(  manager.caster, 
                                                                 manager.transform.gameObject, 
                                                                 previousFrame, currentFrame);*/
             }
 
+            //animate all other objects
             for (int i = 0; i < currentAbility.abilityObjects.Count; i++) {
                 AbilityObject currentObject = currentAbility.abilityObjects[i];
                 //Insert the initial transform for the object

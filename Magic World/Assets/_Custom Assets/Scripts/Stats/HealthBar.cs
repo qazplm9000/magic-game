@@ -10,9 +10,8 @@ public class HealthBar : MonoBehaviour {
     public CharacterManager target;
 
 	// Use this for initialization
-	void Awake() {
+	void Start() {
         healthBar = transform.GetComponent<Slider>();
-
         if (target != null) {
             target.stats.health.valueUpdate += new SlidingStat.ValueUpdate(UpdateHealth);
         }
@@ -22,12 +21,15 @@ public class HealthBar : MonoBehaviour {
     {
         if (target != null)
         {
+            //Debug.Log(target.stats.health.currentValue);
             target.stats.health.valueUpdate += new SlidingStat.ValueUpdate(UpdateHealth);
+            UpdateHealth();
         }
     }
 
     // Update is called once per frame
     void Update () {
+
 	}
 
     public void UpdateHealth() {

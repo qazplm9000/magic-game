@@ -60,7 +60,7 @@ public class CameraController : MonoBehaviour {
     //move the camera with the player
     public void Move()
     {
-        Vector3 newPosition = Vector3.SmoothDamp(transform.position, cameraMarker.transform.position, ref velocity, smoothTime);
+        Vector3 newPosition = cameraMarker.transform.position;//Vector3.SmoothDamp(transform.position, cameraMarker.transform.position, ref velocity, smoothTime);
         transform.position = newPosition;
 
         TurnTowards();

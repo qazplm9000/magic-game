@@ -107,7 +107,8 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\Stat.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\StatTemplate.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\StatType.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\TargetPoint.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Targetting\PlayerTargetter.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Targetting\TargetPoint.cs" />
     <Compile Include="Assets\BasicBandit\DemoSceneBasicBandit\Scripts\ButtonFunction.cs" />
     <Compile Include="Assets\BasicBandit\DemoSceneBasicBandit\Scripts\MovementCamera.cs" />
     <Compile Include="Assets\Environment\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
@@ -244,16 +245,16 @@
     <None Include="Assets\TaichiCharacterPack\TwinViewer\Resources\Taichi\TwinViewer Settings\Puppet\fbx_ctrl.xml" />
     <None Include="Assets\Environment\PostProcessing\Editor Resources\Monitors\WaveformCompute.compute" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

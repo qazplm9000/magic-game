@@ -84,38 +84,46 @@ namespace ControlSystem
                 }
             }
 
-            //Cast spells
-            if (InputManager.manager.GetKeyDown("Cast"))
+
+
+            if (!characterManager.movementLocked)
             {
-                //characterManager.caster.Cast();
-                //characterManager.comboUser.UseCombo();
-                characterManager.caster.CastSpell();
-                Debug.Log("Casting spell");
-            }
-            if (Input.GetKeyDown(KeyCode.Space)) {
-                //characterManager.caster.ChangeIndex(1);
-                characterManager.caster.IncrementIndex();
-            }
 
 
-            //Attack with left mouse or Square
-            if (InputManager.manager.GetKeyDown("Attack"))
-            {
-                /*if (characterManager.target != null) {
-                    characterManager.target.manager.stats.TakeDamage(5);
-                }*/
-
-                if (!characterManager.movementLocked)
+                //Cast spells
+                if (InputManager.manager.GetKeyDown("Cast"))
                 {
-                    //characterManager.comboUser.UseCombo();
                     //characterManager.caster.Cast();
+                    //characterManager.comboUser.UseCombo();
+                    characterManager.caster.CastSpell();
+                    Debug.Log("Casting spell");
                 }
-                else
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    /*if (characterManager.bufferOpen)
-                    {
-                        characterManager.bufferedAction = Action.Attack;
+                    //characterManager.caster.ChangeIndex(1);
+                    characterManager.caster.IncrementIndex();
+                }
+
+
+                //Attack with left mouse or Square
+                if (InputManager.manager.GetKeyDown("Attack"))
+                {
+                    /*if (characterManager.target != null) {
+                        characterManager.target.manager.stats.TakeDamage(5);
                     }*/
+
+                    if (!characterManager.movementLocked)
+                    {
+                        //characterManager.comboUser.UseCombo();
+                        //characterManager.caster.Cast();
+                    }
+                    else
+                    {
+                        /*if (characterManager.bufferOpen)
+                        {
+                            characterManager.bufferedAction = Action.Attack;
+                        }*/
+                    }
                 }
             }
 
@@ -123,11 +131,14 @@ namespace ControlSystem
             //locks and unlocks onto target
             if (InputManager.manager.GetKeyDown("Target")) {
                 Debug.Log("Targetting nearest enemy");
-                characterManager.combat.GetNearestEnemy();
-
-                if (characterManager.target != null)
+                //characterManager.combat.GetNearestEnemy();
+                if (characterManager.target == null)
                 {
+                    characterManager.target = characterManager.targetter.GetNearestTarget();
                     characterManager.isLockingOnTarget = true;
+                }
+                else {
+                    characterManager.target = characterManager.targetter.SwitchTarget();
                 }
             }
 

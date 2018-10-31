@@ -24,6 +24,7 @@ public class SimpleCaster : MonoBehaviour {
             if (castTime > 1) {
                 casting = false;
                 castTime = 0;
+                manager.UnlockMovement();
             }
             castTime += Time.deltaTime;
         }
@@ -44,7 +45,13 @@ public class SimpleCaster : MonoBehaviour {
 
         go.transform.position = transform.position + castOffset;
         go.transform.rotation = transform.rotation;
+
+        SpellBehaviour sb = go.GetComponent<SpellBehaviour>();
+        sb.target = manager.target;
+
         casting = true;
+        manager.LockMovement();
+
 
         return true;
     }

@@ -24,6 +24,10 @@ namespace StatSystem
         public delegate void ValueUpdate();
         public event ValueUpdate valueUpdate;
 
+        public SlidingStat() : base() {
+            currentValue = totalValue;
+        }
+
         /// <summary>
         /// Returns true if the amount is greater than the current value
         /// </summary>
