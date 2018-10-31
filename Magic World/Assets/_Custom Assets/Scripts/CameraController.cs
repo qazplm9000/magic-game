@@ -6,8 +6,18 @@ using InputSystem;
 public class CameraController : MonoBehaviour {
 
     public Transform target;
-    private CharacterManager targetManager;
+    private CharacterManager targetManager {
+        get { return _targetManager; }
+        set {
+            _targetManager = value;
+            targetPoint = value.GetComponentInChildren<TargetPoint>();
+            playerTarget = value.target;
+        }
+    }
+    private CharacterManager _targetManager;
+    public TargetPoint targetPoint;
     public TargetPoint playerTarget;
+    
     //private PlayerMovement targetController;
 
     private Vector3 velocity = Vector3.zero;
@@ -30,6 +40,8 @@ public class CameraController : MonoBehaviour {
     public float maxAngle = 60f;
     public float rotateSpeed = 20f;
 
+    public float minTurn = -20;
+    public float maxTurn = 20;
 
 	// Use this for initialization
 	void Start () {
@@ -48,28 +60,40 @@ public class CameraController : MonoBehaviour {
         playerTarget = targetManager.target;
     }
 
-    // Update is called once per frame
+    
     void LateUpdate () {
-        MoveCameraMarker();
-        Move();
-        RotateCamera();
+        if (playerTarget == null)
+        {
+            MoveCameraMarker(targetPoint.transform.position);
+            Move();
+            TurnTowards(targetPoint.transform.position);
 
-        ZoomCamera(Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime);
+            RotateCamera();
+
+            ZoomCamera(Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime);
+        }
+        else {
+            MoveCameraMarker(targetPoint.transform.position);
+            Move();
+            TurnTowards((targetPoint.transform.position + playerTarget.transform.position) / 2);
+
+            RotateCamera();
+
+            ZoomCamera(Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime);
+        }
 	}
 
     //move the camera with the player
     public void Move()
     {
-        Vector3 newPosition = cameraMarker.transform.position;//Vector3.SmoothDamp(transform.position, cameraMarker.transform.position, ref velocity, smoothTime);
+        Vector3 newPosition = Vector3.SmoothDamp(transform.position, cameraMarker.transform.position, ref velocity, smoothTime);
         transform.position = newPosition;
-
-        TurnTowards();
     }
 
 
 
     //turn towards the target
-    public void TurnTowards() {
+    public void TurnTowards(Vector3 lookPoint) {
         Vector3 targetPosition = Vector3.zero;
 
         if (playerTarget == null)
@@ -82,13 +106,13 @@ public class CameraController : MonoBehaviour {
             //targetPosition /= 2;
         }
 
-        transform.LookAt(targetPosition);
+        transform.LookAt(lookPoint);
     }
 
 
 
     //rotate camera around target
-    public void RotateCamera() {
+    public void RotateCamera(bool clampX = false) {
 
         float xAngle = InputManager.manager.GetAxis("Horizontal Right") * Time.deltaTime * rotateSpeed;
         float yAngle = InputManager.manager.GetAxis("Vertical Right") * Time.deltaTime * rotateSpeed;
@@ -102,21 +126,48 @@ public class CameraController : MonoBehaviour {
         //Debug.DrawLine(target.transform.position + targetOffset, distanceVector, Color.blue);
         //Debug.DrawLine(target.transform.position + targetOffset, new Vector3(distanceVector.x, 0, distanceVector.z), Color.green);
         //Debug.DrawLine(target.transform.position + targetOffset, perpendicular, Color.red);
-        if (angle > maxAngle)
+        /*if (angle > maxAngle)
         {
             yAngle += angle - maxAngle;
         }
         else if (angle < minAngle) {
             yAngle -= minAngle - angle;
-        }
+        }*/
+
+        angle = GetClampedAngle(yAngle, minAngle, maxAngle, new Vector3(distanceVector.x, 0, distanceVector.z), perpendicular);
 
         //Debug.Log(angle);
 
-        distanceVector = Quaternion.Euler(0, xAngle, 0) * distanceVector;
-        Vector3 temp = perpendicular / perpendicular.magnitude * yAngle;
-        distanceVector = Quaternion.Euler(temp.x, 0, temp.z) * distanceVector;
-        
+        if (!clampX)
+        {
+            distanceVector = Quaternion.Euler(0, xAngle, 0) * distanceVector;
+            Vector3 temp = perpendicular / perpendicular.magnitude * yAngle;
+            distanceVector = Quaternion.Euler(temp.x, 0, temp.z) * distanceVector;
+        }
+        else {
 
+            Vector3 temp = perpendicular / perpendicular.magnitude * yAngle;
+        }
+
+    }
+
+
+    private float GetClampedAngle(float deltaAngle, float minAngle, float maxAngle, Vector3 distanceAxis, Vector3 rotateAxis) {
+        float result = Vector3.SignedAngle(distanceVector, distanceAxis, rotateAxis) + deltaAngle;
+
+        if (result < minAngle)
+        {
+            result = minAngle - result;
+        }
+        else if (result > maxAngle)
+        {
+            result = result - maxAngle;
+        }
+        else {
+            result = deltaAngle;
+        }
+
+        return result;
     }
 
 
@@ -159,8 +210,8 @@ public class CameraController : MonoBehaviour {
 
 
     //calculates where the camera should be located
-    public void MoveCameraMarker() {
-        cameraMarker.transform.position = (target.position + targetOffset) - distanceVector;
+    public void MoveCameraMarker(Vector3 targetLocation) {
+        cameraMarker.transform.position = targetLocation - distanceVector;
     }
 
     /*

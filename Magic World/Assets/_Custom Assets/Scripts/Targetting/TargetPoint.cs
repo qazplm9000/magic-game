@@ -8,7 +8,9 @@ public class TargetPoint : MonoBehaviour {
 
     private void Awake()
     {
-        manager = transform.GetComponent<CharacterManager>();
+        manager = transform.GetComponentInParent<CharacterManager>();
     }
+
+
 
 }
