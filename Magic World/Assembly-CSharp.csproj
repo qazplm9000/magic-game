@@ -65,10 +65,12 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\AbilityBehaviour.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\AbilityCaster.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\AbilityObject.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Ability System\AbilityType.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\BehaviourData.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Behaviours\IAnimation.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Combo\ComboTree.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Combo\Combo.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Combo\ComboUser.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Combo\SimpleCombo.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\SimpleCaster.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Behaviour Editor\BehaviourEditor.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Behaviour Editor\Nodes\BaseNode.cs" />
@@ -81,7 +83,6 @@
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Behaviour\Transition.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\EnemyAIHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\InputHandler.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\AI\PlayerInputHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Animator States\SetBool.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterManager.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\AttackType.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\CombatController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\Hitbox.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Combat\SimpleCombo.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Dialogue System\DialogueTree.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Dialogue System\TextNode.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\EnemyAI.cs" />
@@ -99,6 +99,7 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputAxis.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputKey.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputManager.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\PlayerInputHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Pooling\ObjectPool.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\SpellBehaviour.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\CharacterStats.cs" />
@@ -245,16 +246,16 @@
     <None Include="Assets\TaichiCharacterPack\TwinViewer\Resources\Taichi\TwinViewer Settings\Puppet\fbx_ctrl.xml" />
     <None Include="Assets\Environment\PostProcessing\Editor Resources\Monitors\WaveformCompute.compute" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Unity/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/Steven/Documents/GitHub/magic-game/Magic World/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

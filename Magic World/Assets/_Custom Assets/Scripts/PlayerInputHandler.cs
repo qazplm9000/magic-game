@@ -93,9 +93,9 @@ namespace ControlSystem
                 //Cast spells
                 if (InputManager.manager.GetKeyDown("Cast"))
                 {
-                    //characterManager.caster.Cast();
-                    //characterManager.comboUser.UseCombo();
-                    characterManager.caster.CastSpell();
+                    //characterManager.caster.CastSpell();
+                    characterManager.agent.velocity = Vector3.zero;
+                    characterManager.combos.UseSpell();
                     Debug.Log("Casting spell");
                 }
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -108,9 +108,7 @@ namespace ControlSystem
                 //Attack with left mouse or Square
                 if (InputManager.manager.GetKeyDown("Attack"))
                 {
-                    /*if (characterManager.target != null) {
-                        characterManager.target.manager.stats.TakeDamage(5);
-                    }*/
+                    characterManager.combos.UseCombo();
 
                     if (!characterManager.movementLocked)
                     {

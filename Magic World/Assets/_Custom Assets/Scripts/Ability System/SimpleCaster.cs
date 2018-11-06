@@ -34,11 +34,11 @@ public class SimpleCaster : MonoBehaviour {
     /// starts the cast for the spell
     /// </summary>
     /// <returns></returns>
-    public bool CastSpell() {
+    public bool CastSpell(Ability spell) {
         if (casting)
             return false;
 
-        currentAbility = abilities[index];
+        currentAbility = spell;
         manager.anim.CrossFade(currentAbility.animation, 0.2f);
         
         GameObject go = ObjectPool.pool.PullObject(currentAbility.gameObject);
@@ -54,6 +54,10 @@ public class SimpleCaster : MonoBehaviour {
 
 
         return true;
+    }
+
+    public bool CastSpell() {
+        return CastSpell(abilities[index]);
     }
 
     /// <summary>

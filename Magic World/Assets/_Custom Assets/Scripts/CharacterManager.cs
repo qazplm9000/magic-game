@@ -29,7 +29,10 @@ public class CharacterManager : MonoBehaviour {
     [HideInInspector]
     public SimpleCaster caster;
     [HideInInspector]
+    public AbilityCaster caster2;
+    [HideInInspector]
     //public ComboUser comboUser;
+    public SimpleCombo combos;
 
     //used for allowing different character models
     public GameObject activeModel;
@@ -84,6 +87,7 @@ public class CharacterManager : MonoBehaviour {
         agent = transform.GetComponent<NavMeshAgent>();
         //comboUser = transform.GetComponent<ComboUser>();
         targetter = transform.GetComponent<PlayerTargetter>();
+        combos = transform.GetComponent<SimpleCombo>();
 	}
 	
 	// Update is called once per frame

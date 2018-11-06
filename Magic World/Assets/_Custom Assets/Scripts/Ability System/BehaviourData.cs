@@ -17,6 +17,7 @@ namespace AbilitySystem
         public Vector3 objectPosition;
         public Vector3 objectRotation;
 
+        
         public bool Execute(AbilityCaster caster, GameObject go, float previousFrame, float currentFrame) {
             bool result = true;
             float adjustedPrevious = previousFrame - startTime;
@@ -40,9 +41,9 @@ namespace AbilitySystem
             return result;
         }
 
-        //Returns true once the previous frame is outside the effect duration
+        //Returns true once the current frame is outside the effect duration
         public bool HasExecuted(float previousFrame, float currentFrame) {
-            return previousFrame > (startTime + runTime);
+            return currentFrame > (startTime + runTime);
         }
 
         //Returns true while current frame and previous frame are inside the effect duration

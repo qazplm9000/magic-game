@@ -7,7 +7,7 @@ namespace AbilitySystem
     public class ComboUser : MonoBehaviour
     {
 
-        public ComboTree comboTree;
+        //public ComboTree comboTree;
         public int currentIndex = -1;
         public bool usedLightAttack = true;
         private AbilityCaster caster;
@@ -28,7 +28,7 @@ namespace AbilitySystem
         {
             if (casting)
             {
-                casting = currentCombo.Execute(caster, previousFrame, currentFrame);
+                casting = caster.Cast(currentCombo);
                 previousFrame = currentFrame;
                 currentFrame += Time.deltaTime;
             }
@@ -52,7 +52,7 @@ namespace AbilitySystem
 
 
             //use light combo
-            if (lightCombo)
+           /* if (lightCombo)
             {
                 if (comboTree.lightCombos.Count > currentIndex)
                 {
@@ -74,7 +74,7 @@ namespace AbilitySystem
                     previousFrame = 0;
                     currentFrame = 0;
                 }
-            }
+            }*/
         }
 
         public void Reset()
