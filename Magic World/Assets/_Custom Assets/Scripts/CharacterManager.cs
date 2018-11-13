@@ -82,6 +82,7 @@ public class CharacterManager : MonoBehaviour {
         movement = transform.GetComponent<CharacterMovement>();
         stats = transform.GetComponent<CharacterStats>();
         caster = transform.GetComponent<SimpleCaster>();
+        caster2 = transform.GetComponent<AbilityCaster>();
         anim = transform.GetComponentInChildren<Animator>();
         rb = transform.GetComponent<Rigidbody>();
         agent = transform.GetComponent<NavMeshAgent>();

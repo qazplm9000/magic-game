@@ -10,5 +10,6 @@ namespace AbilitySystem
         new public string name;
         public string animation;
         public List<SimpleCaster.Ability> spells;
+        public List<Ability> spells2;
     }
 }

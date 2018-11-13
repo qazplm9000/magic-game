@@ -36,7 +36,7 @@ namespace AbilitySystem
         {
             if (casting)
             {
-                Execute();
+                casting = Execute();
             }
         }
 
@@ -69,8 +69,9 @@ namespace AbilitySystem
 
             if (!casting)
             {
+                Reset();
                 currentAbility = newAbility;
-                InitLists(currentAbility);
+                //InitLists(currentAbility);
                 casting = true;
                 result = true;
             }
@@ -89,13 +90,13 @@ namespace AbilitySystem
             //animate player
             for (int i = 0; i < currentAbility.characterBehaviours.Count; i++) {
                 BehaviourData currentBehaviour = currentAbility.characterBehaviours[i];
-
+                
                 running = running || currentBehaviour.Execute(  manager.caster2, 
                                                                 manager.transform.gameObject, 
                                                                 previousFrame, currentFrame);
             }
 
-
+            /*
             //check all pending behaviours
             for (int i = 0; i < currentAbility.abilityObjects.Count; i++) {
                 running = running || StartBehaviours(i, previousFrame, currentFrame);
@@ -104,6 +105,12 @@ namespace AbilitySystem
             //execute all current behaviours
             for (int i = 0; i < currentAbility.abilityObjects.Count; i++) {
                 running = running || RunBehaviours(i, previousFrame, currentFrame);
+            }
+            */
+
+            //Loop through all other behaviours
+            for (int i = 0; i < currentAbility.abilityObjects.Count; i++) {
+                running = running || ExecuteBehaviour(i, previousFrame, currentFrame);
             }
 
             return running;
@@ -193,6 +200,31 @@ namespace AbilitySystem
             GameObject newObject = ObjectPool.pool.PullObject(go);
             castObjects[index] = go;
         }
+
+
+        private bool ExecuteBehaviour(int index, float previousFrame, float currentFrame) {
+            bool result = false;
+
+            List<AbilityObject> data = currentAbility.abilityObjects;
+            float previousTime = previousFrame - data[index].startTime;
+            float currentTime = currentFrame - data[index].startTime;
+
+            if (previousFrame < data[index].endTime)
+            {
+                for (int i = 0; i < data.Count; i++)
+                {
+                    result = result || data[index].behaviours[i].Execute(manager.caster2, castObjects[index], previousTime, currentTime);
+                }
+            }
+            else {
+                if (castObjects[index] != null) {
+                    ObjectPool.pool.RemoveObject(castObjects[index]);
+                    castObjects[index] = null;
+                }
+            }
+
+            return result;
+        }
         
 
 
@@ -201,6 +233,7 @@ namespace AbilitySystem
             currentFrame = 0;
             currentAbility = null;
             casting = false;
+            castObjects = new List<GameObject>();
         }
 
         

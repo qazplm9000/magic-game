@@ -13,5 +13,12 @@ namespace AbilitySystem
         public float endTime;
         public List<BehaviourData> behaviours;
 
+
+        public bool Execute(AbilityCaster caster, GameObject go, float previousFrame, float currentFrame) {
+
+
+            return true;
+        }
+
     }
 }

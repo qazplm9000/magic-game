@@ -19,7 +19,6 @@ namespace AbilitySystem
 
         
         public bool Execute(AbilityCaster caster, GameObject go, float previousFrame, float currentFrame) {
-            bool result = true;
             float adjustedPrevious = previousFrame - startTime;
             float adjustedCurrent = currentFrame - startTime;
 
@@ -38,12 +37,12 @@ namespace AbilitySystem
                 behaviour.End(caster, go, this);
             }
 
-            return result;
+            return !HasExecuted(previousFrame, currentFrame);
         }
 
         //Returns true once the current frame is outside the effect duration
         public bool HasExecuted(float previousFrame, float currentFrame) {
-            return currentFrame > (startTime + runTime);
+            return previousFrame > (startTime + runTime);
         }
 
         //Returns true while current frame and previous frame are inside the effect duration

@@ -24,6 +24,7 @@ public class SimpleCombo : MonoBehaviour {
         if (comboTimer > comboTime) {
             ResetCombo();
         }
+        comboTimer += Time.deltaTime;
 	}
 
     public void UseCombo() {
@@ -37,9 +38,10 @@ public class SimpleCombo : MonoBehaviour {
 
     public void UseSpell() {
         Combo combo = combos[comboIndex - 1];
-        if (spellIndex < combo.spells.Count) {
-            manager.caster.CastSpell(combo.spells[spellIndex]);
+        if (spellIndex < combo.spells2.Count) {
+            manager.caster2.Cast(combo.spells2[spellIndex]);
             spellIndex++;
+            comboTimer = 0;
         }
     }
 

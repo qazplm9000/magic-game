@@ -68,6 +68,7 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\AbilityType.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\BehaviourData.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Behaviours\IAnimation.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Behaviours\ICreate.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Combo\Combo.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Combo\ComboUser.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Ability System\Combo\SimpleCombo.cs" />
