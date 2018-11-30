@@ -15,12 +15,13 @@ namespace AbilitySystem
             newGo.transform.localPosition = data.objectPosition;
             newGo.transform.localRotation = Quaternion.LookRotation(data.objectRotation);
             newGo.transform.SetParent(null);
+            Debug.Log("Instantiated");
         }
 
 
         public override bool Execute(AbilityCaster caster, GameObject go, BehaviourData data, float previousFrame, float nextFrame)
         {
-            return false;
+            return true;
         }
 
         public override void End(AbilityCaster caster, GameObject go, BehaviourData data)

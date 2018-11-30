@@ -24,6 +24,7 @@ namespace AbilitySystem
 
             //runs on the first frame
             if (IsStarting(previousFrame, currentFrame)) {
+                Debug.Log(behaviour.name);
                 behaviour.Init(caster, go, this);
                 behaviour.Execute(caster, go, this, 0, adjustedCurrent);
             }

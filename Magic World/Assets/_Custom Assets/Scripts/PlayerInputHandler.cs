@@ -104,6 +104,10 @@ namespace ControlSystem
                     characterManager.caster.IncrementIndex();
                 }
 
+                if (Input.GetKeyDown(KeyCode.Alpha4)) {
+                    characterManager.caster2.Cast(characterManager.caster2.abilityList[0]);
+                }
+
 
                 //Attack with left mouse or Square
                 if (InputManager.manager.GetKeyDown("Attack"))

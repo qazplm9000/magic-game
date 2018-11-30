@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using StatSystem;
+using TMPro;
 
 public class HealthBar : MonoBehaviour {
 
     private Slider healthBar;
+    public TextMeshProUGUI text;
     public CharacterManager target;
 
 	// Use this for initialization
 	void Start() {
         healthBar = transform.GetComponent<Slider>();
+        text = transform.GetComponentInChildren<TextMeshProUGUI>();
         if (target != null) {
             target.stats.health.valueUpdate += new SlidingStat.ValueUpdate(UpdateHealth);
+            UpdateHealth();
         }
 	}
 
@@ -33,7 +37,12 @@ public class HealthBar : MonoBehaviour {
 	}
 
     public void UpdateHealth() {
-        healthBar.value = Mathf.InverseLerp(0, target.stats.health.totalValue, target.stats.health.currentValue);
+        int currentHealth = target.stats.health.currentValue;
+        int maxHealth = target.stats.health.totalValue;
+
+        healthBar.value = Mathf.InverseLerp(0, maxHealth, currentHealth);
+
+        text.text = currentHealth.ToString() + " / " + maxHealth.ToString();
     }
 
     private void OnDisable()

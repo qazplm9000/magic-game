@@ -90,10 +90,11 @@ namespace AbilitySystem
             //animate player
             for (int i = 0; i < currentAbility.characterBehaviours.Count; i++) {
                 BehaviourData currentBehaviour = currentAbility.characterBehaviours[i];
-                
-                running = running || currentBehaviour.Execute(  manager.caster2, 
-                                                                manager.transform.gameObject, 
-                                                                previousFrame, currentFrame);
+
+                currentBehaviour.Execute(manager.caster2, manager.transform.gameObject, previousFrame, currentFrame);
+
+                running = running || !currentBehaviour.HasExecuted(previousFrame, currentFrame);
+
             }
 
             /*
@@ -110,7 +111,7 @@ namespace AbilitySystem
 
             //Loop through all other behaviours
             for (int i = 0; i < currentAbility.abilityObjects.Count; i++) {
-                running = running || ExecuteBehaviour(i, previousFrame, currentFrame);
+                running = ExecuteBehaviour(i, previousFrame, currentFrame) || running;
             }
 
             return running;
@@ -213,7 +214,8 @@ namespace AbilitySystem
             {
                 for (int i = 0; i < data.Count; i++)
                 {
-                    result = result || data[index].behaviours[i].Execute(manager.caster2, castObjects[index], previousTime, currentTime);
+                    data[index].behaviours[i].Execute(manager.caster2, castObjects[index], previousTime, currentTime);
+                    result = result || data[index].behaviours[i].HasExecuted(previousFrame, currentFrame);
                 }
             }
             else {
