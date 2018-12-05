@@ -64,14 +64,24 @@ public class CharacterManager : MonoBehaviour {
     public bool isInvincible = false;
     public bool isGuarding = false;
     public bool isLockingOnTarget = false;
-    public TargetPoint target;
+    public TargetPoint target {
+        get { return _target; }
+        set {
+            _target = value;
+            if (OnNewTarget != null) {
+                OnNewTarget(value);
+            }
+        }
+    }
+    public TargetPoint _target;
 
     [HideInInspector]
     public float delta;
     [Header("Time")]
     public float timeScale = 1;
 
-
+    public delegate void OnTargetFunction(TargetPoint target);
+    public event OnTargetFunction OnNewTarget;
     
 
 

@@ -7,7 +7,7 @@ namespace ControlSystem
 {
     public abstract class InputHandler : MonoBehaviour
     {
-        protected CharacterManager characterManager;
+        protected CharacterManager manager;
         public float trueSpeed;
         public bool isDead;
         public bool isInvincible;
@@ -38,7 +38,7 @@ namespace ControlSystem
         /// </summary>
         protected void Init()
         {
-            characterManager = transform.GetComponent<CharacterManager>();
+            manager = transform.GetComponent<CharacterManager>();
             lastPosition = transform.position;
         }
 

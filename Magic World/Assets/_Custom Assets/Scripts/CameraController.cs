@@ -5,224 +5,125 @@ using InputSystem;
 
 public class CameraController : MonoBehaviour {
 
-    public Transform target;
-    private CharacterManager targetManager {
-        get { return _targetManager; }
-        set {
-            _targetManager = value;
-            targetPoint = value.GetComponentInChildren<TargetPoint>();
-            playerTarget = value.target;
-        }
-    }
-    private CharacterManager _targetManager;
-    public TargetPoint targetPoint;
-    public TargetPoint playerTarget;
-    
-    //private PlayerMovement targetController;
+    public TargetPoint player;
+    private TargetPoint target;
+    private Vector3 direction;
 
-    private Vector3 velocity = Vector3.zero;
-    public float targetDistance = 3f;
-    public float height = 0f;
-    private GameObject cameraMarker;
-    private Vector3 distanceVector;
+    public float initialDistance = 5;
+    [Range(0,60)]
+    public float initialAngle = 30;
+    public Vector3 offset;
+    public float xAngle;
+    public float yAngle;
 
-    public float smoothTime = 0.3f;
-
-    //used to shift what part of the target to look for (head as opposed to center)
-    public Vector3 targetOffset = new Vector3(0, 1.8f, 0);
-
-    public float maxZoom = 10f;
-    public float minZoom = 2f;
-    public float zoomSpeed = 2f;
+    public float xAngleSpeed = 5;
+    public float yAngleSpeed = 5;
 
 
-    public float minAngle = -60;
-    public float maxAngle = 60f;
-    public float rotateSpeed = 20f;
+    private Vector3 currentVelocity;
+    [Range(0,1)]
+    public float smoothTime = 0.1f;
+    [Range(0,1)]
+    public float rotationDamping = 0.1f;
 
-    public float minTurn = -20;
-    public float maxTurn = 20;
+
 
 	// Use this for initialization
 	void Start () {
-        if (target == null) {
+        //initialize variables
+        xAngle = 0;
+        yAngle = initialAngle;
+        direction = -player.transform.forward;
+        transform.position = transform.position + offset + CalculateVector(player.transform.forward, initialDistance, xAngle, yAngle);
+
+        //put UpdateTarget in event
+        player.manager.OnNewTarget += UpdateTarget;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        //Get new angles from player input
+        xAngle += InputManager.manager.GetAxis("Horizontal Axis Right") * Time.deltaTime * xAngleSpeed;
+        yAngle += InputManager.manager.GetAxis("Vertical Axis Right") * Time.deltaTime * yAngleSpeed;
+
+        if (target == null)
+        {
+            //Clamp y angle
+            yAngle = Mathf.Clamp(yAngle, -60, 60);
+
+            //Calculate the new location of the camera
+            Vector3 newOffset = CalculateVector(direction, initialDistance, xAngle, yAngle);
             
-        }
-        targetManager = target.GetComponent<CharacterManager>();
+            //dampen the movement
+            Vector3 newLocation = Vector3.SmoothDamp(transform.position + offset, 
+                                                    player.transform.position + offset + newOffset, 
+                                                    ref currentVelocity, smoothTime);
 
-        //creates a new empty game object as the camera's position marker
-        cameraMarker = new GameObject();
-        _initCameraPosition();
+            //Set new location
+            transform.position = newLocation;
+
+            //Face target
+            FaceTarget(player.transform);
+        }
+        else {
+            //update direction
+            direction = -player.transform.forward;
+            
+            //Clamp X and Y angles
+            xAngle = Mathf.Clamp(xAngle, -30, 30);
+            yAngle = Mathf.Clamp(yAngle, -30, 30);
+
+            //get new offset
+            Vector3 newOffset = CalculateVector(direction, initialDistance, xAngle, yAngle);
+
+            //dampen movement
+            Vector3 newPosition = Vector3.SmoothDamp(transform.position + offset, 
+                                                    player.transform.position + offset + newOffset, 
+                                                    ref currentVelocity, smoothTime);
+
+            //Set new location
+            transform.position = newPosition;
+
+            //face target
+            FaceTarget(target.transform);
+        }
+        
 	}
 
-    private void Update()
-    {
-        playerTarget = targetManager.target;
-    }
 
-    
-    void LateUpdate () {
-        if (playerTarget == null)
-        {
-            MoveCameraMarker(targetPoint.transform.position);
-            Move();
-            TurnTowards(targetPoint.transform.position);
-
-            RotateCamera();
-
-            ZoomCamera(Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime);
-        }
-        else {
-            MoveCameraMarker(targetPoint.transform.position);
-            Move();
-            TurnTowards((targetPoint.transform.position + playerTarget.transform.position) / 2);
-
-            RotateCamera();
-
-            ZoomCamera(Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime);
-        }
-	}
-
-    //move the camera with the player
-    public void Move()
-    {
-        Vector3 newPosition = Vector3.SmoothDamp(transform.position, cameraMarker.transform.position, ref velocity, smoothTime);
-        transform.position = newPosition;
+    private void UpdateTarget(TargetPoint newTarget) {
+        target = newTarget;
+        xAngle = 0;
+        yAngle = initialAngle;
     }
 
 
-
-    //turn towards the target
-    public void TurnTowards(Vector3 lookPoint) {
-        Vector3 targetPosition = Vector3.zero;
-
-        if (playerTarget == null)
-        {
-            targetPosition = target.position + target.up * 1.8f;
-        }
-        else {
-            targetPosition = target.position + target.up * 1.8f;
-            //targetPosition += playerTarget.transform.position;
-            //targetPosition /= 2;
-        }
-
-        transform.LookAt(lookPoint);
+    private void FaceTarget(Transform target) {
+        //get the vector from camera position to the target's position
+        Vector3 newDirection = target.position - transform.position;
+        //Interpolate from the camera's current direction to the new direction
+        newDirection = Vector3.Slerp(transform.forward, newDirection, rotationDamping);
+        //look at new direction
+        transform.LookAt(transform.position + newDirection);
     }
 
 
+    //Calculates the vector behind a target given a target, distance, and angle
+    public Vector3 CalculateVector(Vector3 direction, float distance, float xAngle, float yAngle) {
+        //create backwards vector
+        Vector3 result = direction;
 
-    //rotate camera around target
-    public void RotateCamera(bool clampX = false) {
+        //rotate by angle x and y
+        result = Quaternion.Euler(yAngle, -xAngle, 0) * result;
 
-        float xAngle = InputManager.manager.GetAxis("Horizontal Right") * Time.deltaTime * rotateSpeed;
-        float yAngle = InputManager.manager.GetAxis("Vertical Right") * Time.deltaTime * rotateSpeed;
-
-        Vector3 perpendicular = new Vector3(-distanceVector.z, 0, distanceVector.x);
-
-        float angle = Vector3.SignedAngle(distanceVector, 
-                                            new Vector3(distanceVector.x, 0, distanceVector.z), 
-                                            perpendicular) + yAngle;
-
-        //Debug.DrawLine(target.transform.position + targetOffset, distanceVector, Color.blue);
-        //Debug.DrawLine(target.transform.position + targetOffset, new Vector3(distanceVector.x, 0, distanceVector.z), Color.green);
-        //Debug.DrawLine(target.transform.position + targetOffset, perpendicular, Color.red);
-        /*if (angle > maxAngle)
-        {
-            yAngle += angle - maxAngle;
-        }
-        else if (angle < minAngle) {
-            yAngle -= minAngle - angle;
-        }*/
-
-        angle = GetClampedAngle(yAngle, minAngle, maxAngle, new Vector3(distanceVector.x, 0, distanceVector.z), perpendicular);
-
-        //Debug.Log(angle);
-
-        if (!clampX)
-        {
-            distanceVector = Quaternion.Euler(0, xAngle, 0) * distanceVector;
-            Vector3 temp = perpendicular / perpendicular.magnitude * yAngle;
-            distanceVector = Quaternion.Euler(temp.x, 0, temp.z) * distanceVector;
-        }
-        else {
-
-            Vector3 temp = perpendicular / perpendicular.magnitude * yAngle;
-        }
-
-    }
-
-
-    private float GetClampedAngle(float deltaAngle, float minAngle, float maxAngle, Vector3 distanceAxis, Vector3 rotateAxis) {
-        float result = Vector3.SignedAngle(distanceVector, distanceAxis, rotateAxis) + deltaAngle;
-
-        if (result < minAngle)
-        {
-            result = minAngle - result;
-        }
-        else if (result > maxAngle)
-        {
-            result = result - maxAngle;
-        }
-        else {
-            result = deltaAngle;
+        //scale vector by distance
+        if (distance != 0) {
+            result = result / result.magnitude * distance;
         }
 
         return result;
     }
 
-
-    //change camera zoom
-    public void ZoomCamera(float zoom) {
-        targetDistance += zoom;
-
-        if (targetDistance > maxZoom)
-        {
-            targetDistance = maxZoom;
-        }
-        else if (targetDistance < minZoom) {
-            targetDistance = minZoom;
-        }
-
-        float ratio = targetDistance / distanceVector.magnitude;
-
-        distanceVector *= ratio;
-    }
-
-
-
-
-    //Init the position of the camera and the marker
-    public void _initCameraPosition() {
-
-        float tempDistance = targetDistance;
-
-        height = height > targetDistance ? targetDistance : height;
-        tempDistance = Mathf.Sqrt(targetDistance * targetDistance - height * height);
-
-        //sets the camera's initial starting location
-        Vector3 cameraLocation = (target.transform.position + targetOffset) + (height*target.transform.up) - (target.forward * tempDistance);
-        transform.position = cameraLocation;
-
-        //sets the camera marker to the designated position behind the character
-        cameraMarker.transform.position = cameraLocation;
-        distanceVector = (target.position + targetOffset) - cameraMarker.transform.position;
-    }
-
-
-    //calculates where the camera should be located
-    public void MoveCameraMarker(Vector3 targetLocation) {
-        cameraMarker.transform.position = targetLocation - distanceVector;
-    }
-
-    /*
-    public void RecalculateDistanceVector() {
-        distanceVector = (target.position + targetOffset) - cameraMarker.transform.position;
-        
-    }*/
-    
-
-
-    
 
 
 }

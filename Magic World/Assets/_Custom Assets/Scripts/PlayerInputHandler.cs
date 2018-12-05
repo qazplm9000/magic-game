@@ -27,66 +27,66 @@ namespace ControlSystem
         {
             #region Movement and Animation variables
             //sets movement direction
-            characterManager.direction = DirectionFromInput();
+            manager.direction = DirectionFromInput();
             //sets whether movement is locked based on animations
-            characterManager.movementLocked = !CharacterCanMove();
+            manager.movementLocked = !CharacterCanMove();
 
             //sets variables for movement animation
             float speed = CharacterSpeed();
-            characterManager.anim.SetFloat("Speed", characterManager.agent.velocity.magnitude);
-            characterManager.anim.SetBool("isMoving", IsCharacterMoving());
+            manager.anim.SetFloat("Speed", manager.agent.velocity.magnitude);
+            manager.anim.SetBool("isMoving", IsCharacterMoving());
 
             GetAxesValue();
             SetCharacterAxes();
 
-            characterManager.anim.SetBool("lockOn", characterManager.isLockingOnTarget);
+            manager.anim.SetBool("lockOn", manager.isLockingOnTarget);
             #endregion
 
             //Debug.Log(characterManager.rb.velocity);
             //guard when not moving
-            if (!characterManager.movementLocked && characterManager.agent.velocity.magnitude == 0 && !characterManager.isGuarding)
+            if (!manager.movementLocked && manager.agent.velocity.magnitude == 0 && !manager.isGuarding)
             {
                 
                 if (InputManager.manager.GetKeyDown("Dodge"))
                 {
                     Debug.Log("Started guarding");
-                    characterManager.combat.Guard();
+                    manager.combat.Guard();
                 }
             }
 
-            if (characterManager.isGuarding)
+            if (manager.isGuarding)
             {
                 if (InputManager.manager.GetKeyUp("Dodge"))
                 {
-                    characterManager.combat.Unguard();
+                    manager.combat.Unguard();
                 }
             }
 
             //movement
-            if (!characterManager.movementLocked)
+            if (!manager.movementLocked)
             {
-                Vector3 direction = characterManager.direction;
+                Vector3 direction = manager.direction;
                 //checks whether player is guarding or not when moving
-                float moveSpeed = characterManager.movementSpeed;
+                float moveSpeed = manager.movementSpeed;
 
-                if (characterManager.isGuarding)
+                if (manager.isGuarding)
                 {
-                    moveSpeed *= characterManager.guardSpeedMultiplier;
+                    moveSpeed *= manager.guardSpeedMultiplier;
                 }
 
-                if (characterManager.isLockingOnTarget)
+                if (manager.isLockingOnTarget)
                 {
-                    characterManager.movement.Strafe(characterManager.direction, moveSpeed * characterManager.strafeSpeedMultiplier);
+                    manager.movement.Strafe(manager.direction, moveSpeed * manager.strafeSpeedMultiplier);
                 }
                 else {
-                    characterManager.movement.Move(characterManager.direction, moveSpeed);
+                    manager.movement.Move(manager.direction, moveSpeed);
                     //characterManager.movement.MoveWithoutNavMesh(characterManager.direction, moveSpeed);
                 }
             }
 
 
 
-            if (!characterManager.movementLocked)
+            if (!manager.movementLocked)
             {
 
 
@@ -94,27 +94,27 @@ namespace ControlSystem
                 if (InputManager.manager.GetKeyDown("Cast"))
                 {
                     //characterManager.caster.CastSpell();
-                    characterManager.agent.velocity = Vector3.zero;
-                    characterManager.combos.UseSpell();
+                    manager.agent.velocity = Vector3.zero;
+                    manager.combos.UseSpell();
                     Debug.Log("Casting spell");
                 }
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     //characterManager.caster.ChangeIndex(1);
-                    characterManager.caster.IncrementIndex();
+                    manager.caster.IncrementIndex();
                 }
 
                 if (Input.GetKeyDown(KeyCode.Alpha4)) {
-                    characterManager.caster2.Cast(characterManager.caster2.abilityList[0]);
+                    manager.caster2.Cast(manager.caster2.abilityList[0]);
                 }
 
 
                 //Attack with left mouse or Square
                 if (InputManager.manager.GetKeyDown("Attack"))
                 {
-                    characterManager.combos.UseCombo();
+                    manager.combos.UseCombo();
 
-                    if (!characterManager.movementLocked)
+                    if (!manager.movementLocked)
                     {
                         //characterManager.comboUser.UseCombo();
                         //characterManager.caster.Cast();
@@ -129,23 +129,27 @@ namespace ControlSystem
                 }
             }
 
+            if (manager.target != null) {
+                manager.movement.SmoothRotate(manager.target.transform.position - transform.position, 0.1f);
+            }
+
 
             //locks and unlocks onto target
             if (InputManager.manager.GetKeyDown("Target")) {
                 Debug.Log("Targetting nearest enemy");
                 //characterManager.combat.GetNearestEnemy();
-                if (characterManager.target == null)
+                if (manager.target == null)
                 {
-                    characterManager.target = characterManager.targetter.GetNearestTarget();
-                    characterManager.isLockingOnTarget = true;
+                    manager.target = manager.targetter.GetNearestTarget();
+                    manager.isLockingOnTarget = true;
                 }
                 else {
-                    characterManager.target = characterManager.targetter.SwitchTarget();
+                    manager.target = manager.targetter.SwitchTarget();
                 }
             }
 
-            if (characterManager.target == null) {
-                characterManager.isLockingOnTarget = false;
+            if (manager.target == null) {
+                manager.isLockingOnTarget = false;
             }
 
             /*
@@ -159,44 +163,44 @@ namespace ControlSystem
         public void FixedUpdate()
         {
             //dodge with Q
-            if (InputManager.manager.GetKeyDown("Dodge") && characterManager.agent.velocity.magnitude != 0)
+            if (InputManager.manager.GetKeyDown("Dodge") && manager.agent.velocity.magnitude != 0)
             {
-                if (characterManager.combat.currentState == Action.Guard)
+                if (manager.combat.currentState == Action.Guard)
                 {
-                    characterManager.combat.Unguard();
+                    manager.combat.Unguard();
                 }
 
-                if (!characterManager.movementLocked)
+                if (!manager.movementLocked)
                 {
-                    StartCoroutine(characterManager.combat.Dodge(characterManager.direction));
+                    StartCoroutine(manager.combat.Dodge(manager.direction));
                 }
                 else
                 {
-                    if (characterManager.combat.bufferOpen)
+                    if (manager.combat.bufferOpen)
                     {
-                        characterManager.combat.bufferedAction = Action.Dodge;
+                        manager.combat.bufferedAction = Action.Dodge;
                     }
                 }
             }
 
 
             //calls buffered action
-            if (characterManager.combat.bufferedAction != Action.None && !characterManager.movementLocked)
+            if (manager.combat.bufferedAction != Action.None && !manager.movementLocked)
             {
-                switch (characterManager.combat.bufferedAction)
+                switch (manager.combat.bufferedAction)
                 {
                     case Action.Attack:
                         //controller.Rotate(DirectionFromInput());
                         //combos.Attack();
                         break;
                     case Action.Dodge:
-                        characterManager.movement.Rotate(characterManager.direction);
-                        StartCoroutine(characterManager.combat.Dodge(characterManager.direction));
+                        manager.movement.Rotate(manager.direction);
+                        StartCoroutine(manager.combat.Dodge(manager.direction));
                         break;
                     case Action.Skill:
                         break;
                 }
-                characterManager.combat.bufferedAction = Action.None;
+                manager.combat.bufferedAction = Action.None;
             }
         }
 
@@ -210,17 +214,17 @@ namespace ControlSystem
         //sets the horizontal and vertical axes
         protected void SetCharacterAxes()
         {
-            characterManager.horizontal = horizontal;
-            characterManager.vertical = vertical;
-            characterManager.anim.SetFloat("Horizontal", horizontal);
-            characterManager.anim.SetFloat("Vertical", vertical);
+            manager.horizontal = horizontal;
+            manager.vertical = vertical;
+            manager.anim.SetFloat("Horizontal", horizontal);
+            manager.anim.SetFloat("Vertical", vertical);
         }
 
 
         //determines whether a character is moving for animation purposes
         protected override bool IsCharacterMoving()
         {
-            return base.characterManager.direction.magnitude != 0;
+            return base.manager.direction.magnitude != 0;
         }
 
         /// <summary>
@@ -228,7 +232,7 @@ namespace ControlSystem
         /// </summary>
         /// <returns></returns>
         protected bool CharacterCanMove() {
-            return characterManager.anim.GetBool("canMove");
+            return manager.anim.GetBool("canMove");
         }
 
         /// <summary>
