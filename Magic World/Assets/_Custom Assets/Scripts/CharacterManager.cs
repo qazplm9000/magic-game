@@ -45,7 +45,7 @@ public class CharacterManager : MonoBehaviour {
     public NavMeshAgent agent;
     [HideInInspector]
     public Vector3 direction;
-    public CharacterState state;
+    //public CharacterState state;
 
     [Header("Movement")]
     public float movementSpeed = 5;

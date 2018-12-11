@@ -38,6 +38,7 @@ public class CameraController : MonoBehaviour {
 
         //put UpdateTarget in event
         player.manager.OnNewTarget += UpdateTarget;
+        FaceTarget(player.transform);
 	}
 	
 	// Update is called once per frame

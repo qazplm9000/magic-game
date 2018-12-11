@@ -8,6 +8,7 @@ using InputSystem;
 public class CharacterMovement : MonoBehaviour {
     
     CharacterManager manager;
+
     [Range(0,1)]
     public float smoothing = 0.7f;
 
@@ -63,11 +64,12 @@ public class CharacterMovement : MonoBehaviour {
         if (direction.magnitude == 0)
         {
             manager.agent.velocity = Vector3.zero;
-            return;
         }
-
-        //rotate character towards direction and change speed
-        manager.agent.velocity = direction * movementSpeed;
+        else
+        {
+            //rotate character towards direction and change speed
+            manager.agent.velocity = direction * movementSpeed;
+        }
     }
 
     //take a direction and move towards it
@@ -101,6 +103,7 @@ public class CharacterMovement : MonoBehaviour {
         }
 
         _MoveFunction(trueDirection, movementSpeed);
+        SmoothRotate(manager.target.transform.position - transform.position);
     }
 
 

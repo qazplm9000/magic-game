@@ -25,7 +25,7 @@ namespace BehaviourEditor
             }
 
             EditorGUILayout.LabelField("");
-            targetTransition.condition = (Condition)EditorGUILayout.ObjectField(targetTransition.condition, typeof(Condition), false);
+            //targetTransition.condition = (Condition)EditorGUILayout.ObjectField(targetTransition.condition, typeof(Condition), false);
 
             if (targetTransition.condition == null)
             {

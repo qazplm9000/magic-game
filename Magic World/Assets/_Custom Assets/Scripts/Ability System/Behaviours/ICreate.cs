@@ -15,7 +15,7 @@ namespace AbilitySystem
             newGo.transform.localPosition = data.objectPosition;
             newGo.transform.localRotation = Quaternion.LookRotation(data.objectRotation);
             newGo.transform.SetParent(null);
-            Debug.Log("Instantiated");
+            //Debug.Log("Instantiated");
         }
 
 

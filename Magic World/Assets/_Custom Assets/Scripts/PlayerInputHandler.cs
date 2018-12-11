@@ -73,13 +73,8 @@ namespace ControlSystem
                 {
                     moveSpeed *= manager.guardSpeedMultiplier;
                 }
-
-                if (manager.isLockingOnTarget)
-                {
-                    manager.movement.Strafe(manager.direction, moveSpeed * manager.strafeSpeedMultiplier);
-                }
+                
                 else {
-                    manager.movement.Move(manager.direction, moveSpeed);
                     //characterManager.movement.MoveWithoutNavMesh(characterManager.direction, moveSpeed);
                 }
             }
@@ -129,8 +124,22 @@ namespace ControlSystem
                 }
             }
 
-            if (manager.target != null) {
-                manager.movement.SmoothRotate(manager.target.transform.position - transform.position, 0.1f);
+            if (manager.target != null)
+            {
+                //Strafe if moving
+                if (manager.direction.magnitude != 0)
+                {
+                    manager.movement.Strafe(manager.direction, manager.movementSpeed * manager.strafeSpeedMultiplier);
+                }
+                else
+                {
+                    //When not moving, turn towards target
+                    //This makes sure the player is facing the target when idle and changing targets
+                    manager.movement.SmoothRotate(manager.target.transform.position - transform.position, 0.1f);
+                }
+            }
+            else {
+                manager.movement.Move(manager.direction, manager.movementSpeed);
             }
 
 
@@ -147,10 +156,7 @@ namespace ControlSystem
                     manager.target = manager.targetter.SwitchTarget();
                 }
             }
-
-            if (manager.target == null) {
-                manager.isLockingOnTarget = false;
-            }
+            
 
             /*
             if (Input.GetKeyDown(KeyCode.H)) {
