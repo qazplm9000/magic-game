@@ -10,7 +10,7 @@ public class KeyUpCondition : Condition {
 
     public override bool Execute(CharacterManager manager)
     {
-        return InputManager.manager.GetKeyUp(key);
+        return World.inputs.GetKeyUp(key);
     }
     
 }

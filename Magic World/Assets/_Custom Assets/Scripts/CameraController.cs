@@ -44,8 +44,8 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //Get new angles from player input
-        xAngle += InputManager.manager.GetAxis("Horizontal Axis Right") * Time.deltaTime * xAngleSpeed;
-        yAngle += InputManager.manager.GetAxis("Vertical Axis Right") * Time.deltaTime * yAngleSpeed;
+        xAngle += World.inputs.GetAxis("Horizontal Axis Right") * Time.deltaTime * xAngleSpeed;
+        yAngle += World.inputs.GetAxis("Vertical Axis Right") * Time.deltaTime * yAngleSpeed;
 
         if (target == null)
         {

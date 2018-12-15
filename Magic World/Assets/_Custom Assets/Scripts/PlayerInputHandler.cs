@@ -47,7 +47,7 @@ namespace ControlSystem
             if (!manager.movementLocked && manager.agent.velocity.magnitude == 0 && !manager.isGuarding)
             {
                 
-                if (InputManager.manager.GetKeyDown("Dodge"))
+                if (World.inputs.GetKeyDown("Dodge"))
                 {
                     Debug.Log("Started guarding");
                     manager.combat.Guard();
@@ -56,7 +56,7 @@ namespace ControlSystem
 
             if (manager.isGuarding)
             {
-                if (InputManager.manager.GetKeyUp("Dodge"))
+                if (World.inputs.GetKeyUp("Dodge"))
                 {
                     manager.combat.Unguard();
                 }
@@ -86,7 +86,7 @@ namespace ControlSystem
 
 
                 //Cast spells
-                if (InputManager.manager.GetKeyDown("Cast"))
+                if (World.inputs.GetKeyDown("Cast"))
                 {
                     //characterManager.caster.CastSpell();
                     manager.agent.velocity = Vector3.zero;
@@ -105,7 +105,7 @@ namespace ControlSystem
 
 
                 //Attack with left mouse or Square
-                if (InputManager.manager.GetKeyDown("Attack"))
+                if (World.inputs.GetKeyDown("Attack"))
                 {
                     manager.combos.UseCombo();
 
@@ -144,7 +144,7 @@ namespace ControlSystem
 
 
             //locks and unlocks onto target
-            if (InputManager.manager.GetKeyDown("Target")) {
+            if (World.inputs.GetKeyDown("Target")) {
                 Debug.Log("Targetting nearest enemy");
                 //characterManager.combat.GetNearestEnemy();
                 if (manager.target == null)
@@ -169,7 +169,7 @@ namespace ControlSystem
         public void FixedUpdate()
         {
             //dodge with Q
-            if (InputManager.manager.GetKeyDown("Dodge") && manager.agent.velocity.magnitude != 0)
+            if (World.inputs.GetKeyDown("Dodge") && manager.agent.velocity.magnitude != 0)
             {
                 if (manager.combat.currentState == Action.Guard)
                 {
@@ -213,8 +213,8 @@ namespace ControlSystem
 
         protected void GetAxesValue()
         {
-            horizontal = InputManager.manager.GetAxis("Horizontal Left");
-            vertical = InputManager.manager.GetAxis("Vertical Left");
+            horizontal = World.inputs.GetAxis("Horizontal Left");
+            vertical = World.inputs.GetAxis("Vertical Left");
         }
 
         //sets the horizontal and vertical axes
@@ -253,8 +253,8 @@ namespace ControlSystem
             Vector3 cameraRight = mainCamera.transform.right;
             cameraRight = new Vector3(cameraRight.x, 0, cameraRight.z);
             cameraRight /= cameraRight.magnitude;
-            Vector3 direction = cameraForward * InputManager.manager.GetAxis("Vertical Left");
-            direction += cameraRight * InputManager.manager.GetAxis("Horizontal Left");
+            Vector3 direction = cameraForward * World.inputs.GetAxis("Vertical Left");
+            direction += cameraRight * World.inputs.GetAxis("Horizontal Left");
 
 
 

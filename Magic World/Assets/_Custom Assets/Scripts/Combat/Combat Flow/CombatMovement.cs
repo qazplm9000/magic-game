@@ -26,8 +26,8 @@ namespace CombatSystem
         {
             //get input
             Vector3 movement = Vector3.zero;
-            movement += Input.GetAxis("Horizontal") * new Vector3(0, 0, 1);
-            movement += Input.GetAxis("Vertical") * new Vector3(-1, 0, 0);
+            movement += World.inputs.GetAxis("Horizontal") * new Vector3(0, 0, 1);
+            movement += World.inputs.GetAxis("Vertical") * new Vector3(-1, 0, 0);
             
             //scale movement vector if over certain threshold
             //might still move faster diagonally for a short moment

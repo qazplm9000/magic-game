@@ -82,8 +82,13 @@
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Behaviour\Conditions\IsDead.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Behaviour\States\State.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Behaviour\Transition.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\CharacterInput.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\EnemyAIHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\InputHandler.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\PlayerBattleInput.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\PlayerInputAction.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\PlayerInputAxis.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\PlayerInputKey.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Animator States\SetBool.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Character State System\CharacterState.cs" />
@@ -98,7 +103,7 @@
     <Compile Include="Assets\_Custom Assets\Scripts\CharacterMovement.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\Action.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\AttackType.cs" />
-    <Compile Include="Assets\_Custom Assets\Scripts\Combat\Combat Flow\BattleManager.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Combat\Combat Flow\BattleState.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\Combat Flow\Combatant.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\Combat Flow\CombatCamera.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Combat\Combat Flow\CombatMovement.cs" />
@@ -115,6 +120,7 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputAxis.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputKey.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputManager.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\Input Manager\InputObject.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\PlayerInputHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Pooling\ObjectPool.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\SpellBehaviour.cs" />
@@ -126,6 +132,7 @@
     <Compile Include="Assets\_Custom Assets\Scripts\Stats\StatType.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Targetting\PlayerTargetter.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\Targetting\TargetPoint.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\World.cs" />
     <Compile Include="Assets\BasicBandit\DemoSceneBasicBandit\Scripts\ButtonFunction.cs" />
     <Compile Include="Assets\BasicBandit\DemoSceneBasicBandit\Scripts\MovementCamera.cs" />
     <Compile Include="Assets\Environment\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />

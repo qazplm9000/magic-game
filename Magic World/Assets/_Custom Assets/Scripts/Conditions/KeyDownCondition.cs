@@ -10,6 +10,6 @@ public class KeyDownCondition : Condition
 
     public override bool Execute(CharacterManager manager)
     {
-        return InputManager.manager.GetKeyDown(key);
+        return World.inputs.GetKeyDown(key);
     }
 }

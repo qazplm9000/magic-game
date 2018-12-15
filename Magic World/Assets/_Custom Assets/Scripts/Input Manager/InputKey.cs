@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace InputSystem
 {
-    [CreateAssetMenu(menuName = "Inputs/Key")]
-    public class InputKey : ScriptableObject
+    [System.Serializable]
+    public class InputKey
     {
 
         public string keyName;
@@ -27,7 +27,7 @@ namespace InputSystem
         public bool ChangeKey(KeyCode code) {
             bool result = false;
 
-            if (InputManager.manager.IsControllerInput(code))
+            if (World.inputs.IsControllerInput(code))
             {
                 result = controllerKey != code;
                 controllerKey = code;

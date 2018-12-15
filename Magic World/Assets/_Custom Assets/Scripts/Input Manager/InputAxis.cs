@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace InputSystem
 {
-    [CreateAssetMenu(menuName = "Inputs/Axis")]
-    public class InputAxis : ScriptableObject
+    [System.Serializable]
+    public class InputAxis
     {
 
         public string axisName;

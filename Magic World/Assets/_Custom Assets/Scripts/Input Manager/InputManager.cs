@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace InputSystem
 {
-    public class InputManager : MonoBehaviour
+    [System.Serializable]
+    public class InputManager
     {
         public List<InputAxis> axes = new List<InputAxis>();
         private Dictionary<string, InputAxis> axesDict = new Dictionary<string, InputAxis>();
@@ -16,29 +17,12 @@ namespace InputSystem
 
         private RuntimePlatform platform;
         
-        public static InputManager manager;
-        
 
         // Use this for initialization
-        void Awake()
+        void Start()
         {
-            if (manager == null)
-            {
-                manager = this;
-                platform = Application.platform;
-            }
-            else
-            {
-                Destroy(this);
-            }
-
+            platform = Application.platform;
             ListToDict();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public void ChangeKey(string keyname, KeyCode key)

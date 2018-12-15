@@ -10,6 +10,6 @@ public class KeyGetCondition : Condition
 
     public override bool Execute(CharacterManager manager)
     {
-        return InputManager.manager.GetKey(key);
+        return World.inputs.GetKey(key);
     }
 }
