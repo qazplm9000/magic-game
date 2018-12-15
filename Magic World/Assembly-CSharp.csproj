@@ -85,6 +85,7 @@
     <Compile Include="Assets\_Custom Assets\Scripts\AI\CharacterInput.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\EnemyAIHandler.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\InputHandler.cs" />
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\Player Actions\MoveCharacter.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\PlayerBattleInput.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\PlayerInputAction.cs" />
     <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\PlayerInputAxis.cs" />

@@ -23,7 +23,10 @@ public class World : MonoBehaviour {
         else {
             Destroy(this);
         }
-        
+        if (inputs == null) {
+            inputs = new InputManager();
+            inputs.inputKeys = inputObject;
+        }
 	}
 	
 	// Update is called once per frame

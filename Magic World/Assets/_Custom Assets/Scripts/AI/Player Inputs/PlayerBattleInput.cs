@@ -8,26 +8,25 @@ namespace InputSystem
     [CreateAssetMenu(menuName = "Input/Player Battle Inputs")]
     public class PlayerBattleInput : CharacterBattleInput
     {
-        public List<PlayerInputKey> axisInputs;
+        public List<PlayerInputAction> actions;
         public List<PlayerInputKey> inputs;
 
         public override void Execute(BattleState battle, CharacterManager character)
         {
-            ExecutePlayerAxes(character);
+            ExecuteDefaultActions(character);
             ExecutePlayerKeys(character);
         }
 
+        
+        //loops through all events that run regardless of key events
+        private void ExecuteDefaultActions(CharacterManager character) {
+            for (int i = 0; i < actions.Count; i++) {
+                PlayerInputAction action = actions[i];
 
-        //loops through all axis events
-        private void ExecutePlayerAxes(CharacterManager character) {
-            for (int i = 0; i < axisInputs.Count; i++) {
-                PlayerInputKey input = axisInputs[i];
-
-                if (!ConditionsPass(input.conditions, character)) {
-                    continue;
+                if (action != null)
+                {
+                    action.Execute(character);
                 }
-
-                input.action.Execute(character);
             }
         }
 
@@ -49,7 +48,10 @@ namespace InputSystem
                 }
 
                 //perform action
-                input.action.Execute(character);
+                if (input.action != null)
+                {
+                    input.action.Execute(character);
+                }
 
             }
         }

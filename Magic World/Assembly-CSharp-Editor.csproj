@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\_Custom Assets\Scripts\AI\Player Inputs\Editor\PlayerInputActionEditor.cs" />
     <Compile Include="Assets\Environment\PostProcessing\Editor\Attributes\PostProcessingModelEditorAttribute.cs" />
     <Compile Include="Assets\Environment\PostProcessing\Editor\Models\AmbientOcclusionModelEditor.cs" />
     <Compile Include="Assets\Environment\PostProcessing\Editor\Models\AntialiasingModelEditor.cs" />

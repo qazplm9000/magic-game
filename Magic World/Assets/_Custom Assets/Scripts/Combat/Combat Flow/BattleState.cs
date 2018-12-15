@@ -11,47 +11,51 @@ namespace CombatSystem
     {
 
         //list of all characters
-        //public List<Combatant> combatants
-        //public List<Combatant> players
-        //public List<Combatant> enemies
+        public List<CharacterManager> characters;
+        public List<CharacterManager> players;
+        public List<CharacterManager> enemies;
 
         //current character's turn
         //public Combatant currentTurn
         public float turnTimer;
         public float turnTime;
-        public bool actionTaken = false;
+        public CharacterManager currentCharacter;
 
 
         //public delegate void TurnSwap(Combatant currentCharacter);
         //public event TurnSwap turnSwap;
 
-        // Use this for initialization
-        void Start()
+        // Initialize the battle with given characters
+        public void InitBattle()
         {
-
+            //take in arguments for party members and enemies
         }
 
         // Update is called once per frame
         public void Update()
         {
 
-            if (actionTaken) {
-                turnTimer -= Time.deltaTime;
-
-                if (turnTimer < turnTime) {
-                    ProgressTurn();
-                }
+            if (turnTimer <= 0) {
+                turnTimer = 0;
+                //wait for current character to finish all actions
+                //progress turn when done
+                ProgressTurn();
             }
 
-            Debug.Log("Test");
+
+            /* Call while character is taking any action (moving, attacking, casting, item)
+            if (currentCharacter.TakingAction()) {
+                turnTimer -= Time.deltaTime;
+            }*/
 
 
         }
 
 
-
+        /// <summary>
+        /// switch over to next character
+        /// </summary>
         public void ProgressTurn() {
-            actionTaken = false;
             //switch to next character
             //currentCharacter = nextCombatant
             //call turn event

@@ -12,6 +12,16 @@ namespace InputSystem
         public List<InputKey> keys = new List<InputKey>();
         private Dictionary<string, InputKey> keyDict = new Dictionary<string, InputKey>();
 
+        public InputObject inputKeys {
+            get { return _inputKeys; }
+            set {
+                ListToDict(value);
+                _inputKeys = value;
+            }
+        }
+
+        private InputObject _inputKeys { get; set; }
+
         [Space(10)]
         public ControllerKeys controllerKeys;
 
@@ -22,7 +32,6 @@ namespace InputSystem
         void Start()
         {
             platform = Application.platform;
-            ListToDict();
         }
 
         public void ChangeKey(string keyname, KeyCode key)
@@ -105,14 +114,20 @@ namespace InputSystem
         }
 
         //converts the list values to a dict
-        private void ListToDict()
+        private void ListToDict(InputObject io)
         {
-            foreach (InputAxis axis in axes) {
-                axesDict[axis.axisName] = axis;
+            //create new dict with axes
+            List<InputAxis> axesObject = io.axes;
+            axesDict = new Dictionary<string, InputAxis>();
+            for (int i = 0; i < axesObject.Count; i++) {
+                axesDict[axesObject[i].axisName] = axesObject[i];
             }
 
-            foreach (InputKey key in keys) {
-                keyDict[key.keyName] = key;
+            //create new dict with keys
+            List<InputKey> keyObjects = io.keys;
+            keyDict = new Dictionary<string, InputKey>();
+            for (int i = 0; i < keyObjects.Count; i++) {
+                keyDict[keyObjects[i].keyName] = keyObjects[i];
             }
         }
 

@@ -7,22 +7,20 @@ using InputSystem;
 //Script used for containing all movement functions
 public class CharacterMovement : MonoBehaviour {
     
-    CharacterManager manager;
+    private CharacterManager character;
+    private Camera mainCamera;
 
     [Range(0,1)]
     public float smoothing = 0.7f;
 
     // Use this for initialization
     void Start () {
-        manager = transform.GetComponent<CharacterManager>();
+        character = transform.GetComponent<CharacterManager>();
+        mainCamera = Camera.main;
         //prevents the navmesh agent from auto-turning
-        manager.agent.updateRotation = false;
+        character.agent.updateRotation = false;
 	}
-
-    private void Update()
-    {
-    }
-
+    
 
     /// <summary>
     /// Smoothly rotate character
@@ -58,36 +56,30 @@ public class CharacterMovement : MonoBehaviour {
             transform.Rotate(transform.up, angle);
         }
     }
-
-    private void _MoveFunction(Vector3 direction, float movementSpeed) {
-        //do nothing if direction vector is 0
-        if (direction.magnitude == 0)
-        {
-            manager.agent.velocity = Vector3.zero;
-        }
-        else
-        {
-            //rotate character towards direction and change speed
-            manager.agent.velocity = direction * movementSpeed;
-        }
-    }
+    
 
     //take a direction and move towards it
-    //movementPercent depends on how far joystick is held
-    public void Move(Vector3 direction, float movementSpeed) {
+    public void Move(Vector3 direction, float movementSpeed = 5) {
         //direction with Y movement removed
-        Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
+        //Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
 
-        if (trueDirection.magnitude == 0)
-        {
-            return;
-        }
-
-        _MoveFunction(trueDirection, movementSpeed);
-        
-        SmoothRotate(trueDirection);
+        character.agent.velocity = direction * movementSpeed;
+        //SmoothRotate(trueDirection);
 
     }
+
+    
+    public Vector3 DirectionFromCamera(Vector3 direction) {
+        Vector3 result = mainCamera.transform.forward * direction.z;
+        result += mainCamera.transform.right * direction.x;
+
+        if (result.magnitude > 1) {
+            result /= result.magnitude;
+        }
+
+        return result;
+    }
+
 
     /// <summary>
     /// Moves while facing the target
@@ -102,8 +94,8 @@ public class CharacterMovement : MonoBehaviour {
             return;
         }
 
-        _MoveFunction(trueDirection, movementSpeed);
-        SmoothRotate(manager.target.transform.position - transform.position);
+        //_MoveFunction(trueDirection, movementSpeed);
+        SmoothRotate(character.target.transform.position - transform.position);
     }
 
 
@@ -113,7 +105,7 @@ public class CharacterMovement : MonoBehaviour {
     /// <param name="direction"></param>
     /// <param name="movementSpeed"></param>
     public void HaltMovement() {
-        manager.agent.velocity = Vector3.zero;
+        character.agent.velocity = Vector3.zero;
     }
 
 
@@ -121,8 +113,8 @@ public class CharacterMovement : MonoBehaviour {
         //moves the character in the direction
         //transform.position += direction * movementPercent * movementSpeed * Time.deltaTime;
         Vector3 trueDirection = new Vector3(direction.x, 0, direction.z);
-        manager.rb.velocity = trueDirection * movementSpeed + 
-                                            (manager.rb.velocity.y * Vector3.down + 
+        character.rb.velocity = trueDirection * movementSpeed + 
+                                            (character.rb.velocity.y * Vector3.down + 
                                             Physics.gravity * Time.deltaTime);
     }
     

@@ -25,19 +25,19 @@ namespace CombatSystem
         void Update()
         {
             //get input
-            Vector3 movement = Vector3.zero;
-            movement += World.inputs.GetAxis("Horizontal") * new Vector3(0, 0, 1);
-            movement += World.inputs.GetAxis("Vertical") * new Vector3(-1, 0, 0);
+            //Vector3 movement = Vector3.zero;
+            //movement += World.inputs.GetAxis("Horizontal") * new Vector3(0, 0, 1);
+            //movement += World.inputs.GetAxis("Vertical") * new Vector3(-1, 0, 0);
             
             //scale movement vector if over certain threshold
             //might still move faster diagonally for a short moment
-            if (movement.magnitude > 1) {
-                movement /= movement.magnitude;
-            }
+            //if (movement.magnitude > 1) {
+               // movement /= movement.magnitude;
+            //}
 
-            movement = movement * Time.deltaTime * speed;
+           // movement = movement * Time.deltaTime * speed;
 
-            agent.velocity = movement;
+            //agent.velocity = movement;
         }
     }
 }

@@ -74,6 +74,7 @@ public class CharacterManager : MonoBehaviour {
         }
     }
     public TargetPoint _target;
+    public PlayerBattleInput playerController;
 
     [HideInInspector]
     public float delta;
@@ -108,9 +109,7 @@ public class CharacterManager : MonoBehaviour {
         SetTrueSpeed();
 
 
-        if (Input.GetKeyDown(KeyCode.K)) {
-            stats.TakeDamage(5);
-        }
+        playerController.Execute(World.battle, this);
 	}
 
 
@@ -146,5 +145,26 @@ public class CharacterManager : MonoBehaviour {
     public void UnlockMovement() {
         movementLocked = false;
     }
-    
+
+
+    /// <summary>
+    /// Moves the character in the direction relative to the camera
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="speed"></param>
+    public void Move(Vector3 direction, float speed = 5) {
+        Vector3 trueDirection = movement.DirectionFromCamera(direction);
+        movement.Move(trueDirection, speed);
+    }
+
+    /// <summary>
+    /// Rotates the character in the direction relative to the character
+    /// </summary>
+    /// <param name="direction"></param>
+    public void Rotate(Vector3 direction) {
+        Vector3 trueDirection = movement.DirectionFromCamera(direction);
+        movement.SmoothRotate(trueDirection, .7f);
+    }
+
+
 }
