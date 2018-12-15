@@ -1,6 +1,6 @@
-Magic World/
-!Magic World/Assets
-!Magic World/Assets/
-!Magic World/ProjectSettings
+Magic World/.vs/
 Magic World/Library/
+Magic World/obj/
+*.csproj
+*.sln
 *.meta
