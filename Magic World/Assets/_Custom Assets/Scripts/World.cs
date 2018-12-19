@@ -11,6 +11,7 @@ public class World : MonoBehaviour {
     public static World world;
     public static BattleState battle;
     public static InputManager inputs;
+    public static ObjectPool pool;
     public InputObject inputObject;
 
 
@@ -19,6 +20,7 @@ public class World : MonoBehaviour {
         if (world == null)
         {
             world = this;
+            DontDestroyOnLoad(this);
         }
         else {
             Destroy(this);
@@ -28,9 +30,10 @@ public class World : MonoBehaviour {
             inputs.inputKeys = inputObject;
         }
 	}
-	
-	// Update is called once per frame
-	void Update () {
+    
+
+    // Update is called once per frame
+    void Update () {
         if (battle != null) {
             battle.Update();
         }

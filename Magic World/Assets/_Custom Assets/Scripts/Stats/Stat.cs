@@ -108,6 +108,11 @@ namespace StatSystem {
         //calculates what the total value of the stat is after boosts
         public void CalculateTotalValue() {
             totalValue = (int)((baseValue + totalModifier) * totalMultiplier);
+
+            if (OnTotalValueChanged != null) {
+                OnTotalValueChanged();
+            }
+
         }
 
 
@@ -117,7 +122,6 @@ namespace StatSystem {
             statMultipliers = new List<float>();
             baseValue = initialValue + CalculateStatFromLevels();
             CalculateTotalValue();
-            OnTotalValueChanged += CalculateTotalValue;
         }
     }
 }

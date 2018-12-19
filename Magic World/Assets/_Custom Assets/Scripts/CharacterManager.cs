@@ -16,8 +16,8 @@ public class CharacterManager : MonoBehaviour {
     [HideInInspector]
     public float horizontal;
 
-    [HideInInspector]
-    public CharacterController controller;
+   // [HideInInspector]
+    //public CharacterController controller;
     [HideInInspector]
     public CombatController combat;
     [HideInInspector]
@@ -88,7 +88,7 @@ public class CharacterManager : MonoBehaviour {
 
     // Use this for initialization
     void Awake () {
-        controller = transform.GetComponent<CharacterController>();
+        //controller = transform.GetComponent<CharacterController>();
         combat = transform.GetComponent<CombatController>();
         movement = transform.GetComponent<CharacterMovement>();
         stats = transform.GetComponent<CharacterStats>();
@@ -109,7 +109,7 @@ public class CharacterManager : MonoBehaviour {
         SetTrueSpeed();
 
 
-        playerController.Execute(World.battle, this);
+        //playerController.Execute(World.battle, this);
 	}
 
 

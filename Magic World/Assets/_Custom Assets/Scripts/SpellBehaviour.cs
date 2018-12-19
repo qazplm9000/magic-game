@@ -36,7 +36,7 @@ public class SpellBehaviour : MonoBehaviour {
         if (colliderTarget == target) {
             target.manager.stats.TakeDamage(5);
             //function for spell disappearing
-            ObjectPool.pool.RemoveObject(transform.gameObject);
+            World.pool.RemoveObject(transform.gameObject);
         }
     }
 

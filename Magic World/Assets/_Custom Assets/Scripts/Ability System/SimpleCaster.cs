@@ -41,7 +41,7 @@ public class SimpleCaster : MonoBehaviour {
         currentAbility = spell;
         manager.anim.CrossFade(currentAbility.animation, 0.2f);
         
-        GameObject go = ObjectPool.pool.PullObject(currentAbility.gameObject);
+        GameObject go = World.pool.PullObject(currentAbility.gameObject);
 
         go.transform.position = transform.position + castOffset;
         go.transform.rotation = transform.rotation;

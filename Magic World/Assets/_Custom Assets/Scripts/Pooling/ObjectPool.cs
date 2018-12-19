@@ -2,20 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool : MonoBehaviour {
-
-    public static ObjectPool pool;
+public class ObjectPool {
+    
     public Dictionary<GameObject, List<GameObject>> objectPool = new Dictionary<GameObject, List<GameObject>>();
+    public Vector3 defaultPosition;
 
 	// Use this for initialization
 	void Start () {
-        if (pool == null)
-        {
-            pool = this;
-        }
-        else {
-            Destroy(this);
-        }
+
 	}
 
     /// <summary>
@@ -32,7 +26,7 @@ public class ObjectPool : MonoBehaviour {
         }
 
         for (int i = 0; i < number; i++) {
-            GameObject instantiatedObject = Instantiate(newObject);
+            GameObject instantiatedObject = Object.Instantiate(newObject, defaultPosition, Quaternion.Euler(0,0,0));
             instantiatedObject.SetActive(false);
             objectPool[newObject].Add(instantiatedObject);
             result = instantiatedObject;
@@ -64,7 +58,7 @@ public class ObjectPool : MonoBehaviour {
             {
                 GameObject currentObject = objectList[i];
 
-                if (!currentObject.active)
+                if (!currentObject.activeInHierarchy)
                 {
                     result = currentObject;
                     break;
@@ -94,7 +88,7 @@ public class ObjectPool : MonoBehaviour {
 
     public void RemoveObject(GameObject thisObject) {
         thisObject.SetActive(false);
-        thisObject.transform.position = transform.position;
+        thisObject.transform.position = defaultPosition;
     }
 
     public static Behaviour GetComponentFromObject<Behaviour>(GameObject gameObject, Behaviour behaviour) where Behaviour : MonoBehaviour{
