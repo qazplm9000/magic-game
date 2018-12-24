@@ -109,7 +109,7 @@ public class CharacterManager : MonoBehaviour {
         SetTrueSpeed();
 
 
-        //playerController.Execute(World.battle, this);
+        playerController.Execute(World.battle, this);
 	}
 
 
@@ -136,6 +136,7 @@ public class CharacterManager : MonoBehaviour {
 
     public void SetTrueSpeed() {
         trueSpeed = agent.velocity.magnitude;
+        anim.SetFloat("Speed", trueSpeed);
     }
 
     public void LockMovement() {

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using CombatSystem;
-using InputSystem;
+using AbilitySystem;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CombatController : MonoBehaviour {
 
-    CharacterManager characterManager;
+    CharacterManager character;
     public Action currentState = Action.None;
     /*
     public TargetPoint target;
@@ -22,6 +22,9 @@ public class CombatController : MonoBehaviour {
     public OnAction OnDodgeEnd;
     public OnAction OnKnockback;
     public OnAction OnKnockbackEnd;
+
+    public List<Ability> combos;
+    private int currentCombo = 0;
 
 
     public bool interrupted = false;
@@ -54,7 +57,7 @@ public class CombatController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        characterManager = GetComponent<CharacterManager>();
+        character = GetComponent<CharacterManager>();
 	}
 	
 	// Update is called once per frame
@@ -68,111 +71,6 @@ public class CombatController : MonoBehaviour {
 	}
 
 
-    /*
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log("Enter trigger");
-        TargetPoint colliderTarget = other.transform.GetComponent<TargetPoint>();
-
-        if (colliderTarget != null) {
-            if (IsEnemy(other.transform))
-            {
-                if (!allEnemyTargets.Contains(colliderTarget))
-                {
-                    allEnemyTargets.Add(colliderTarget);
-                }
-            }
-            else {
-                if (!allFriendlyTargets.Contains(colliderTarget))
-                {
-                    allFriendlyTargets.Add(colliderTarget);
-                }
-            }
-        }
-    }
-    */
-    /*
-    private void OnTriggerExit(Collider other)
-    {
-        TargetPoint colliderTarget = other.transform.GetComponent<TargetPoint>();
-
-        if (colliderTarget != null)
-        {
-            if (IsEnemy(other.transform))
-            {
-                allEnemyTargets.Remove(colliderTarget);
-            }
-            else
-            {
-                allFriendlyTargets.Remove(colliderTarget);
-            }
-        }
-    }
-
-    */
-    /*
-    public void GetNearestEnemy() {
-        TargetPoint nearestTarget = null;
-        float targetProximity = 0;
-
-        foreach (TargetPoint tp in allEnemyTargets) {
-            if (nearestTarget == null)
-            {
-                nearestTarget = tp;
-                targetProximity = TargetProximity(tp);
-            }
-            else {
-                if (TargetProximity(tp) < targetProximity)
-                {
-                    nearestTarget = tp;
-                    targetProximity = TargetProximity(tp);
-                }
-            }
-        }
-
-        target = nearestTarget;
-        characterManager.target = nearestTarget;
-    }
-    
-
-    private float TargetProximity(TargetPoint controller) {
-        float result = 0;
-
-        result = (controller.transform.position - transform.position).magnitude;
-
-        return result;
-    }
-
-    
-
-
-    private bool IsEnemy(Transform target) {
-        bool result = false;
-
-        if (transform.tag == "enemy")
-        {
-            if (target.tag == "enemy")
-            {
-                result = false;
-            }
-            else
-            {
-                result = true;
-            }
-        }
-        else{
-            if (target.tag == "ally") {
-                result = false;
-            }
-            else
-            {
-                result = true;
-            }
-        }
-
-        return result;
-    }
-    */
 
     public IEnumerator Dodge(Vector3 direction) {
 
@@ -196,7 +94,7 @@ public class CombatController : MonoBehaviour {
         //animation
         dodging = true;
         //animator.SetBool("Dodge", dodging);
-        characterManager.anim.CrossFade("Dodge", 0.2f);
+        character.anim.CrossFade("Dodge", 0.2f);
 
         //activates event OnDodge
         if (OnDodge != null)
@@ -207,14 +105,14 @@ public class CombatController : MonoBehaviour {
         //LockMovement();
 
         while (dodgeSpeed < dodgeTargetSpeed) {
-            characterManager.agent.velocity = dodgeDirection * dodgeSpeed;
+            character.agent.velocity = dodgeDirection * dodgeSpeed;
             dodgeSpeed += dodgeAcceleration * Time.deltaTime;
             dodgeTimer += Time.deltaTime;
             yield return null;
         }
 
         while (dodgeSpeed > 0) {
-            characterManager.agent.velocity = dodgeDirection * dodgeSpeed;
+            character.agent.velocity = dodgeDirection * dodgeSpeed;
             dodgeSpeed -= dodgeDeacceleration * Time.deltaTime;
 
             //checks if invincibility frames need to be disabled
@@ -260,8 +158,8 @@ public class CombatController : MonoBehaviour {
             OnGuard();
         }
         currentState = Action.Guard;
-        characterManager.isGuarding = true;
-        characterManager.anim.SetBool("isGuarding", true);
+        character.isGuarding = true;
+        character.anim.SetBool("isGuarding", true);
     }
 
     public void Unguard() {
@@ -269,13 +167,13 @@ public class CombatController : MonoBehaviour {
         {
             OnGuardEnd();
         }
-        characterManager.isGuarding = false;
+        character.isGuarding = false;
         currentState = Action.None;
-        characterManager.anim.SetBool("isGuarding", false);
+        character.anim.SetBool("isGuarding", false);
     }
 
     public void EnableIFrame() {
-        characterManager.isInvincible = true;
+        character.isInvincible = true;
     }
 
     public void DisableIFrame() {
@@ -394,11 +292,22 @@ public class CombatController : MonoBehaviour {
 
     public void TakeDamage(int damage) {
         //decrease HP by damage
-        characterManager.stats.TakeDamage(damage);
+        character.stats.TakeDamage(damage);
     }
 
 
     public void PlayAnimation(string animationName, int layer = 0) {
-        characterManager.anim.CrossFade(animationName, 0.2f);
+        character.anim.CrossFade(animationName, 0.2f);
+    }
+
+
+    //strings together a combo if player is not currently doing any actions
+    public void Attack() {
+        if (character.caster2.currentAbility == null && combos.Count > 0) {
+            character.agent.velocity = character.agent.velocity / 2; //cuts velocity in half instead of doing a quick stop
+            character.caster2.Cast(combos[currentCombo]);
+            currentCombo++;
+            currentCombo %= combos.Count;
+        }
     }
 }

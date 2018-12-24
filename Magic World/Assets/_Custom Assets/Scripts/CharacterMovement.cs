@@ -70,8 +70,13 @@ public class CharacterMovement : MonoBehaviour {
 
     
     public Vector3 DirectionFromCamera(Vector3 direction) {
-        Vector3 result = mainCamera.transform.forward * direction.z;
-        result += mainCamera.transform.right * direction.x;
+        Vector3 camForward = mainCamera.transform.forward;
+        camForward = new Vector3(camForward.x, 0, camForward.z);
+        camForward /= camForward.magnitude;
+        Vector3 camRight = mainCamera.transform.right;
+
+        Vector3 result = camForward * direction.z;
+        result += camRight * direction.x;
 
         if (result.magnitude > 1) {
             result /= result.magnitude;

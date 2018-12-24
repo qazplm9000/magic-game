@@ -37,6 +37,10 @@ namespace AbilitySystem
             if (casting)
             {
                 casting = Execute();
+
+                if (!casting) {
+                    currentAbility = null;
+                }
             }
         }
 
