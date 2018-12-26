@@ -9,11 +9,20 @@ namespace StatSystem
     public class CharacterStats : MonoBehaviour
     {
 
-        public SlidingStat health;
-        public SlidingStat mana;
+        public Stat currentHealth;
+        public Stat maxHealth;
+        public Stat currentMana;
+        public Stat maxMana;
         public Stat strength;
-        public Stat magic;
         public Stat defense;
+        public Stat magic;
+        public Stat magicDefense;
+        public Stat agility;
+        public Stat attackTime;
+
+        //stat multipliers go here
+        public Stat healthMultiplier;
+
 
         public delegate void HealthUpdate();
         public event HealthUpdate healthUpdate;
@@ -26,8 +35,8 @@ namespace StatSystem
 
         private void Awake()
         {
-            health.Init();
-            mana.Init();
+            currentHealth.Init();
+            currentMana.Init();
             strength.Init();
             magic.Init();
             defense.Init();
@@ -42,7 +51,7 @@ namespace StatSystem
         /// <param name="enemyStats"></param>
         public void TakeDamage(int damage)
         {
-            health.ReduceValue(damage);
+            currentHealth.RemoveStat(damage);
             CheckIsDead();
         }
 
@@ -51,7 +60,10 @@ namespace StatSystem
         /// </summary>
         /// <param name="healAmount"></param>
         public void HealDamage(int healAmount) {
-            health.IncreaseValue(healAmount);
+            currentHealth.AddStat(healAmount);
+            if (currentHealth.value > maxHealth.value) {
+                currentHealth.value = maxHealth.value;
+            }
         }
 
         /// <summary>
@@ -60,7 +72,7 @@ namespace StatSystem
         /// </summary>
         /// <returns></returns>
         public void CheckIsDead() {
-            if (health.currentValue == 0 && !isDead) {
+            if (currentHealth.value == 0 && !isDead) {
                 isDead = true;
 
                 if (OnDeath != null) {

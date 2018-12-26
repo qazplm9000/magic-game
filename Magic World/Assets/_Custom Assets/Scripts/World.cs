@@ -10,10 +10,14 @@ public class World : MonoBehaviour {
 
     public static World world;
     public static BattleState battle;
+    //public static OverworldState overworld;
     public static InputManager inputs;
-    public static ObjectPool pool;
     public InputObject inputObject;
 
+    //object pools for various objects
+    public static ObjectPool pool;
+
+    public WorldState state;
 
 	// Use this for initialization
 	void Awake () {
@@ -34,8 +38,15 @@ public class World : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (battle != null) {
+
+        //overworld update
+        if (state == WorldState.Overworld)
+        {
+            
+        }//battle update
+        else if (state == WorldState.Battle) {
             battle.Update();
         }
+
 	}
 }

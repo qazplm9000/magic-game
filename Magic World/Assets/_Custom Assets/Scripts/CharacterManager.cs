@@ -16,7 +16,29 @@ public class CharacterManager : MonoBehaviour {
     [HideInInspector]
     public float horizontal;
 
-   // [HideInInspector]
+
+
+    /*
+    //Modules for character
+    public SkillAnimator animator; //used for any skill animations
+    public CombatManager combat;
+    public TargetManager targetter;
+    public CharacterStats stats;
+    public MovementManager movement;
+
+    //used in combat
+    public CharacterController battleController;    
+    //used everywhere else
+    //enemies have AI controllers for battle and overworld
+    //other party members following (if there are any) would have AI following scripts
+    public CharacterController overworldController; 
+
+     
+     */
+
+
+
+    // [HideInInspector]
     //public CharacterController controller;
     [HideInInspector]
     public CombatController combat;

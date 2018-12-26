@@ -8,10 +8,10 @@ namespace StatSystem {
     public class Stat {
 
         public StatType statType;
-        public int initialValue = 10;
-        public float levelMultiplier = 5f;
+        //public int initialValue = 10;
+        //public float levelMultiplier = 5f;
         public int baseValue = 10;
-
+        public int value = 10;
 
         //temporary and permanent stat boosts
         private List<int> statModifiers;
@@ -27,15 +27,56 @@ namespace StatSystem {
         public int totalValue;
 
         public Stat() {
-            Init();
-            CalculateTotalValue();
+            //Init();
+            //CalculateTotalValue();
         }
 
         public Stat(int newValue) {
-            initialValue = newValue;
-            Init();
+            //initialValue = newValue;
+            //Init();
         }
 
+
+        public void AddStat(int amount) {
+            value += amount;
+            CallEvent();
+        }
+
+        public void RemoveStat(int amount) {
+            value -= amount;
+            CallEvent();
+        }
+
+        public void SetBaseValue(int newValue) {
+            baseValue = newValue;
+        }
+
+
+        public void CallEvent() {
+            if (OnTotalValueChanged != null) {
+                OnTotalValueChanged();
+            }
+        }
+
+
+        public static bool operator >(Stat left, Stat right) {
+            return left.value > right.value;
+        }
+
+        public static bool operator <(Stat left, Stat right) {
+            return left.value < right.value;
+        }
+
+        public static bool operator ==(Stat left, Stat right) {
+            return left.value == right.value;
+        }
+
+        public static bool operator !=(Stat left, Stat right) {
+            return left.value != right.value;
+        }
+
+
+        /*
         #region stat modifiers
         //adds a stat modifier in the list
         public void AddStatModifier(int modifier) {
@@ -114,14 +155,14 @@ namespace StatSystem {
             }
 
         }
-
+        */
 
 
         public virtual void Init() {
             statModifiers = new List<int>();
             statMultipliers = new List<float>();
-            baseValue = initialValue + CalculateStatFromLevels();
-            CalculateTotalValue();
+            //baseValue = initialValue + CalculateStatFromLevels();
+            //CalculateTotalValue();
         }
     }
 }
