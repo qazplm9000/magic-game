@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class PlayerTargetter : MonoBehaviour {
 
-    private List<TargetPoint> allFriendlyTargets = new List<TargetPoint>();
-    [SerializeField] private List<TargetPoint> allEnemyTargets = new List<TargetPoint>();
+    private List<CharacterManager> allFriendlyTargets = new List<CharacterManager>();
+    [SerializeField] private List<CharacterManager> allEnemyTargets = new List<CharacterManager>();
     private SphereCollider targetCollider;
     private CharacterManager manager;
 
-    public TargetPoint target;
+    public CharacterManager target;
     private int index;
 
     public int colliderSize {
@@ -39,12 +39,12 @@ public class PlayerTargetter : MonoBehaviour {
 
     //PUBLIC FUNCTIONS
 
-    public TargetPoint GetNearestTarget() {
-        TargetPoint result = null;
+    public CharacterManager GetNearestTarget() {
+        CharacterManager result = null;
         float nearest = 999;
 
         for (int i = 0; i < allEnemyTargets.Count; i++) {
-            TargetPoint currentTarget = allEnemyTargets[i];
+            CharacterManager currentTarget = allEnemyTargets[i];
             float distance = DistanceFromTarget(currentTarget);
 
             if (distance < nearest) {
@@ -58,9 +58,9 @@ public class PlayerTargetter : MonoBehaviour {
     }
 
     //increment or decrement the target
-    public TargetPoint SwitchTarget(bool reverse = false) {
+    public CharacterManager SwitchTarget(bool reverse = false) {
         int totalTargets = allEnemyTargets.Count;
-        TargetPoint result = null;
+        CharacterManager result = null;
 
         if (totalTargets != 0) {
             if (!reverse)
@@ -83,7 +83,7 @@ public class PlayerTargetter : MonoBehaviour {
 
     //PRIVATE FUNCTIONS
 
-    private float DistanceFromTarget(TargetPoint target) {
+    private float DistanceFromTarget(CharacterManager target) {
         return (transform.position - target.transform.position).magnitude;
     }
     
@@ -92,7 +92,7 @@ public class PlayerTargetter : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "enemy") {
-            TargetPoint target = other.GetComponent<TargetPoint>();
+            CharacterManager target = other.GetComponent<CharacterManager>();
 
             if (target != null) {
                 allEnemyTargets.Add(target);
@@ -104,7 +104,7 @@ public class PlayerTargetter : MonoBehaviour {
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "enemy") {
-            TargetPoint target = other.GetComponent<TargetPoint>();
+            CharacterManager target = other.GetComponent<CharacterManager>();
 
             if (target != null)
             {

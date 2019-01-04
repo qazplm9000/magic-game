@@ -40,20 +40,11 @@ public class CharacterManager : MonoBehaviour {
 
     // [HideInInspector]
     //public CharacterController controller;
-    [HideInInspector]
     public CombatController combat;
-    [HideInInspector]
     public PlayerTargetter targetter;
-    [HideInInspector]
     public CharacterMovement movement;
-    [HideInInspector]
     public CharacterStats stats;
-    [HideInInspector]
-    public SimpleCaster caster;
-    [HideInInspector]
     public AbilityCaster caster2;
-    [HideInInspector]
-    //public ComboUser comboUser;
     public SimpleCombo combos;
 
     //used for allowing different character models
@@ -67,16 +58,13 @@ public class CharacterManager : MonoBehaviour {
     public NavMeshAgent agent;
     [HideInInspector]
     public Vector3 direction;
+    public Vector3 turnDirection;
     //public CharacterState state;
 
     [Header("Movement")]
     public float movementSpeed = 5;
     public bool movementLocked = false;
     public float trueSpeed = 0;
-    [Range(0,1)]
-    public float guardSpeedMultiplier = 0.2f;
-    [Range(0,1)]
-    public float strafeSpeedMultiplier = 0.7f;
     
     [Header("Combat")]
     public bool bufferOpen = true;
@@ -105,16 +93,15 @@ public class CharacterManager : MonoBehaviour {
 
     public delegate void OnTargetFunction(TargetPoint target);
     public event OnTargetFunction OnNewTarget;
-    
 
+    public Ability currentSpell;
 
     // Use this for initialization
     void Awake () {
         //controller = transform.GetComponent<CharacterController>();
+        stats = transform.GetComponent<CharacterStats>();
         combat = transform.GetComponent<CombatController>();
         movement = transform.GetComponent<CharacterMovement>();
-        stats = transform.GetComponent<CharacterStats>();
-        caster = transform.GetComponent<SimpleCaster>();
         caster2 = transform.GetComponent<AbilityCaster>();
         anim = transform.GetComponentInChildren<Animator>();
         rb = transform.GetComponent<Rigidbody>();
@@ -122,6 +109,8 @@ public class CharacterManager : MonoBehaviour {
         //comboUser = transform.GetComponent<ComboUser>();
         targetter = transform.GetComponent<PlayerTargetter>();
         combos = transform.GetComponent<SimpleCombo>();
+
+        turnDirection = transform.forward;
 	}
 	
 	// Update is called once per frame
@@ -130,8 +119,12 @@ public class CharacterManager : MonoBehaviour {
         SetDelta();
         SetTrueSpeed();
 
+        direction = transform.forward;
 
-        playerController.Execute(World.battle, this);
+        if (playerController != null)
+        {
+            playerController.Execute(World.battle, this);
+        }
 	}
 
 
@@ -158,7 +151,11 @@ public class CharacterManager : MonoBehaviour {
 
     public void SetTrueSpeed() {
         trueSpeed = agent.velocity.magnitude;
-        anim.SetFloat("Speed", trueSpeed);
+        try
+        {
+            anim.SetFloat("Speed", trueSpeed);
+        }
+        catch (System.Exception e) { }
     }
 
     public void LockMovement() {

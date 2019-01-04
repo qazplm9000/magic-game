@@ -202,7 +202,7 @@ namespace AbilitySystem
 
 
         private void InitObject(GameObject go, int index) {
-            GameObject newObject = World.pool.PullObject(go);
+            GameObject newObject = World.spellPool.PullObject(go);
             castObjects[index] = go;
         }
 
@@ -224,7 +224,7 @@ namespace AbilitySystem
             }
             else {
                 if (castObjects[index] != null) {
-                    World.pool.RemoveObject(castObjects[index]);
+                    World.spellPool.RemoveObject(castObjects[index]);
                     castObjects[index] = null;
                 }
             }

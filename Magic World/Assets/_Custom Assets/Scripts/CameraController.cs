@@ -61,7 +61,8 @@ public class CameraController : MonoBehaviour {
                                                     ref currentVelocity, smoothTime);
 
             //Set new location
-            transform.position = newLocation;
+            //transform.position = newLocation;
+            transform.position = newOffset + player.transform.position + offset;
 
             //Face target
             FaceTarget(player.transform);

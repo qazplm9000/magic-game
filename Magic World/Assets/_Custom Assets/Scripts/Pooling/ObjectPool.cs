@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool {
-    
-    public Dictionary<GameObject, List<GameObject>> objectPool = new Dictionary<GameObject, List<GameObject>>();
-    public Vector3 defaultPosition;
+public class ObjectPool<T> where T : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    public Dictionary<GameObject, List<T>> objectPool;
+    public Vector3 defaultPosition; //where objects are hidden
 
-	}
+    public ObjectPool(){
+        objectPool = new Dictionary<GameObject, List<T>>();
+        defaultPosition = Vector3.zero;
+    }
+
+    public ObjectPool(Vector3 newPosition)
+    {
+        objectPool = new Dictionary<GameObject, List<T>>();
+        defaultPosition = newPosition;
+    }
+
+
 
     /// <summary>
     /// Adds the object to the pool and returns the last result
@@ -22,13 +30,15 @@ public class ObjectPool {
         GameObject result = null;
 
         if (!objectPool.ContainsKey(newObject)) {
-            objectPool[newObject] = new List<GameObject>();
+            objectPool[newObject] = new List<T>();
         }
 
         for (int i = 0; i < number; i++) {
             GameObject instantiatedObject = Object.Instantiate(newObject, defaultPosition, Quaternion.Euler(0,0,0));
             instantiatedObject.SetActive(false);
-            objectPool[newObject].Add(instantiatedObject);
+            T scriptReference = instantiatedObject.AddComponent<T>();
+
+            objectPool[newObject].Add(scriptReference);
             result = instantiatedObject;
         }
 
@@ -49,18 +59,18 @@ public class ObjectPool {
             result = AddObject(thisObject);
         }
 
-        List<GameObject> objectList = objectPool[thisObject];
+        List<T> objectList = objectPool[thisObject];
 
         //try to find object
         if (result == null)
         {
             for (int i = 0; i < objectList.Count; i++)
             {
-                GameObject currentObject = objectList[i];
+                T currentObject = objectList[i];
 
-                if (!currentObject.activeInHierarchy)
+                if (!currentObject.gameObject.activeInHierarchy)
                 {
-                    result = currentObject;
+                    result = currentObject.gameObject;
                     break;
                 }
             }
@@ -91,23 +101,27 @@ public class ObjectPool {
         thisObject.transform.position = defaultPosition;
     }
 
-    public static Behaviour GetComponentFromObject<Behaviour>(GameObject gameObject, Behaviour behaviour) where Behaviour : MonoBehaviour{
-        Behaviour component = null;
+    /// <summary>
+    /// Finds the game object and returns the attached monobehaviour
+    /// </summary>
+    /// <param name="go"></param>
+    /// <returns></returns>
+    public T GetObjectScript(GameObject go) {
 
-        Component[] behaviours = gameObject.GetComponents(behaviour.GetType());
+        if (objectPool.ContainsKey(go))
+        {
+            List<T> objectList = objectPool[go];
 
-        for (int i = 0; i < behaviours.Length; i++) {
-            if (behaviours[i] == behaviour) {
-                component = (Behaviour)behaviours[i];
-                break;
+            for (int i = 0; i < objectList.Count; i++) {
+                if (!objectList[i].gameObject.activeInHierarchy) {
+                    return objectList[i];
+                }
             }
         }
 
-        if (component == null) {
-            component = (Behaviour)gameObject.AddComponent(behaviour.GetType());
-        }
+        GameObject newGo = AddObject(go);
+        return newGo.GetComponent<T>();
 
-        return component;
     }
 
 }

@@ -10,7 +10,7 @@ namespace AbilitySystem
 
         public override void Init(AbilityCaster caster, GameObject go, BehaviourData data)
         {
-            GameObject newGo = World.pool.PullObject(data.behaviourObject);
+            GameObject newGo = World.spellPool.PullObject(data.behaviourObject);
             newGo.transform.SetParent(caster.transform);
             newGo.transform.localPosition = data.objectPosition;
             newGo.transform.localRotation = Quaternion.LookRotation(data.objectRotation);

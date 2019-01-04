@@ -8,13 +8,14 @@ using TMPro;
 public class HealthBar : MonoBehaviour {
 
     private Slider healthBar;
-    public TextMeshProUGUI text;
+    public TextMeshProUGUI nameText;
+    public TextMeshProUGUI healthText;
     public CharacterManager target;
 
 	// Use this for initialization
 	void Awake() {
-        healthBar = transform.GetComponent<Slider>();
-        text = transform.GetComponentInChildren<TextMeshProUGUI>();/*
+        healthBar = transform.GetComponentInChildren<Slider>();
+        /*
         if (target != null) {
             target.stats.health.valueUpdate += new SlidingStat.ValueUpdate(UpdateHealth);
             UpdateHealth();
@@ -34,7 +35,7 @@ public class HealthBar : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        
+        UpdateHealth();
 	}
 
     public void UpdateHealth() {
@@ -43,7 +44,13 @@ public class HealthBar : MonoBehaviour {
 
         healthBar.value = Mathf.InverseLerp(0, maxHealth, currentHealth);
 
-        text.text = currentHealth.ToString() + " / " + maxHealth.ToString();
+        healthText.text = currentHealth.ToString() + " / " + maxHealth.ToString();
+    }
+
+
+    public void SetNewTarget(CharacterManager newTarget) {
+        target = newTarget;
+        UpdateHealth();
     }
 
     private void OnDisable()

@@ -9,7 +9,7 @@ namespace CharacterStateSystem
     {
         public override void Execute(CharacterManager manager)
         {
-            manager.target = manager.targetter.SwitchTarget();
+            //manager.target = manager.targetter.SwitchTarget();
         }
     }
 }

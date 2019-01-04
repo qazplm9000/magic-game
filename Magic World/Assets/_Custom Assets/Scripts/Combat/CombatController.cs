@@ -32,24 +32,26 @@ public class CombatController : MonoBehaviour {
     public bool dodging = false;
     public bool lockedMovement = false;
 
+    public GameObject hitboxObject;
+
     //dodge variables
-    public float dodgeInitialSpeed = 5f;
+    /*public float dodgeInitialSpeed = 5f;
     public float dodgeTargetSpeed = 10f;
     public float dodgeDeacceleration = 15f;
     public float dodgeAcceleration = 25f;
-    public float dodgeInvincibleTime = 0.5f;
+    public float dodgeInvincibleTime = 0.5f;*/
 
     //guard variables
     public bool guarding = false;
-    public float guardMoveSpeed = 1f;
+    //public float guardMoveSpeed = 1f;
 
     //knockback variables
-    private float knockback = 0f;
+    /*private float knockback = 0f;
     public float knockbackThreshold = 10f;
     public float knockbackForceMultiplier = 1f;
     public float knockbackMaxTime = 3f; //max time you can stay down before you automatically stand up
     public float knockbackMinTime = 1f;
-    private bool knockbackCancel = false;
+    private bool knockbackCancel = false;*/
 
     public Action bufferedAction = Action.None;
     public bool bufferOpen = false;
@@ -72,7 +74,7 @@ public class CombatController : MonoBehaviour {
 
 
 
-    public IEnumerator Dodge(Vector3 direction) {
+    /*public IEnumerator Dodge(Vector3 direction) {
 
         Vector3 dodgeDirection = direction;
 
@@ -150,7 +152,7 @@ public class CombatController : MonoBehaviour {
         }
 
         //UnlockMovement();
-    }
+    }*/
 
     public void Guard() {
         if (OnGuard != null)
@@ -193,7 +195,7 @@ public class CombatController : MonoBehaviour {
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="amount"></param>
-    public IEnumerator Knockback(Vector3 direction, float amount) {
+    /*public IEnumerator Knockback(Vector3 direction, float amount) {
         knockback += amount;
         float knockbackTimer = 0f;
 
@@ -230,7 +232,7 @@ public class CombatController : MonoBehaviour {
         }
 
         
-    }
+    }*/
 
 
     public void LockMovement() {
@@ -246,7 +248,7 @@ public class CombatController : MonoBehaviour {
     /// Adds knockback to the threshold without triggering a knockback
     /// </summary>
     /// <param name="amount"></param>
-    public void AddKnockback(float amount) {
+    /*public void AddKnockback(float amount) {
         knockback += amount;
     }
 
@@ -255,7 +257,7 @@ public class CombatController : MonoBehaviour {
     /// </summary>
     public void ResetKnockback() {
         knockback = 0;
-    }
+    }*/
 
 
     /// <summary>
@@ -278,7 +280,7 @@ public class CombatController : MonoBehaviour {
     /// </summary>
     /// <param name="time"></param>
     /// <returns></returns>
-    public IEnumerator OpenBuffer(float time) {
+    /*public IEnumerator OpenBuffer(float time) {
         float timer = 0f;
 
         while (timer < time) {
@@ -287,7 +289,7 @@ public class CombatController : MonoBehaviour {
         }
 
         bufferOpen = true;
-    }
+    }*/
 
 
     public void TakeDamage(int damage) {
@@ -296,9 +298,9 @@ public class CombatController : MonoBehaviour {
     }
 
 
-    public void PlayAnimation(string animationName, int layer = 0) {
+    /*public void PlayAnimation(string animationName, int layer = 0) {
         character.anim.CrossFade(animationName, 0.2f);
-    }
+    }*/
 
 
     //strings together a combo if player is not currently doing any actions
@@ -306,6 +308,8 @@ public class CombatController : MonoBehaviour {
         if (character.caster2.currentAbility == null && combos.Count > 0) {
             character.agent.velocity = character.agent.velocity / 2; //cuts velocity in half instead of doing a quick stop
             character.caster2.Cast(combos[currentCombo]);
+            Hitbox hbox = World.hitboxPool.GetObjectScript(hitboxObject);
+            hbox.CreateHitbox(character, 0.2f, new Vector3(0, 0.5f, 0.5f));
             currentCombo++;
             currentCombo %= combos.Count;
         }

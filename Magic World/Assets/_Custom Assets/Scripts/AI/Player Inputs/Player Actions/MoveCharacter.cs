@@ -15,7 +15,12 @@ namespace InputSystem
                 direction += new Vector3(0, 0, 1) * World.inputs.GetAxis("Vertical Left");
 
                 character.Move(direction);
-                character.Rotate(direction);
+
+                if (direction.magnitude != 0)
+                {
+                    character.turnDirection = direction;
+                    character.movement.SmoothRotate(character.turnDirection);
+                }
             }
         }
     }

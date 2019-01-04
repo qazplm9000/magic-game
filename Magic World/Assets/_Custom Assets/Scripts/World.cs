@@ -15,7 +15,8 @@ public class World : MonoBehaviour {
     public InputObject inputObject;
 
     //object pools for various objects
-    public static ObjectPool pool;
+    public static ObjectPool<SpellBehaviour> spellPool;
+    public static ObjectPool<Hitbox> hitboxPool;
 
     public WorldState state;
 
@@ -33,6 +34,9 @@ public class World : MonoBehaviour {
             inputs = new InputManager();
             inputs.inputKeys = inputObject;
         }
+
+        spellPool = new ObjectPool<SpellBehaviour>();
+        hitboxPool = new ObjectPool<Hitbox>();
 	}
     
 

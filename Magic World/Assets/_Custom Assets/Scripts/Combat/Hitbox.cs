@@ -7,17 +7,12 @@ namespace CombatSystem
     [System.Serializable]
     public class Hitbox : MonoBehaviour
     {
-
-        public GameObject hitboxObject;
-        private GameObject hitbox;
+        
         public float lifetime = 0.3f;
         private float timer = 0f;
-        public List<CombatController> targets = new List<CombatController>();
-        private Vector3 positionOffset;
-        private Transform user;
-
-        public delegate void OnTarget(CombatController target);
-        public event OnTarget HitTarget;
+        public List<CharacterManager> targets = new List<CharacterManager>();
+        private CharacterManager user;
+        
 
         // Use this for initialization
         void Start()
@@ -39,26 +34,39 @@ namespace CombatSystem
 
         private void OnTriggerStay(Collider other)
         {
-            CombatController target = other.transform.GetComponent<CombatController>();
+            CharacterManager target = other.transform.GetComponent<CharacterManager>();
             if (target != null && !targets.Contains(target) && target != user)
             {
                 targets.Add(target);
-                HitTarget(target);
+                target.stats.TakeDamage(5);
             }
         }
 
-        public void CreateHitbox(Transform newUser, float lifetime, Vector3 offset, OnTarget damageFormula)
+        public void CreateHitbox(CharacterManager caster, float lifetime, Vector3 offset)
         {
             //sets the position of the hitbox relative to the player and parents it
-            user = newUser;
+            user = caster;
             transform.position = user.transform.position + offset;
             transform.rotation = user.transform.rotation;
-            transform.SetParent(user.transform);
 
             //sets the lifetime for the hitbox
             this.lifetime = lifetime;
-            
-            HitTarget += damageFormula;
+            timer = 0f;
+
+            transform.gameObject.SetActive(true);
+        }
+
+        public void CreateHitbox(CharacterManager caster, float lifetime, Vector3 offset, Transform parent)
+        {
+            //sets the position of the hitbox relative to the player and parents it
+            user = caster;
+            transform.position = parent.position + offset;
+            transform.rotation = parent.rotation;
+            transform.parent = parent;
+
+            //sets the lifetime for the hitbox
+            this.lifetime = lifetime;
+            timer = 0f;
 
             transform.gameObject.SetActive(true);
         }
@@ -66,10 +74,8 @@ namespace CombatSystem
         public void ResetHitbox()
         {
             //resets the list of targets obtained and the timer
-            targets = new List<CombatController>();
+            targets = new List<CharacterManager>();
             timer = 0f;
-            HitTarget = null;
-            hitbox = null;
         }
     }
 }

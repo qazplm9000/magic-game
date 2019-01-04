@@ -24,7 +24,7 @@ namespace StatSystem {
         public delegate void TotalValueChanged();
         public event TotalValueChanged OnTotalValueChanged;
 
-        public int totalValue;
+        //public int totalValue;
 
         public Stat() {
             //Init();
