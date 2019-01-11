@@ -43,7 +43,7 @@ namespace InputSystem
                 }
 
                 //ignore if any condition does not hold true
-                if (!ConditionsPass(input.conditions, character)) {
+                if (!input.conditions.ConditionsPass(character)) {
                     continue;
                 }
 

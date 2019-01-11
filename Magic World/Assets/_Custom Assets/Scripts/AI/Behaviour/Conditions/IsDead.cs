@@ -9,7 +9,7 @@ namespace Behaviour
     {
         public override bool CheckCondition(CharacterManager state)
         {
-            return state.isDead;
+            return false;
         }
         
     }

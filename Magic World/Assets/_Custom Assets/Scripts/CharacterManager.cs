@@ -6,6 +6,7 @@ using AbilitySystem;
 using InputSystem;
 using CombatSystem;
 using StatSystem;
+using CharacterStateSystem;
 
 
 public class CharacterManager : MonoBehaviour {
@@ -66,14 +67,7 @@ public class CharacterManager : MonoBehaviour {
     public bool movementLocked = false;
     public float trueSpeed = 0;
     
-    [Header("Combat")]
-    public bool bufferOpen = true;
-    public Action bufferedAction = Action.None;
-    public bool isCasting = false;
-    public bool isDead = false;
-    public bool isInvincible = false;
-    public bool isGuarding = false;
-    public bool isLockingOnTarget = false;
+
     public TargetPoint target {
         get { return _target; }
         set {
@@ -85,6 +79,10 @@ public class CharacterManager : MonoBehaviour {
     }
     public TargetPoint _target;
     public PlayerBattleInput playerController;
+    public CharacterState defaultState;
+    public CharacterState attackState;
+    public CharacterState currentState;
+
 
     [HideInInspector]
     public float delta;
@@ -111,6 +109,8 @@ public class CharacterManager : MonoBehaviour {
         combos = transform.GetComponent<SimpleCombo>();
 
         turnDirection = transform.forward;
+
+        currentState = defaultState;
 	}
 	
 	// Update is called once per frame
@@ -121,9 +121,8 @@ public class CharacterManager : MonoBehaviour {
 
         direction = transform.forward;
 
-        if (playerController != null)
-        {
-            playerController.Execute(World.battle, this);
+        if (currentState != null) {
+            currentState.Execute(this);
         }
 	}
 

@@ -8,7 +8,7 @@ namespace InputSystem
     public class PlayerInputKey
     {
         public string buttonName;
-        public List<Condition> conditions;
+        public ConditionList conditions;
         public PlayerInputAction action;
     }
 }

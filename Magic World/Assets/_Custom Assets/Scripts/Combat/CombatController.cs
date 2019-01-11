@@ -160,7 +160,7 @@ public class CombatController : MonoBehaviour {
             OnGuard();
         }
         currentState = Action.Guard;
-        character.isGuarding = true;
+        //character.isGuarding = true;
         character.anim.SetBool("isGuarding", true);
     }
 
@@ -169,13 +169,13 @@ public class CombatController : MonoBehaviour {
         {
             OnGuardEnd();
         }
-        character.isGuarding = false;
+        //character.isGuarding = false;
         currentState = Action.None;
         character.anim.SetBool("isGuarding", false);
     }
 
     public void EnableIFrame() {
-        character.isInvincible = true;
+        //character.isInvincible = true;
     }
 
     public void DisableIFrame() {
