@@ -30,7 +30,7 @@ namespace CharacterStateSystem
         public void Execute(CharacterManager character) {
             for (int i = 0; i < keys.Count; i++) {
                 PlayerInputKey key = keys[i];
-                if (World.inputs.GetKeyDown(key.buttonName) && key.conditions.ConditionsPass(character)) {
+                if ((key.buttonName == "" || World.inputs.GetKeyDown(key.buttonName)) && key.conditions.ConditionsPass(character)) {
                     key.action.Execute(character);
                 }
             }

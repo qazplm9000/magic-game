@@ -9,7 +9,7 @@ using InputSystem;
 public class World : MonoBehaviour {
 
     public static World world;
-    public static BattleState battle;
+    public BattleState battle;
     //public static OverworldState overworld;
     public static InputManager inputs;
     public InputObject inputObject;

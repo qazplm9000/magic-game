@@ -28,7 +28,7 @@ public class PlayerTargetter : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        initCollider();
+        //initCollider();
         manager = transform.GetComponent<CharacterManager>();
     }
 
@@ -56,6 +56,29 @@ public class PlayerTargetter : MonoBehaviour {
 
         return result;
     }
+
+
+    public TargetPoint GetNearestTargetPoint() {
+        TargetPoint result = null;
+        float distance = float.MaxValue;
+
+        TargetPoint[] targets = FindObjectsOfType<TargetPoint>();
+
+        for (int i = 0; i < targets.Length; i++) {
+            //eventually should check if target is an enemy instead
+            if (targets[i].manager != manager) {
+                float newDistance = (targets[i].transform.position - transform.position).magnitude;
+                if (distance > newDistance) {
+                    distance = newDistance;
+                    result = targets[i];
+                }
+            }
+        }
+
+        return result;
+    }
+
+
 
     //increment or decrement the target
     public CharacterManager SwitchTarget(bool reverse = false) {

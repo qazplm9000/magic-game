@@ -20,6 +20,7 @@ namespace CombatSystem
         public float turnTimer;
         public float turnTime;
         public CharacterManager currentCharacter;
+        private int characterIndex = 0;
 
 
         //public delegate void TurnSwap(Combatant currentCharacter);
@@ -29,24 +30,28 @@ namespace CombatSystem
         public void InitBattle()
         {
             //take in arguments for party members and enemies
+            //determine turn order
         }
 
         // Update is called once per frame
         public void Update()
         {
 
-            if (turnTimer <= 0) {
+            if (turnTimer <= 0)
+            {
                 turnTimer = 0;
                 //wait for current character to finish all actions
                 //progress turn when done
                 ProgressTurn();
             }
-
-
-            /* Call while character is taking any action (moving, attacking, casting, item)
-            if (currentCharacter.TakingAction()) {
+            else {
+                //currentCharacter.defaultState.Execute(currentCharacter);
+                if (currentCharacter.playerController != null)
+                {
+                    currentCharacter.TakeTurn();
+                }
                 turnTimer -= Time.deltaTime;
-            }*/
+            }
 
 
         }
@@ -56,9 +61,13 @@ namespace CombatSystem
         /// switch over to next character
         /// </summary>
         public void ProgressTurn() {
-            //switch to next character
-            //currentCharacter = nextCombatant
-            //call turn event
+            //set turn timer
+            turnTimer = turnTime;
+
+            //swap to next character
+            characterIndex++;
+            characterIndex %= characters.Count;
+            currentCharacter = characters[characterIndex];
         }
 
 

@@ -121,9 +121,7 @@ public class CharacterManager : MonoBehaviour {
 
         direction = transform.forward;
 
-        if (currentState != null) {
-            currentState.Execute(this);
-        }
+        
 	}
 
 
@@ -185,5 +183,15 @@ public class CharacterManager : MonoBehaviour {
         movement.SmoothRotate(trueDirection, .7f);
     }
 
+
+    /// <summary>
+    /// Has the player take their turn
+    /// </summary>
+    public void TakeTurn() {
+        if (currentState != null)
+        {
+            currentState.Execute(this);
+        }
+    }
 
 }

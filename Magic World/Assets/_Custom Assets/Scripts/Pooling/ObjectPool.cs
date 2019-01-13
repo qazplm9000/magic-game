@@ -114,12 +114,14 @@ public class ObjectPool<T> where T : MonoBehaviour {
 
             for (int i = 0; i < objectList.Count; i++) {
                 if (!objectList[i].gameObject.activeInHierarchy) {
+                    objectList[i].gameObject.SetActive(true);
                     return objectList[i];
                 }
             }
         }
 
         GameObject newGo = AddObject(go);
+        newGo.SetActive(true);
         return newGo.GetComponent<T>();
 
     }
