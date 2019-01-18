@@ -78,7 +78,7 @@ public class CharacterManager : MonoBehaviour {
         }
     }
     public TargetPoint _target;
-    public PlayerBattleInput playerController;
+    public CharacterInput playerController;
     public CharacterState defaultState;
     public CharacterState attackState;
     public CharacterState currentState;
@@ -121,7 +121,13 @@ public class CharacterManager : MonoBehaviour {
 
         direction = transform.forward;
 
-        
+        if (anim.GetBool("canMove"))
+        {
+            currentState = defaultState;
+        }
+        else {
+            currentState = attackState;
+        }
 	}
 
 

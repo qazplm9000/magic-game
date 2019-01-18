@@ -8,7 +8,7 @@ public class KeyUpCondition : Condition {
 
     public string key;
 
-    public override bool Execute(CharacterManager manager)
+    public override bool Execute(CharacterManager character)
     {
         return World.inputs.GetKeyUp(key);
     }

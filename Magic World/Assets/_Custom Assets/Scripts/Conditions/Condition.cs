@@ -4,7 +4,8 @@ using UnityEngine;
 
 
 public abstract class Condition : ScriptableObject {
+    public string description;
 
-    public abstract bool Execute(CharacterManager manager);
+    public abstract bool Execute(CharacterManager character);
     
 }

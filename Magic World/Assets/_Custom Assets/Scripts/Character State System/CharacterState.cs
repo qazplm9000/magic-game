@@ -24,15 +24,12 @@ namespace CharacterStateSystem
         //plays every frame while in the state
         public List<StateEventObject> updateEvents;
 
-        public List<PlayerInputKey> keys;
+        public CharacterInput inputs;
 
 
         public void Execute(CharacterManager character) {
-            for (int i = 0; i < keys.Count; i++) {
-                PlayerInputKey key = keys[i];
-                if ((key.buttonName == "" || World.inputs.GetKeyDown(key.buttonName)) && key.conditions.ConditionsPass(character)) {
-                    key.action.Execute(character);
-                }
+            if (inputs != null) {
+                inputs.Execute(character);
             }
         }
 

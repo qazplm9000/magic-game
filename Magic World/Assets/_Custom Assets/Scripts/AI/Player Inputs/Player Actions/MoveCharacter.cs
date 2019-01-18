@@ -9,18 +9,15 @@ namespace InputSystem
     {
         public override void Execute(CharacterManager character)
         {
-            if (character.caster2.currentAbility == null)
+            Vector3 direction = new Vector3(1, 0, 0) * World.inputs.GetAxis("Horizontal Left");
+            direction += new Vector3(0, 0, 1) * World.inputs.GetAxis("Vertical Left");
+
+            Vector3 trueDirection = character.movement.DirectionFromCamera(direction);
+            character.movement.Move(trueDirection);
+
+            if (direction.magnitude != 0)
             {
-                Vector3 direction = new Vector3(1, 0, 0) * World.inputs.GetAxis("Horizontal Left");
-                direction += new Vector3(0, 0, 1) * World.inputs.GetAxis("Vertical Left");
-
-                character.Move(direction);
-
-                if (direction.magnitude != 0)
-                {
-                    character.turnDirection = direction;
-                    character.movement.SmoothRotate(character.turnDirection);
-                }
+                character.turnDirection = trueDirection;
             }
         }
     }
