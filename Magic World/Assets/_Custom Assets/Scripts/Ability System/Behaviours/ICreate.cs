@@ -8,10 +8,10 @@ namespace AbilitySystem
     public class ICreate : AbilityBehaviour
     {
 
-        public override void Init(AbilityCaster caster, GameObject go, BehaviourData data)
+        public override void Init(CharacterManager character, GameObject go, BehaviourData data)
         {
             GameObject newGo = World.spellPool.PullObject(data.behaviourObject);
-            newGo.transform.SetParent(caster.transform);
+            newGo.transform.SetParent(character.transform);
             newGo.transform.localPosition = data.objectPosition;
             newGo.transform.localRotation = Quaternion.LookRotation(data.objectRotation);
             newGo.transform.SetParent(null);
@@ -19,17 +19,17 @@ namespace AbilitySystem
         }
 
 
-        public override bool Execute(AbilityCaster caster, GameObject go, BehaviourData data, float previousFrame, float nextFrame)
+        public override bool Execute(CharacterManager character, GameObject go, BehaviourData data, float previousFrame, float nextFrame)
         {
             return true;
         }
 
-        public override void End(AbilityCaster caster, GameObject go, BehaviourData data)
+        public override void End(CharacterManager character, GameObject go, BehaviourData data)
         {
             
         }
 
-        public override void Interrupt(AbilityCaster caster, GameObject go, BehaviourData data)
+        public override void Interrupt(CharacterManager character, GameObject go, BehaviourData data)
         {
             
         }

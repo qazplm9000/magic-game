@@ -48,6 +48,11 @@ public class CharacterManager : MonoBehaviour {
     public AbilityCaster caster2;
     public SimpleCombo combos;
 
+    public float castPrevious = 0;
+    public float castCurrent = 0;
+
+    public CharacterVariables vars = new CharacterVariables();
+
     //used for allowing different character models
     public GameObject activeModel;
 
@@ -121,13 +126,21 @@ public class CharacterManager : MonoBehaviour {
 
         direction = transform.forward;
 
-        if (anim.GetBool("canMove"))
+        /*if (anim.GetBool("canMove"))
         {
             currentState = defaultState;
         }
         else {
             currentState = attackState;
         }
+
+        if (currentSpell != null) {
+            bool result = currentSpell.Execute(this);
+            if (!result) {
+                currentSpell = null;
+            }
+        }*/
+
 	}
 
 
@@ -198,6 +211,26 @@ public class CharacterManager : MonoBehaviour {
         {
             currentState.Execute(this);
         }
+    }
+    
+
+
+    /// <summary>
+    /// Casts the ability if not currently casting
+    /// Returns false if already casting
+    /// </summary>
+    /// <param name="ability"></param>
+    /// <returns></returns>
+    public bool CastAbility(Ability ability)
+    {
+        bool result = false;
+
+        if (currentSpell == null && ability != null) {
+            result = true;
+            currentSpell = ability;
+        }
+
+        return result;
     }
 
 }

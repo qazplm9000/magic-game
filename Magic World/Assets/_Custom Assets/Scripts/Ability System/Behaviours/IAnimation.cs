@@ -8,22 +8,22 @@ namespace AbilitySystem
     public class IAnimation : AbilityBehaviour
     {
 
-        public override void Init(AbilityCaster caster, GameObject go, BehaviourData data)
+        public override void Init(CharacterManager character, GameObject go, BehaviourData data)
         {
-            caster.manager.anim.CrossFade(data.animationName, 0.2f);
+            character.anim.CrossFade(data.animationName, 0.2f);
         }
 
-        public override bool Execute(AbilityCaster caster, GameObject go, BehaviourData data, float previousFrame, float nextFrame)
+        public override bool Execute(CharacterManager character, GameObject go, BehaviourData data, float previousFrame, float nextFrame)
         {
             return data.runTime > nextFrame;
         }
 
-        public override void Interrupt(AbilityCaster caster, GameObject go, BehaviourData data)
+        public override void Interrupt(CharacterManager character, GameObject go, BehaviourData data)
         {
             return;
         }
 
-        public override void End(AbilityCaster caster, GameObject go, BehaviourData data)
+        public override void End(CharacterManager character, GameObject go, BehaviourData data)
         {
             return;
         }

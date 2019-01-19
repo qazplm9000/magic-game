@@ -95,7 +95,7 @@ namespace AbilitySystem
             for (int i = 0; i < currentAbility.characterBehaviours.Count; i++) {
                 BehaviourData currentBehaviour = currentAbility.characterBehaviours[i];
 
-                currentBehaviour.Execute(manager.caster2, manager.transform.gameObject, previousFrame, currentFrame);
+                currentBehaviour.Execute(manager, manager.transform.gameObject, previousFrame, currentFrame);
 
                 running = running || !currentBehaviour.HasExecuted(previousFrame, currentFrame);
 
@@ -164,7 +164,7 @@ namespace AbilitySystem
 
             int i = 0;
             while (i < behaviours.Count) {
-                behaviours[i].Execute(manager.caster2, castObjects[index], previousFrame, currentFrame);
+                behaviours[i].Execute(manager, castObjects[index], previousFrame, currentFrame);
 
                 if (!behaviours[i].HasExecuted(previousFrame, currentFrame)) {
                     behaviours.RemoveAt(i);
@@ -218,7 +218,7 @@ namespace AbilitySystem
             {
                 for (int i = 0; i < data.Count; i++)
                 {
-                    data[index].behaviours[i].Execute(manager.caster2, castObjects[index], previousTime, currentTime);
+                    data[index].behaviours[i].Execute(manager, castObjects[index], previousTime, currentTime);
                     result = result || data[index].behaviours[i].HasExecuted(previousFrame, currentFrame);
                 }
             }

@@ -307,11 +307,19 @@ public class CombatController : MonoBehaviour {
     public void Attack() {
         if (character.caster2.currentAbility == null && combos.Count > 0) {
             character.agent.velocity = character.agent.velocity / 2; //cuts velocity in half instead of doing a quick stop
-            character.caster2.Cast(combos[currentCombo]);
+            bool casted = character.CastAbility(combos[currentCombo]);
+
+            if (!casted) {
+                return;
+            }
+
             Hitbox hbox = World.hitboxPool.GetObjectScript(hitboxObject);
             hbox.CreateHitbox(character, 0.2f, new Vector3(0, 0.5f, 0.5f));
             currentCombo++;
             currentCombo %= combos.Count;
         }
     }
+
+
+
 }

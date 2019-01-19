@@ -7,13 +7,13 @@ namespace AbilitySystem
     public abstract class AbilityBehaviour : ScriptableObject
     {
 
-        public abstract void Init(AbilityCaster caster, GameObject go, BehaviourData data);
+        public abstract void Init(CharacterManager character, GameObject go, BehaviourData data);
 
         //returns true while running
-        public abstract bool Execute(AbilityCaster caster, GameObject go, BehaviourData data, float previousFrame, float nextFrame);
+        public abstract bool Execute(CharacterManager character, GameObject go, BehaviourData data, float previousFrame, float nextFrame);
 
-        public abstract void End(AbilityCaster caster, GameObject go, BehaviourData data);
+        public abstract void End(CharacterManager character, GameObject go, BehaviourData data);
 
-        public abstract void Interrupt(AbilityCaster caster, GameObject go, BehaviourData data);
+        public abstract void Interrupt(CharacterManager character, GameObject go, BehaviourData data);
     }
 }

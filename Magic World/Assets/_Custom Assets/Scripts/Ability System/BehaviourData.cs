@@ -18,24 +18,24 @@ namespace AbilitySystem
         public Vector3 objectRotation;
 
         
-        public bool Execute(AbilityCaster caster, GameObject go, float previousFrame, float currentFrame) {
+        public bool Execute(CharacterManager character, GameObject go, float previousFrame, float currentFrame) {
             float adjustedPrevious = previousFrame - startTime;
             float adjustedCurrent = currentFrame - startTime;
 
             //runs on the first frame
             if (IsStarting(previousFrame, currentFrame)) {
                 Debug.Log(behaviour.name);
-                behaviour.Init(caster, go, this);
-                behaviour.Execute(caster, go, this, 0, adjustedCurrent);
+                behaviour.Init(character, go, this);
+                behaviour.Execute(character, go, this, 0, adjustedCurrent);
             }
             //runs in the middle frames
             else if (IsRunning(previousFrame, currentFrame)) {
-                behaviour.Execute(caster, go, this, adjustedPrevious, adjustedCurrent);
+                behaviour.Execute(character, go, this, adjustedPrevious, adjustedCurrent);
             }
             //runs on the last frame
             else if (IsEnding(previousFrame, currentFrame)) {
-                behaviour.Execute(caster, go, this, adjustedPrevious, runTime);
-                behaviour.End(caster, go, this);
+                behaviour.Execute(character, go, this, adjustedPrevious, runTime);
+                behaviour.End(character, go, this);
             }
 
             return !HasExecuted(previousFrame, currentFrame);
