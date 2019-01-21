@@ -12,7 +12,7 @@ namespace InputSystem
         public override void Execute(CharacterManager character)
         {
             Debug.Log("Rotating");
-            character.movement.SmoothRotate(character.turnDirection);
+            character.movement.SmoothRotate(character, character.turnDirection);
 
         }
     }

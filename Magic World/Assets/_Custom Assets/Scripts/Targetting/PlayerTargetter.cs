@@ -38,10 +38,10 @@ public class PlayerTargetter : MonoBehaviour {
     }
 
     //PUBLIC FUNCTIONS
-
+    /*
     public CharacterManager GetNearestTarget() {
         CharacterManager result = null;
-        float nearest = 999;
+        float nearest = float.MaxValue;
 
         for (int i = 0; i < allEnemyTargets.Count; i++) {
             CharacterManager currentTarget = allEnemyTargets[i];
@@ -56,7 +56,7 @@ public class PlayerTargetter : MonoBehaviour {
 
         return result;
     }
-
+    */
 
     public TargetPoint GetNearestTargetPoint() {
         TargetPoint result = null;

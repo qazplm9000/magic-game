@@ -7,6 +7,7 @@ using InputSystem;
 using CombatSystem;
 using StatSystem;
 using CharacterStateSystem;
+using MovementSystem;
 
 
 public class CharacterManager : MonoBehaviour {
@@ -44,6 +45,7 @@ public class CharacterManager : MonoBehaviour {
     public CombatController combat;
     public PlayerTargetter targetter;
     public CharacterMovement movement;
+    public CharacterRotation rotation;
     public CharacterStats stats;
     public AbilityCaster caster2;
     public SimpleCombo combos;
@@ -104,7 +106,6 @@ public class CharacterManager : MonoBehaviour {
         //controller = transform.GetComponent<CharacterController>();
         stats = transform.GetComponent<CharacterStats>();
         combat = transform.GetComponent<CombatController>();
-        movement = transform.GetComponent<CharacterMovement>();
         caster2 = transform.GetComponent<AbilityCaster>();
         anim = transform.GetComponentInChildren<Animator>();
         rb = transform.GetComponent<Rigidbody>();
@@ -116,7 +117,10 @@ public class CharacterManager : MonoBehaviour {
         turnDirection = transform.forward;
 
         currentState = defaultState;
-	}
+
+        //prevents the navmesh agent from auto-turning
+        agent.updateRotation = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -188,9 +192,8 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="speed"></param>
-    public void Move(Vector3 direction, float speed = 5) {
-        Vector3 trueDirection = movement.DirectionFromCamera(direction);
-        movement.Move(trueDirection, speed);
+    public void Move(Vector3 direction) {
+        movement.Move(this, direction);
     }
 
     /// <summary>
@@ -198,8 +201,8 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="direction"></param>
     public void Rotate(Vector3 direction) {
-        Vector3 trueDirection = movement.DirectionFromCamera(direction);
-        movement.SmoothRotate(trueDirection, .7f);
+        Vector3 trueDirection = DirectionFromCamera(direction);
+        movement.SmoothRotate(this, trueDirection, .7f);
     }
 
 
@@ -232,5 +235,31 @@ public class CharacterManager : MonoBehaviour {
 
         return result;
     }
+
+
+
+    /// <summary>
+    /// Adjusts the direction in relation to camera
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    public Vector3 DirectionFromCamera(Vector3 direction)
+    {
+        Vector3 camForward = mainCamera.transform.forward;
+        camForward = new Vector3(camForward.x, 0, camForward.z);
+        camForward /= camForward.magnitude;
+        Vector3 camRight = mainCamera.transform.right;
+
+        Vector3 result = camForward * direction.z;
+        result += camRight * direction.x;
+
+        if (result.magnitude > 1)
+        {
+            result /= result.magnitude;
+        }
+
+        return result;
+    }
+
 
 }

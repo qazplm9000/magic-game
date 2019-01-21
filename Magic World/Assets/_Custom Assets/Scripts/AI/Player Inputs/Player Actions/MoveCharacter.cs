@@ -12,8 +12,8 @@ namespace InputSystem
             Vector3 direction = new Vector3(1, 0, 0) * World.inputs.GetAxis("Horizontal Left");
             direction += new Vector3(0, 0, 1) * World.inputs.GetAxis("Vertical Left");
 
-            Vector3 trueDirection = character.movement.DirectionFromCamera(direction);
-            character.movement.Move(trueDirection);
+            Vector3 trueDirection = character.DirectionFromCamera(direction);
+            character.movement.Move(character, trueDirection);
 
             if (direction.magnitude != 0)
             {
