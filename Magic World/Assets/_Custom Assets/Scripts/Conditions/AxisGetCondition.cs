@@ -8,7 +8,7 @@ public class AxisGetCondition : Condition
 {
     public string axis;
 
-    public override bool Execute(CharacterManager character)
+    public override bool _Execute(CharacterManager character)
     {
         return World.inputs.GetAxis(axis) > 0;
     }

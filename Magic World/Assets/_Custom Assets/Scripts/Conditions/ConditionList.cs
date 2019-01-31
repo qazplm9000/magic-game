@@ -21,7 +21,7 @@ public class ConditionList
         }
         else {
             for (int i = 0; i < conditions.Count; i++) {
-                if (!conditions[i].Execute(character)) {
+                if (!conditions[i]._Execute(character)) {
                     result = false;
                     break;
                 }

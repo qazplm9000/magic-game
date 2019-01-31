@@ -18,6 +18,9 @@ public class World : MonoBehaviour {
     public static ObjectPool<SpellBehaviour> spellPool;
     public static ObjectPool<Hitbox> hitboxPool;
 
+    //party leader
+    public CharacterManager partyLeader;
+
     public WorldState state;
 
 	// Use this for initialization

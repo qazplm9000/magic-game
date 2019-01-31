@@ -39,14 +39,12 @@ namespace CharacterStateSystem
         }
 
 
-        public void ExitState(CharacterManager character, CharacterState newState) {
+        public void ExitState(CharacterManager character) {
             for (int i = 0; i < exitEvents.Count; i++) {
                 if (exitEvents[i] != null) {
                     exitEvents[i].Execute(character);
                 }
             }
-
-            character.currentState = newState;
         }
     }
 }

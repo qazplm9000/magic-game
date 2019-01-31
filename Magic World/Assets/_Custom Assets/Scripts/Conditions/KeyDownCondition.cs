@@ -8,7 +8,7 @@ public class KeyDownCondition : Condition
 {
     public string key;
 
-    public override bool Execute(CharacterManager manager)
+    public override bool _Execute(CharacterManager manager)
     {
         return World.inputs.GetKeyDown(key);
     }

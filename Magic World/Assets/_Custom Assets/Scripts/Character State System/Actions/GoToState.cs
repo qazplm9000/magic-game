@@ -1,6 +1,7 @@
 ﻿using CharacterStateSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace InputSystem
@@ -8,17 +9,21 @@ namespace InputSystem
     [CreateAssetMenu(menuName = "Input/State Actions/Go To")]
     public class GoToState : PlayerInputAction
     {
-        public enum State {
-            Attack,
-            Default
-        }
-
-        public State state;
+        public string stateName;
 
         public override void Execute(CharacterManager character)
         {
-            CharacterState newState = state == State.Attack ? character.attackState : character.defaultState;
-            character.currentState.ExitState(character, newState);
+            bool result = character.stateTree.ChangeState(character, stateName);
+
+            if (!result) {
+                throw new MissingStateException();
+            }
+        }
+
+
+        public class MissingStateException : Exception {
+            public MissingStateException() {
+            }
         }
     }
 }

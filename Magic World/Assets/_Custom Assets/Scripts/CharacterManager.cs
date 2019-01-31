@@ -91,9 +91,8 @@ public class CharacterManager : MonoBehaviour {
     }
     public CharacterManager _target;
     public CharacterInput playerController;
-    public CharacterState defaultState;
-    public CharacterState attackState;
     public CharacterState currentState;
+    public CharacterStateTree stateTree;
 
 
     [HideInInspector]
@@ -120,7 +119,7 @@ public class CharacterManager : MonoBehaviour {
 
         turnDirection = transform.forward;
 
-        currentState = defaultState;
+        currentState = stateTree.GetDefaultState();
 
         //prevents the navmesh agent from auto-turning
         agent.updateRotation = false;
