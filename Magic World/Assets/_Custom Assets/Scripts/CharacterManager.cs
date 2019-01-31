@@ -8,6 +8,7 @@ using CombatSystem;
 using StatSystem;
 using CharacterStateSystem;
 using MovementSystem;
+using TargettingSystem;
 
 
 public class CharacterManager : MonoBehaviour {
@@ -18,6 +19,7 @@ public class CharacterManager : MonoBehaviour {
     [HideInInspector]
     public float horizontal;
 
+    public Camera mainCamera;
 
 
     /*
@@ -43,13 +45,16 @@ public class CharacterManager : MonoBehaviour {
     // [HideInInspector]
     //public CharacterController controller;
     public CombatController combat;
-    public PlayerTargetter targetter;
+    public Targetter targetter;
     public CharacterMovement movement;
     public CharacterRotation rotation;
     public CharacterStats stats;
     public AbilityCaster caster2;
     public SimpleCombo combos;
 
+
+    public Ability currentAbility;
+    public Ability bufferedAbility;
     public float castPrevious = 0;
     public float castCurrent = 0;
 
@@ -75,7 +80,7 @@ public class CharacterManager : MonoBehaviour {
     public float trueSpeed = 0;
     
 
-    public TargetPoint target {
+    public CharacterManager target {
         get { return _target; }
         set {
             _target = value;
@@ -84,7 +89,7 @@ public class CharacterManager : MonoBehaviour {
             }
         }
     }
-    public TargetPoint _target;
+    public CharacterManager _target;
     public CharacterInput playerController;
     public CharacterState defaultState;
     public CharacterState attackState;
@@ -96,10 +101,9 @@ public class CharacterManager : MonoBehaviour {
     [Header("Time")]
     public float timeScale = 1;
 
-    public delegate void OnTargetFunction(TargetPoint target);
+    public delegate void OnTargetFunction(CharacterManager target);
     public event OnTargetFunction OnNewTarget;
 
-    public Ability currentSpell;
 
     // Use this for initialization
     void Awake () {
@@ -111,7 +115,7 @@ public class CharacterManager : MonoBehaviour {
         rb = transform.GetComponent<Rigidbody>();
         agent = transform.GetComponent<NavMeshAgent>();
         //comboUser = transform.GetComponent<ComboUser>();
-        targetter = transform.GetComponent<PlayerTargetter>();
+        //targetter = transform.GetComponent<PlayerTargetter>();
         combos = transform.GetComponent<SimpleCombo>();
 
         turnDirection = transform.forward;
@@ -120,6 +124,8 @@ public class CharacterManager : MonoBehaviour {
 
         //prevents the navmesh agent from auto-turning
         agent.updateRotation = false;
+
+        mainCamera = Camera.main;
     }
 	
 	// Update is called once per frame
@@ -202,7 +208,7 @@ public class CharacterManager : MonoBehaviour {
     /// <param name="direction"></param>
     public void Rotate(Vector3 direction) {
         Vector3 trueDirection = DirectionFromCamera(direction);
-        movement.SmoothRotate(this, trueDirection, .7f);
+        rotation.Rotate(this, trueDirection);
     }
 
 
@@ -215,7 +221,7 @@ public class CharacterManager : MonoBehaviour {
             currentState.Execute(this);
         }
     }
-    
+
 
 
     /// <summary>
@@ -224,17 +230,45 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="ability"></param>
     /// <returns></returns>
-    public bool CastAbility(Ability ability)
+    public bool CastAbility(Ability ability, bool bufferable = true)
     {
         bool result = false;
 
-        if (currentSpell == null && ability != null) {
-            result = true;
-            currentSpell = ability;
+        if (currentAbility == null)
+        {
+            currentAbility = ability;
+        }
+        else {
+            if (bufferable) {
+                bufferedAbility = ability;
+            }
         }
 
         return result;
     }
+
+    /// <summary>
+    /// Runs the current ability to completion and replaces with the buffered ability when done
+    /// Returns false when done running
+    /// </summary>
+    /// <returns></returns>
+    public bool RunAbility() {
+        bool result = false;
+
+        if (currentAbility != null)
+        {
+            result = currentAbility.Execute(this);
+        }
+        else if(bufferedAbility != null){
+            currentAbility = bufferedAbility;
+            bufferedAbility = null;
+            result = true;
+        }
+
+        return result;
+    }
+
+
 
 
 

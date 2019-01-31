@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace InputSystem
 {
-    [CreateAssetMenu(menuName = "Input/Actions/Cast Spell")]
-    public class CastSpell : PlayerInputAction
+    [CreateAssetMenu(menuName = "Input/Character State/Run Ability")]
+    public class RunAbility : PlayerInputAction
     {
         public override void Execute(CharacterManager character)
         {
-            character.caster2.Cast(character.currentAbility);
+            bool result = character.RunAbility();
+            
         }
     }
 }

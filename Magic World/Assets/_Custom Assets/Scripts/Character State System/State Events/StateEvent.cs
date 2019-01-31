@@ -6,6 +6,6 @@ namespace CharacterStateSystem
 {
     public abstract class StateEvent : ScriptableObject
     {
-        public abstract void Execute(CharacterManager manager);
+        public abstract void Execute(CharacterManager character);
     }
 }

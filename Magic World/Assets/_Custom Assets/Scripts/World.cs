@@ -38,7 +38,12 @@ public class World : MonoBehaviour {
         spellPool = new ObjectPool<SpellBehaviour>();
         hitboxPool = new ObjectPool<Hitbox>();
 	}
-    
+
+    private void Start()
+    {
+        battle.SetCharacters(FindAllCharacters());
+    }
+
 
     // Update is called once per frame
     void Update () {
@@ -53,4 +58,11 @@ public class World : MonoBehaviour {
         }
 
 	}
+
+
+
+    public CharacterManager[] FindAllCharacters() {
+        return GameObject.FindObjectsOfType<CharacterManager>();
+    }
+    
 }

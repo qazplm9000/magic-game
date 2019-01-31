@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class SpellBehaviour : MonoBehaviour {
 
-    public TargetPoint target;
+    public CharacterManager target;
     public float speed = 5f;
 
 	// Use this for initialization
-	void OnEnable () {
+	/*void OnEnable () {
         TargetPoint[] targets = FindObjectsOfType<TargetPoint>();
 
         for(int i = 0; i < targets.Length; i++)
@@ -18,7 +18,7 @@ public class SpellBehaviour : MonoBehaviour {
                 break;
             }
         }
-	}
+	}*/
 	
 	// Update is called once per frame
 	void Update () {
@@ -34,7 +34,7 @@ public class SpellBehaviour : MonoBehaviour {
         TargetPoint colliderTarget = other.GetComponent<TargetPoint>();
 
         if (colliderTarget == target) {
-            target.manager.stats.TakeDamage(5);
+            target.stats.TakeDamage(5);
             //function for spell disappearing
             World.spellPool.RemoveObject(transform.gameObject);
         }

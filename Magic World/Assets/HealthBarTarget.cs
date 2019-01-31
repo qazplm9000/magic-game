@@ -12,7 +12,7 @@ public class HealthBarTarget : MonoBehaviour {
 	void Start ()
     {
         SetPlayerBar();
-        playerManager.OnNewTarget += ChangeTarget;
+        //playerManager.OnNewTarget += ChangeTarget;
         //Debug.Log("Added event");
 	}
 

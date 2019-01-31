@@ -11,10 +11,7 @@ namespace CharacterStateSystem
         //name for the state
         //will be used as the key in the state tree dictionary
         public string StateName;
-
-        //will go to exit node upon hitting exit condition
-        //exits to default if left blank
-        public string ExitNode;
+        
 
         
         //plays on the frame the state enters
@@ -27,11 +24,29 @@ namespace CharacterStateSystem
         public CharacterInput inputs;
 
 
+        public void EnterState(CharacterManager character) {
+            for (int i = 0; i < enterEvents.Count; i++) {
+                if (enterEvents[i] != null) {
+                    enterEvents[i].Execute(character);
+                }
+            }
+        }
+
         public void Execute(CharacterManager character) {
             if (inputs != null) {
                 inputs.Execute(character);
             }
         }
 
+
+        public void ExitState(CharacterManager character, CharacterState newState) {
+            for (int i = 0; i < exitEvents.Count; i++) {
+                if (exitEvents[i] != null) {
+                    exitEvents[i].Execute(character);
+                }
+            }
+
+            character.currentState = newState;
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace MovementSystem
 
         public override void Move(CharacterManager character, Vector3 direction)
         {
-            Vector3 trueDirection = DirectionFromCamera(direction);
+            Vector3 trueDirection = character.DirectionFromCamera(direction);
 
             character.agent.velocity = trueDirection * character.movementSpeed;
         }

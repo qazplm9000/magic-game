@@ -17,6 +17,8 @@ namespace InputSystem
             EditorStyles.textField.wordWrap = true;
             EditorGUILayout.LabelField("Description");
             action.description = EditorGUILayout.TextArea(action.description);
+
+            base.OnInspectorGUI();
         }
     }
 }

@@ -22,6 +22,8 @@ namespace CombatSystem
         public CharacterManager currentCharacter;
         private int characterIndex = 0;
 
+        public Element currentElement = Element.None;
+        public int elementalCharge = 0;
 
         //public delegate void TurnSwap(Combatant currentCharacter);
         //public event TurnSwap turnSwap;
@@ -46,10 +48,7 @@ namespace CombatSystem
             }
             else {
                 //currentCharacter.defaultState.Execute(currentCharacter);
-                if (currentCharacter.playerController != null)
-                {
-                    currentCharacter.TakeTurn();
-                }
+                currentCharacter.TakeTurn();
                 turnTimer -= Time.deltaTime;
             }
 
@@ -68,6 +67,46 @@ namespace CombatSystem
             characterIndex++;
             characterIndex %= characters.Count;
             currentCharacter = characters[characterIndex];
+        }
+
+
+        public void ApplyCharge(Element element, int charge = 1) {
+            if (element != Element.None) {
+                if (element == currentElement)
+                {
+                    elementalCharge += charge;
+                }
+                else {
+                    elementalCharge -= charge;
+                }
+
+                //changes the current element if charge becomes 0 or lower
+                if (elementalCharge <= 0) {
+                    currentElement = element;
+                    elementalCharge = -elementalCharge + 1;
+                }
+            }
+        }
+
+
+        public void SetCharacters(CharacterManager[] allCharacters) {
+            characters = new List<CharacterManager>();
+            enemies = new List<CharacterManager>();
+            players = new List<CharacterManager>();
+
+            for (int i = 0; i < allCharacters.Length; i++) {
+                CharacterManager character = allCharacters[i];
+
+                characters.Add(character);
+
+                if (character.tag == "enemy")
+                {
+                    enemies.Add(character);
+                }
+                else {
+                    players.Add(character);
+                }
+            }
         }
 
 

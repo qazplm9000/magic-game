@@ -1,13 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InputSystem;
 
 namespace CharacterStateSystem
 {
     [System.Serializable]
     public class StateEventObject
     {
-        public Condition condition;
-        public StateEvent stateEvent;
+        public ConditionList conditions;
+        public PlayerInputAction stateEvent;
+
+        public void Execute(CharacterManager character) {
+            if (conditions.ConditionsPass(character)) {
+                stateEvent.Execute(character);
+            }
+        }
     }
 }

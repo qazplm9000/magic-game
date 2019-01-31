@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour {
         transform.position = transform.position + offset + CalculateVector(player.transform.forward, initialDistance, xAngle, yAngle);
 
         //put UpdateTarget in event
-        player.manager.OnNewTarget += UpdateTarget;
+        //player.manager.OnNewTarget += UpdateTarget;
         FaceTarget(player.transform);
 	}
 	

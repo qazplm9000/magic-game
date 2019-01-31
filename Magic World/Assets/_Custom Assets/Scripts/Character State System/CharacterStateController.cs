@@ -48,10 +48,10 @@ namespace CharacterStateSystem
             for (int i = 0; i < currentState.updateEvents.Count; i++) {
                 StateEventObject eventObject = currentState.updateEvents[i];
 
-                if (eventObject.condition == null || eventObject.condition.Execute(manager)) {
+                /*if (eventObject.conditions == null || eventObject.conditions.Execute(manager)) {
                     eventObject.stateEvent.Execute(manager);
                     Debug.Log("Played event");
-                }
+                }*/
             }
         }
     }
