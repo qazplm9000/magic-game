@@ -5,8 +5,8 @@ using InputSystem;
 
 public class CameraController : MonoBehaviour {
 
-    public TargetPoint player;
-    private TargetPoint target;
+    public CharacterManager player;
+    private CharacterManager target;
     private Vector3 direction;
 
     public float initialDistance = 5;
@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 
-    private void UpdateTarget(TargetPoint newTarget) {
+    private void UpdateTarget(CharacterManager newTarget) {
         target = newTarget;
         xAngle = 0;
         yAngle = initialAngle;

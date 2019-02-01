@@ -24,7 +24,7 @@ namespace InputSystem
             for (int i = 0; i < actions.Count; i++)
             {
                 PlayerInputAction action = actions[i];
-                Debug.Log(i);
+                //Debug.Log(i);
                 if (action != null)
                 {
                     action.Execute(character);

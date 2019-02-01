@@ -29,6 +29,8 @@ namespace CharacterStateSystem
                 StateNames thisState = states[i];
                 _states[thisState.stateName] = thisState.state;
             }
+
+            //Debug.Log("There are " + _states.Count + " states in the dictionary");
         }
 
         public void Execute(CharacterManager character) {

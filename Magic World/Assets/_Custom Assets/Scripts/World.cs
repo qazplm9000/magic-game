@@ -58,6 +58,7 @@ public class World : MonoBehaviour {
         }//battle update
         else if (state == WorldState.Battle) {
             battle.Update();
+            //Debug.Log("Updating battle state");
         }
 
 	}

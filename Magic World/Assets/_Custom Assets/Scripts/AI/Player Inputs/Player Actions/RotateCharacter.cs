@@ -11,7 +11,7 @@ namespace InputSystem
     {
         public override void Execute(CharacterManager character)
         {
-            Debug.Log("Rotating");
+            //Debug.Log("Rotating");
             character.Rotate(character.turnDirection);
 
         }

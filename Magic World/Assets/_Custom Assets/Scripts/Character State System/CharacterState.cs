@@ -36,6 +36,13 @@ namespace CharacterStateSystem
             if (inputs != null) {
                 inputs.Execute(character);
             }
+
+            for (int i = 0; i < updateEvents.Count; i++) {
+                StateEventObject currentEvent = updateEvents[i];
+                if (currentEvent.stateEvent != null && currentEvent.conditions.ConditionsPass(character)) {
+                    currentEvent.Execute(character);
+                }
+            }
         }
 
 
