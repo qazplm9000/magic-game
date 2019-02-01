@@ -35,16 +35,6 @@ namespace StatSystem
 
         private void Awake()
         {
-            currentHealth.Init();
-            maxHealth.Init();
-            currentMana.Init();
-            maxMana.Init();
-            strength.Init();
-            magic.Init();
-            defense.Init();
-            magicDefense.Init();
-            agility.Init();
-            attackTime.Init();
         }
 
 

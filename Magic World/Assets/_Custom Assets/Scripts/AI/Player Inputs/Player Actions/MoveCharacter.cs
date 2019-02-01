@@ -5,7 +5,7 @@ using UnityEngine;
 namespace InputSystem
 {
     [CreateAssetMenu(menuName = "Input/Actions/Move Character")]
-    public class MoveCharacter : PlayerInputAction
+    public class MoveCharacter : PlayerAction
     {
         public override void Execute(CharacterManager character)
         {

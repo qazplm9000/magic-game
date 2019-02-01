@@ -6,13 +6,13 @@ using UnityEditor;
 
 namespace InputSystem
 {
-    [CustomEditor(typeof(PlayerInputAction), true)]
+    [CustomEditor(typeof(PlayerAction), true)]
     public class PlayerInputActionEditor : Editor
     {
 
         public override void OnInspectorGUI()
         {
-            PlayerInputAction action = (PlayerInputAction)target;
+            PlayerAction action = (PlayerAction)target;
 
             EditorStyles.textField.wordWrap = true;
             EditorGUILayout.LabelField("Description");

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace InputSystem
 {
     [CreateAssetMenu(menuName = "Input/Actions/Rotate Character")]
-    public class RotateCharacter : PlayerInputAction
+    public class RotateCharacter : PlayerAction
     {
         public override void Execute(CharacterManager character)
         {

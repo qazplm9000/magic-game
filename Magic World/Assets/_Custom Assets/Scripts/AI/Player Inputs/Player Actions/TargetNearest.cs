@@ -5,7 +5,7 @@ using UnityEngine;
 namespace InputSystem
 {
     [CreateAssetMenu(menuName = "Input/Actions/Target Nearest")]
-    public class TargetNearest : PlayerInputAction
+    public class TargetNearest : PlayerAction
     {
         public override void Execute(CharacterManager character)
         {

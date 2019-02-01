@@ -7,7 +7,7 @@ namespace InputSystem
     [CreateAssetMenu(menuName = "Input/Player Input")]
     public class PlayerInput : CharacterInput
     {
-        public List<PlayerInputAction> actions;
+        public List<PlayerAction> actions;
         public List<PlayerInputKey> inputs;
 
 
@@ -23,7 +23,7 @@ namespace InputSystem
         {
             for (int i = 0; i < actions.Count; i++)
             {
-                PlayerInputAction action = actions[i];
+                PlayerAction action = actions[i];
                 //Debug.Log(i);
                 if (action != null)
                 {

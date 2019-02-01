@@ -6,7 +6,7 @@ using UnityEngine;
 namespace InputSystem
 {
     [CreateAssetMenu(menuName = "Input/Actions/Look At Target")]
-    public class LookAtTarget : PlayerInputAction
+    public class LookAtTarget : PlayerAction
     {
         public override void Execute(CharacterManager character)
         {

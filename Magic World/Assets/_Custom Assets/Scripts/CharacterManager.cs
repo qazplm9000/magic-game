@@ -206,8 +206,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="direction"></param>
     public void Rotate(Vector3 direction) {
-        Vector3 trueDirection = DirectionFromCamera(direction);
-        rotation.Rotate(this, trueDirection);
+        rotation.Rotate(this, direction);
     }
 
 

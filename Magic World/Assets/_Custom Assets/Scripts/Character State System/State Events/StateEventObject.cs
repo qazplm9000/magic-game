@@ -9,7 +9,7 @@ namespace CharacterStateSystem
     public class StateEventObject
     {
         public ConditionList conditions;
-        public PlayerInputAction stateEvent;
+        public PlayerAction stateEvent;
 
         public void Execute(CharacterManager character) {
             if (conditions.ConditionsPass(character)) {

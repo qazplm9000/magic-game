@@ -7,7 +7,7 @@ using UnityEngine;
 namespace InputSystem
 {
     [CreateAssetMenu(menuName = "Input/State Actions/Go To")]
-    public class GoToState : PlayerInputAction
+    public class GoToState : PlayerAction
     {
         public string stateName;
 

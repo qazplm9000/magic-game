@@ -6,7 +6,7 @@ using UnityEngine;
 namespace InputSystem
 {
     [CreateAssetMenu(menuName = "Input/Actions/Character Attack")]
-    public class CharacterAttack : PlayerInputAction
+    public class CharacterAttack : PlayerAction
     {
         public override void Execute(CharacterManager character)
         {

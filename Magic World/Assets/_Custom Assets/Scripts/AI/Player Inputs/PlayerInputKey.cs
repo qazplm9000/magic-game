@@ -9,6 +9,6 @@ namespace InputSystem
     {
         public string buttonName;
         public ConditionList conditions;
-        public PlayerInputAction action;
+        public PlayerAction action;
     }
 }

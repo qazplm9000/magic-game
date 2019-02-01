@@ -5,7 +5,7 @@ using UnityEngine;
 namespace InputSystem
 {
     [CreateAssetMenu(menuName = "Input/Actions/Dampen Movement")]
-    public class DampenMovement : PlayerInputAction
+    public class DampenMovement : PlayerAction
     {
         [Range(0,1)]
         public float dampenModifier = 0;
