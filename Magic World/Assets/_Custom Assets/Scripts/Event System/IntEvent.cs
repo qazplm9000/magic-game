@@ -1,15 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace StatSystem
-{
+namespace EventSystem{
     [System.Serializable]
-    public class CharacterStat
+    public class IntEvent : UnityEvent<string>
     {
-        public Stat stat;
-        public int value;
-
-
+        
     }
 }

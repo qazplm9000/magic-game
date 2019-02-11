@@ -100,14 +100,13 @@ public class CharacterManager : MonoBehaviour {
     [Header("Time")]
     public float timeScale = 1;
 
-    public delegate void OnTargetFunction(CharacterManager target);
-    public event OnTargetFunction OnNewTarget;
+    public delegate void CharacterEvent(CharacterManager character);
+    public CharacterEvent OnNewTarget;
 
 
     // Use this for initialization
     void Awake () {
         //controller = transform.GetComponent<CharacterController>();
-        stats = transform.GetComponent<CharacterStats>();
         combat = transform.GetComponent<CombatController>();
         caster2 = transform.GetComponent<AbilityCaster>();
         anim = transform.GetComponentInChildren<Animator>();
@@ -291,6 +290,10 @@ public class CharacterManager : MonoBehaviour {
         }
 
         return result;
+    }
+
+    public void Test(string arg) {
+        Debug.Log(arg);
     }
 
 

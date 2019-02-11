@@ -17,14 +17,14 @@ public class HealthBarTarget : MonoBehaviour {
 	}
 
     public void SetPlayerBar() {
-        playerManager.stats.currentHealth.OnTotalValueChanged += playerHealthBar.UpdateHealth;
-        playerHealthBar.UpdateHealth();
+        //playerManager.stats.currentHealth.OnTotalValueChanged += playerHealthBar.UpdateHealth;
+        //playerHealthBar.UpdateHealth();
     }
 
     public void ChangeTarget(TargetPoint target) {
         //removes the current event if the current target is not null
         if (enemyHealthBar.target != null) {
-            enemyHealthBar.target.stats.currentHealth.OnTotalValueChanged -= enemyHealthBar.UpdateHealth;
+            //enemyHealthBar.target.stats.currentHealth.OnTotalValueChanged -= enemyHealthBar.UpdateHealth;
         }
 
         //sets the new target and sets the new event in place if needed
@@ -34,7 +34,7 @@ public class HealthBarTarget : MonoBehaviour {
             enemyHealthBar.gameObject.SetActive(true);
             //update target and health event
             enemyHealthBar.target = target.manager;
-            enemyHealthBar.target.stats.currentHealth.OnTotalValueChanged += enemyHealthBar.UpdateHealth;
+            //enemyHealthBar.target.stats.currentHealth.OnTotalValueChanged += enemyHealthBar.UpdateHealth;
             //update health
             enemyHealthBar.UpdateHealth();
         }

@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 namespace StatSystem
 {
-    public class CharacterStats : MonoBehaviour
+    [System.Serializable]
+    public class CharacterStats
     {
-
         public Stat currentHealth;
         public Stat maxHealth;
         public Stat currentMana;
@@ -23,18 +23,11 @@ namespace StatSystem
         //stat multipliers go here
         public Stat healthMultiplier;
 
-
-        public delegate void HealthUpdate();
-        public event HealthUpdate healthUpdate;
-
-
         public bool isDead = false;
 
-        public delegate void CharacterDeath();
-        public event CharacterDeath OnDeath;
 
-        private void Awake()
-        {
+        public void InitStats(List<int> values) {
+            
         }
 
 
@@ -46,7 +39,7 @@ namespace StatSystem
         /// <param name="enemyStats"></param>
         public void TakeDamage(int damage)
         {
-            currentHealth.RemoveStat(damage);
+            //currentHealth.RemoveStat(damage);
             CheckIsDead();
         }
 
@@ -55,7 +48,7 @@ namespace StatSystem
         /// </summary>
         /// <param name="healAmount"></param>
         public void HealDamage(int healAmount) {
-            currentHealth.AddStat(healAmount);
+            //currentHealth.AddStat(healAmount);
             if (currentHealth.value > maxHealth.value) {
                 currentHealth.value = maxHealth.value;
             }
@@ -69,15 +62,11 @@ namespace StatSystem
         public void CheckIsDead() {
             if (currentHealth.value == 0 && !isDead) {
                 isDead = true;
-
-                if (OnDeath != null) {
-                    OnDeath();
-                }
             }
         }
 
         
-        
 
+        
     }
 }

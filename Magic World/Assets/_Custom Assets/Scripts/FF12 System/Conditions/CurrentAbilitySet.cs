@@ -7,7 +7,7 @@ public class CurrentAbilitySet : Condition
 {
     public override bool _Execute(CharacterManager character)
     {
-        Debug.Log(character.currentAbility != null);
+        //Debug.Log(character.currentAbility != null);
         return character.currentAbility != null;
     }
 }

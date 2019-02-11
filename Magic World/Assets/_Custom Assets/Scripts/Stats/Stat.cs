@@ -2,22 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-namespace StatSystem {
-
-    [CreateAssetMenu(menuName = "")]
-    public class Stat : ScriptableObject
+namespace StatSystem
+{
+    [System.Serializable]
+    public class Stat
     {
+        public string statName;
+        public StatCalculation statCalculation;
         public int value;
 
-        public virtual int CalculateStat(CharacterStats stats) {
-            return value;
+        public Stat(Stat newStat, int newValue) {
+            statName = newStat.statName;
+            statCalculation = newStat.statCalculation;
+            value = newValue;
         }
-
-        public void AddStat(int addition) {
-            value += addition;
-        }
-
-
     }
 }

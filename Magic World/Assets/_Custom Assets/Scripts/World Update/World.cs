@@ -10,6 +10,7 @@ public class World : MonoBehaviour {
 
     public static World world;
     public BattleState battle;
+    public WorldUpdate worldUpdate;
     //public static OverworldState overworld;
     public static InputManager inputs;
     public InputObject inputObject;
@@ -18,8 +19,21 @@ public class World : MonoBehaviour {
     public static ObjectPool<SpellBehaviour> spellPool;
     public static ObjectPool<Hitbox> hitboxPool;
 
-    //party leader
-    public CharacterManager partyLeader;
+
+    public List<CharacterManager> allCharacters = new List<CharacterManager>();
+    public List<CharacterManager> players = new List<CharacterManager>();
+    public List<CharacterManager> enemies = new List<CharacterManager>();
+    public List<CharacterManager> npcs = new List<CharacterManager>();
+    public List<CharacterManager> turnOrder = new List<CharacterManager>();
+
+    public CharacterManager currentTurn;
+    public int turnIndex = 0;
+    public float turnTime;
+    public float turnTimer;
+
+
+    //main camera
+    public Camera mainCamera;
 
     public WorldState state;
 
@@ -40,33 +54,37 @@ public class World : MonoBehaviour {
 
         spellPool = new ObjectPool<SpellBehaviour>();
         hitboxPool = new ObjectPool<Hitbox>();
+
+        mainCamera = Camera.main;
 	}
+    
+
+    public void OnLevelWasLoaded(int level)
+    {
+        mainCamera = Camera.main;
+    }
 
     private void Start()
     {
-        battle.SetCharacters(FindAllCharacters());
+        SetAllCharacters();
+        worldUpdate.StartWorld(this);
     }
 
 
     // Update is called once per frame
     void Update () {
-
-        //overworld update
-        if (state == WorldState.Overworld)
-        {
-            
-        }//battle update
-        else if (state == WorldState.Battle) {
-            battle.Update();
-            //Debug.Log("Updating battle state");
-        }
-
+        worldUpdate.UpdateWorld(this);
 	}
 
 
 
-    public CharacterManager[] FindAllCharacters() {
-        return GameObject.FindObjectsOfType<CharacterManager>();
+    public void SetAllCharacters() {
+        CharacterManager[] characters = FindObjectsOfType<CharacterManager>();
+        allCharacters = new List<CharacterManager>();
+
+        for (int i = 0; i < characters.Length; i++) {
+            allCharacters.Add(characters[i]);
+        }
     }
     
 }
