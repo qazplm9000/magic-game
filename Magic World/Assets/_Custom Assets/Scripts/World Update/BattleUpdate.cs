@@ -45,8 +45,8 @@ public class BattleUpdate : WorldUpdate
     public void NextTurn(World world) {
         world.turnIndex = (world.turnIndex + 1) % world.turnOrder.Count;
         world.currentTurn = world.turnOrder[world.turnIndex];
-        world.turnTime = turnTime;
-        world.turnTimer = turnTime;
+        world.turnTime = world.currentTurn.stats.attackTime;
+        world.turnTimer = world.turnTime;
     }
 
     public void SetTurnOrder(World world) {

@@ -31,7 +31,7 @@ namespace AbilitySystem {
             for (int i = 0; i < characterBehaviours.Count; i++) {
                 BehaviourData cur = characterBehaviours[i];
 
-                result = result || cur.Execute(character, null, character.castPrevious, character.castCurrent);
+                result = cur.Execute(character, null, character.castPrevious, character.castCurrent) || result;
             }
 
             //resets cast times on last frame

@@ -303,9 +303,12 @@ public class CharacterManager : MonoBehaviour {
         Debug.Log(arg);
     }
 
-
-    public void Attack() {
-        currentAbility = combos.GetNextCombo();
+    /// <summary>
+    /// Plays the current combo in the combo manager
+    /// </summary>
+    /// <returns></returns>
+    public bool Attack() {
+        return combos.PlayCurrentCombo();
     }
 
 

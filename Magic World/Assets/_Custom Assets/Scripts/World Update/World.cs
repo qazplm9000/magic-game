@@ -20,6 +20,7 @@ public class World : MonoBehaviour {
     public static ObjectPool<Hitbox> hitboxPool;
 
 
+    [Header("Combat")]
     public List<CharacterManager> allCharacters = new List<CharacterManager>();
     public List<CharacterManager> turnOrder = new List<CharacterManager>();
 

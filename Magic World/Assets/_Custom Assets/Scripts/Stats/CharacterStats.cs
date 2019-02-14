@@ -9,21 +9,36 @@ namespace StatSystem
     [System.Serializable]
     public class CharacterStats
     {
-        public Stat currentHealth;
-        public Stat maxHealth;
-        public Stat currentMana;
-        public Stat maxMana;
-        public Stat strength;
-        public Stat defense;
-        public Stat magic;
-        public Stat magicDefense;
-        public Stat agility;
-        public Stat attackTime;
+        [Tooltip("Character's current health")]
+        public int currentHealth;
+        [Tooltip("Character's maximum health")]
+        public int maxHealth;
+        [Tooltip("Character's current mana")]
+        public int currentMana;
+        [Tooltip("Character's maximum mana")]
+        public int maxMana;
+        [Tooltip("")]
+        public int strength;
+        [Tooltip("")]
+        public int defense;
+        [Tooltip("")]
+        public int magic;
+        [Tooltip("")]
+        public int magicDefense;
+        [Tooltip("")]
+        public int agility;
+        [Tooltip("")]
+        public int delay;
+        [Tooltip("")]
+        public float attackTime;
 
         //stat multipliers go here
-        public Stat healthMultiplier;
+        public float healthMultiplier;
 
         public bool isDead = false;
+
+        
+
 
 
         public void InitStats(List<int> values) {
@@ -39,8 +54,14 @@ namespace StatSystem
         /// <param name="enemyStats"></param>
         public void TakeDamage(int damage)
         {
-            //currentHealth.RemoveStat(damage);
-            CheckIsDead();
+            currentHealth -= damage;
+            currentHealth = Mathf.Max(currentHealth, 0);
+
+            if (IsDead()) {
+                isDead = true;
+                //Run event for dying
+            }
+
         }
 
         /// <summary>
@@ -48,21 +69,16 @@ namespace StatSystem
         /// </summary>
         /// <param name="healAmount"></param>
         public void HealDamage(int healAmount) {
-            //currentHealth.AddStat(healAmount);
-            if (currentHealth.value > maxHealth.value) {
-                currentHealth.value = maxHealth.value;
-            }
+            currentHealth += healAmount;
+            currentHealth = Mathf.Min(currentHealth, maxHealth);
         }
 
         /// <summary>
         /// Returns true if the target has 0 HP.
-        /// Calls OnDeath event when character dies.
         /// </summary>
         /// <returns></returns>
-        public void CheckIsDead() {
-            if (currentHealth.value == 0 && !isDead) {
-                isDead = true;
-            }
+        public bool IsDead() {
+            return currentHealth > 0;
         }
 
         
