@@ -10,7 +10,7 @@ namespace InputSystem
     {
         public override void Execute(CharacterManager character)
         {
-            character.combat.Attack();
+            character.Attack();
         }
     }
 }

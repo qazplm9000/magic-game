@@ -1,25 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 namespace CharacterStateSystem
 {
-    public class CharacterStateManager : Editor
+    public class CharacterStateManager : MonoBehaviour
     {
 
-
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        public CharacterStateTree stateTree;
+        public CharacterState currentState;
+        public StateTransition currentTransitions;
     }
 }

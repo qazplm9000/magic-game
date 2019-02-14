@@ -9,18 +9,6 @@ public class BattleUpdate : WorldUpdate
 
     public override void StartWorld(World world)
     {
-        //world.FindAllCharacters();
-        for (int i = 0; i < world.allCharacters.Count; i++) {
-            CharacterManager character = world.allCharacters[i];
-
-            if (character.tag == "enemy")
-            {
-                world.enemies.Add(character);
-            }
-            else {
-                world.players.Add(character);
-            }
-        }
 
         SetTurnOrder(world);
 
@@ -29,13 +17,23 @@ public class BattleUpdate : WorldUpdate
 
     public override void UpdateWorld(World world)
     {
-        world.currentTurn.TakeTurn();
+        //checks if anyone is currently casting anything
+        bool isCasting = false;
+
+        //loops through all characters and updates them
+        for (int i = 0; i < world.allCharacters.Count; i++) {
+            isCasting = world.allCharacters[i].TakeTurn() || isCasting;
+        }
+
         if (world.turnTimer > 0)
         {
             world.turnTimer -= Time.deltaTime;
         }
         else {
-            NextTurn(world);
+            if (!isCasting)
+            {
+                NextTurn(world);
+            }
         }
     }
 

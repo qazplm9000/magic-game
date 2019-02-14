@@ -46,7 +46,10 @@ namespace CombatSystem
         {
             //sets the position of the hitbox relative to the player and parents it
             user = caster;
-            transform.position = user.transform.position + offset;
+            transform.position = user.transform.position + 
+                                    user.transform.forward * offset.z +
+                                    user.transform.right * offset.x +
+                                    user.transform.up * offset.y;
             transform.rotation = user.transform.rotation;
 
             //sets the lifetime for the hitbox

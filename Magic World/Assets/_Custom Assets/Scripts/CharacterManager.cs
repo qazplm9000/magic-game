@@ -9,6 +9,7 @@ using StatSystem;
 using CharacterStateSystem;
 using MovementSystem;
 using TargettingSystem;
+using ComboSystem;
 
 
 public class CharacterManager : MonoBehaviour {
@@ -50,7 +51,7 @@ public class CharacterManager : MonoBehaviour {
     public CharacterRotation rotation;
     public CharacterStats stats;
     public AbilityCaster caster2;
-    public SimpleCombo combos;
+    public ComboManager combos;
 
 
     public Ability currentAbility;
@@ -114,7 +115,7 @@ public class CharacterManager : MonoBehaviour {
         agent = transform.GetComponent<NavMeshAgent>();
         //comboUser = transform.GetComponent<ComboUser>();
         //targetter = transform.GetComponent<PlayerTargetter>();
-        combos = transform.GetComponent<SimpleCombo>();
+        combos = transform.GetComponent<ComboManager>();
 
         turnDirection = transform.forward;
 
@@ -211,14 +212,20 @@ public class CharacterManager : MonoBehaviour {
 
     /// <summary>
     /// Has the player take their turn
+    /// Returns true if the current ability is set, returns false otherwise
     /// </summary>
-    public void TakeTurn() {
+    public bool TakeTurn() {
         if (currentState != null)
         {
             currentState.Execute(this);
         }
+
+        return currentAbility != null;
     }
 
+    public void Idle() {
+        currentState = stateTree.GetIdleState();
+    }
 
 
     /// <summary>
@@ -294,6 +301,11 @@ public class CharacterManager : MonoBehaviour {
 
     public void Test(string arg) {
         Debug.Log(arg);
+    }
+
+
+    public void Attack() {
+        currentAbility = combos.GetNextCombo();
     }
 
 

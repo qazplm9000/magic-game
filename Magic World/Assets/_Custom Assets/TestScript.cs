@@ -24,7 +24,7 @@ public class TestScript : MonoBehaviour
         DateTime time = DateTime.Now;
 
         for (int i = 0; i < 1000000; i++) {
-            TestWithTypeCast();
+            //TestWithTypeCast();
         }
 
         newTime = DateTime.Now;
@@ -34,7 +34,7 @@ public class TestScript : MonoBehaviour
         time = DateTime.Now;
 
         for (int i = 0; i < 1000000; i++) {
-            TestWithoutTypeCast();
+            TestWithTypeCast();
         }
 
         newTime = DateTime.Now;
@@ -53,12 +53,9 @@ public class TestScript : MonoBehaviour
 
 
     public void TestWithTypeCast() {
-        TestClass test = new TestClass2();
-        TestClass2 test2 = (TestClass2)test;
     }
 
     public void TestWithoutTypeCast() {
-        TestClass2 test = new TestClass2();
     }
 
 
@@ -66,21 +63,19 @@ public class TestScript : MonoBehaviour
 
 
     public interface TestClass{
-        void Test();
+        
     }
 
 
-    public class TestClass1 : TestClass{
+    public class TestClass1{
 
         public virtual void Test() {
-            int i = 0;
+            
         }
     }
 
-    public class TestClass2 : TestClass{
-        public void Test() {
-            int i = 0;
-        }
+    public class TestClass2{
+        
     }
 
 

@@ -21,9 +21,6 @@ public class World : MonoBehaviour {
 
 
     public List<CharacterManager> allCharacters = new List<CharacterManager>();
-    public List<CharacterManager> players = new List<CharacterManager>();
-    public List<CharacterManager> enemies = new List<CharacterManager>();
-    public List<CharacterManager> npcs = new List<CharacterManager>();
     public List<CharacterManager> turnOrder = new List<CharacterManager>();
 
     public CharacterManager currentTurn;

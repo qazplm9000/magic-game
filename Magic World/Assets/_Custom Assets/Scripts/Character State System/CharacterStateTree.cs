@@ -54,7 +54,7 @@ namespace CharacterStateSystem
         /// <param name="character"></param>
         /// <param name="stateName"></param>
         /// <returns></returns>
-        public bool ChangeState(CharacterManager character, string stateName = "default") {
+        public bool ChangeState(CharacterManager character, string stateName = "idle") {
             bool result = false;
 
             if (_states.ContainsKey(stateName)) {
@@ -86,6 +86,10 @@ namespace CharacterStateSystem
             }
 
             return result;
+        }
+
+        public CharacterState GetIdleState() {
+            return _states["Idle"];
         }
 
     }

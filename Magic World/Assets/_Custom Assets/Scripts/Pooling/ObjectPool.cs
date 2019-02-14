@@ -106,7 +106,7 @@ public class ObjectPool<T> where T : MonoBehaviour {
     /// </summary>
     /// <param name="go"></param>
     /// <returns></returns>
-    public T GetObjectScript(GameObject go) {
+    public T PullObjectBehaviour(GameObject go) {
 
         if (objectPool.ContainsKey(go))
         {

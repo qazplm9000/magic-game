@@ -313,7 +313,7 @@ public class CombatController : MonoBehaviour {
                 return;
             }
 
-            Hitbox hbox = World.hitboxPool.GetObjectScript(hitboxObject);
+            Hitbox hbox = World.hitboxPool.PullObjectBehaviour(hitboxObject);
             hbox.CreateHitbox(character, 0.2f, new Vector3(0, 0.5f, 0.5f));
             currentCombo++;
             currentCombo %= combos.Count;

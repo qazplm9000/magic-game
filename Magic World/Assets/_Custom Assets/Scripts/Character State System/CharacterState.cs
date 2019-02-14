@@ -11,7 +11,9 @@ namespace CharacterStateSystem
         //name for the state
         //will be used as the key in the state tree dictionary
         public string StateName;
-        
+
+        //describes what the current state is for
+        public string stateDescription;
 
         
         //plays on the frame the state enters

@@ -10,7 +10,7 @@ namespace AbilitySystem
 
         public override void Init(CharacterManager character, GameObject go, BehaviourData data)
         {
-            SpellBehaviour spell = World.spellPool.GetObjectScript(data.behaviourObject);
+            SpellBehaviour spell = World.spellPool.PullObjectBehaviour(data.behaviourObject);
             spell.target = character.target;
 
             GameObject newGo = spell.gameObject;
