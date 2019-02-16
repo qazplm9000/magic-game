@@ -39,7 +39,10 @@ namespace AbilitySystem
         /// </summary>
         /// <returns></returns>
         public bool PlayCurrentCombo() {
-            bool playing = currentCombo.UseAbility(character);
+            previousFrame = currentFrame;
+            currentFrame += Time.deltaTime;
+
+            bool playing = currentCombo.UseAbility(character, previousFrame, currentFrame);
 
             if (!playing) {
                 currentCombo = GetNextCombo();

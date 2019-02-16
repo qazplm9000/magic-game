@@ -8,6 +8,6 @@ namespace MovementSystem
     {
         public string description;
 
-        public abstract void Move(CharacterManager character, Vector3 direction);
+        public abstract void Move(MovementManager character, Vector3 direction);
     }
 }

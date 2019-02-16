@@ -9,7 +9,7 @@ namespace MovementSystem
     {
         public string description;
 
-        public abstract void Rotate(CharacterManager character, Vector3 direction);
+        public abstract void Rotate(MovementManager character, Vector3 direction);
 
     }
 }

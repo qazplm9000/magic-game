@@ -11,7 +11,10 @@ namespace AbilitySystem
         public override void Execute(SpellBehaviour spell)
         {
             spell.transform.position += spell.transform.forward * spell.speed * Time.deltaTime;
-            spell.transform.LookAt(spell.target.transform);
+            if (spell.target != null)
+            {
+                spell.transform.LookAt(spell.target.transform);
+            }
         }
     }
 }

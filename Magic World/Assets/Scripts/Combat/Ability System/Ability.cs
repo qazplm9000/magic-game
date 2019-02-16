@@ -8,7 +8,8 @@ namespace AbilitySystem {
 
         public string spellName = "";
         public int manaCost = 1;
-        public Element spellElement;
+        public AbilityElement spellElement;
+        public AbilityType spellType;
 
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace AbilitySystem {
         /// Override if anything fancy needs to be done (like checking character buffs and stuff)
         /// </summary>
         /// <returns></returns>
-        public virtual Element GetElement(CharacterManager caster) {
+        public virtual AbilityElement GetElement(CharacterManager caster) {
             return spellElement;
         }
 
@@ -85,6 +86,7 @@ namespace AbilitySystem {
                                         caster.transform.forward * offset.z +
                                         caster.transform.right * offset.x +
                                         caster.transform.up * offset.y;
+            go.transform.rotation = caster.transform.rotation;
         }
 
     }

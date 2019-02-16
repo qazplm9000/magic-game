@@ -48,7 +48,7 @@ namespace CombatSystem
             }
             else {
                 //currentCharacter.defaultState.Execute(currentCharacter);
-                currentCharacter.TakeTurn();
+                //currentCharacter.TakeTurn();
                 turnTimer -= Time.deltaTime;
             }
 

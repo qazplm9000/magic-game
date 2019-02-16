@@ -46,19 +46,17 @@ public class CharacterManager : MonoBehaviour {
     //public CharacterController controller;
     public CombatController combat;
     public Targetter targetter;
-    public CharacterMovement movement;
+    public MovementManager movement;
     public CharacterRotation rotation;
     public CharacterStats stats;
     public ComboManager combos;
     public AbilityManager abilityCaster;
-
+    public CharacterStateManager stateManager;
+    public CharacterAction currentAction;
+    public CharacterAction bufferedAction;
 
     public Ability currentAbility;
     public Ability bufferedAbility;
-    [HideInInspector]
-    public float castPrevious = 0;
-    [HideInInspector]
-    public float castCurrent = 0;
 
     public CharacterVariables vars = new CharacterVariables();
 
@@ -73,7 +71,6 @@ public class CharacterManager : MonoBehaviour {
     public NavMeshAgent agent;
     [HideInInspector]
     public Vector3 direction;
-    public Vector3 turnDirection;
     //public CharacterState state;
 
     [Header("Movement")]
@@ -92,15 +89,8 @@ public class CharacterManager : MonoBehaviour {
         }
     }
     public CharacterManager _target;
-    public CharacterInput playerController;
-    public CharacterState currentState;
-    public CharacterStateTree stateTree;
 
-
-    [HideInInspector]
-    public float delta;
-    [Header("Time")]
-    public float timeScale = 1;
+    
 
     public delegate void CharacterEvent(CharacterManager character);
     public CharacterEvent OnNewTarget;
@@ -117,10 +107,8 @@ public class CharacterManager : MonoBehaviour {
         //targetter = transform.GetComponent<PlayerTargetter>();
         combos = transform.GetComponent<ComboManager>();
         abilityCaster = transform.GetComponent<AbilityManager>();
-
-        turnDirection = transform.forward;
-
-        currentState = stateTree.GetDefaultState();
+        movement = transform.GetComponent<MovementManager>();
+        stateManager = transform.GetComponent<CharacterStateManager>();
 
         //prevents the navmesh agent from auto-turning
         agent.updateRotation = false;
@@ -131,37 +119,13 @@ public class CharacterManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         SetAnimationMovement();
-        SetDelta();
         SetTrueSpeed();
 
         direction = transform.forward;
 
-        Attack();
-
-        /*if (anim.GetBool("canMove"))
-        {
-            currentState = defaultState;
-        }
-        else {
-            currentState = attackState;
-        }
-
-        if (currentSpell != null) {
-            bool result = currentSpell.Execute(this);
-            if (!result) {
-                currentSpell = null;
-            }
-        }*/
-
 	}
 
-
-    /// <summary>
-    /// Sets the delta based on timeScale
-    /// </summary>
-    private void SetDelta() {
-        delta = Time.deltaTime * timeScale;
-    }
+    
 
     private void SetAnimationMovement() {
         if (anim != null)
@@ -171,11 +135,7 @@ public class CharacterManager : MonoBehaviour {
         }
     }
 
-
-    public void SetTimeScale(float newTimescale) {
-        timeScale = newTimescale;
-        anim.speed = timeScale;
-    }
+    
 
     public void SetTrueSpeed() {
         trueSpeed = rb.velocity.magnitude;
@@ -187,92 +147,8 @@ public class CharacterManager : MonoBehaviour {
     }
     
 
-    /// <summary>
-    /// Moves the character in the direction relative to the camera
-    /// </summary>
-    /// <param name="direction"></param>
-    /// <param name="speed"></param>
-    public void Move(Vector3 direction) {
-        movement.Move(this, direction);
-    }
+    
 
-    /// <summary>
-    /// Rotates the character in the direction relative to the character
-    /// </summary>
-    /// <param name="direction"></param>
-    public void Rotate(Vector3 direction) {
-        rotation.Rotate(this, direction);
-    }
-
-
-    /// <summary>
-    /// Has the player take their turn
-    /// Returns true if the current ability is set, returns false otherwise
-    /// </summary>
-    public bool TakeTurn() {
-        if (currentState != null)
-        {
-            currentState.Execute(this);
-        }
-        else {
-            Idle();
-        }
-
-        return currentAbility != null;
-    }
-
-    public void Idle() {
-        //currentState = stateTree.GetIdleState();
-    }
-
-
-    /// <summary>
-    /// Casts the ability if not currently casting
-    /// Returns false if already casting
-    /// </summary>
-    /// <param name="ability"></param>
-    /// <returns></returns>
-    public bool CastAbility(Ability ability, bool bufferable = true)
-    {
-        bool result = false;
-
-        if (currentAbility == null)
-        {
-            currentAbility = ability;
-        }
-        else {
-            if (bufferable) {
-                bufferedAbility = ability;
-            }
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Runs the current ability to completion and replaces with the buffered ability when done
-    /// Returns false when done running
-    /// </summary>
-    /// <returns></returns>
-    public bool RunAbility() {
-        bool playing = false;
-
-        castPrevious = castCurrent;
-        castCurrent += Time.deltaTime;
-
-        if (currentAbility != null)
-        {
-            playing = currentAbility.UseAbility();
-        }
-
-        if (!playing) {
-            castPrevious = 0;
-            castCurrent = 0;
-            currentAbility = null;
-        }
-
-        return playing;
-    }
 
 
 
@@ -300,25 +176,146 @@ public class CharacterManager : MonoBehaviour {
 
         return result;
     }
+    
 
-    public void Test(string arg) {
-        Debug.Log(arg);
+
+
+
+
+
+
+
+
+
+    //*************************************************//
+    //*************************************************//
+    //*************                    ****************//
+    //************  Movement Functions  ***************//
+    //*************                    ****************//
+    //*************************************************//
+    //*************************************************//
+
+
+
+    /// <summary>
+    /// Moves the character in the direction relative to the camera
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="speed"></param>
+    public void Move(Vector3 direction)
+    {
+        movement.Move(direction);
     }
+
+    /// <summary>
+    /// Rotates the character in the direction relative to the character
+    /// </summary>
+    /// <param name="direction"></param>
+    public void Rotate()
+    {
+        movement.Rotate();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //*************************************************//
+    //*************************************************//
+    //*************                  ******************//
+    //************  Combat Functions  *****************//
+    //*************                  ******************//
+    //*************************************************//
+    //*************************************************//
+
+
 
     /// <summary>
     /// Plays the current combo in the combo manager
     /// </summary>
     /// <returns></returns>
-    public bool Attack() {
+    public bool Attack()
+    {
         return combos.PlayCurrentCombo();
     }
+
+    /// <summary>
+    /// Runs the current ability to completion and replaces with the buffered ability when done
+    /// Returns false when done running
+    /// </summary>
+    /// <returns></returns>
+    public bool RunAbility()
+    {
+        bool playing = false;
+
+        playing = abilityCaster.Cast();
+
+        return playing;
+    }
+
+    /// <summary>
+    /// Casts the ability if not currently casting
+    /// Returns false if already casting
+    /// </summary>
+    /// <param name="ability"></param>
+    /// <returns></returns>
+    public bool CastAbility(Ability ability, bool bufferable = true)
+    {
+        bool result = false;
+
+        if (currentAbility == null)
+        {
+            currentAbility = ability;
+        }
+        else
+        {
+            if (bufferable)
+            {
+                bufferedAbility = ability;
+            }
+        }
+
+        return result;
+    }
+
+
+    public void TakeDamage(int damage)
+    {
+        stats.TakeDamage(damage);
+    }
+
+
+
+
+
+
+
+
+    //*************************************************//
+    //*************************************************//
+    //***********                     *****************//
+    //**********  Animation Functions  ****************//
+    //***********                     *****************//
+    //*************************************************//
+    //*************************************************//
+
 
 
     /// <summary>
     /// Plays the animation
     /// </summary>
     /// <param name="animationName"></param>
-    public void PlayAnimation(string animationName, int layer = 0) {
+    public void PlayAnimation(string animationName, int layer = 0)
+    {
         //later on maybe extend functionality to a separate animation class
         //  that allows the same animator to be used across characters with separate
         //  but with different animations assigned to different names
@@ -327,8 +324,5 @@ public class CharacterManager : MonoBehaviour {
 
 
 
-    public void TakeDamage(int damage) {
-        stats.TakeDamage(damage);
-    }
 
 }
