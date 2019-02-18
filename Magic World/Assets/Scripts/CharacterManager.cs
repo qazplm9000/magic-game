@@ -122,8 +122,8 @@ public class CharacterManager : MonoBehaviour {
 
     public void Start()
     {
-        World.eventManager.SubscribeEvent("OnSwitchNextButton", SwitchNextCombo);
-        World.eventManager.SubscribeEvent("OnSwitchPreviousButton", SwitchPreviousCombo);
+        //World.eventManager.SubscribeEvent("OnSwitchNextButton", SwitchNextCombo);
+        //World.eventManager.SubscribeEvent("OnSwitchPreviousButton", SwitchPreviousCombo);
     }
     
 	

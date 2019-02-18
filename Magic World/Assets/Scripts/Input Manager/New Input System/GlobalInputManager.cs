@@ -14,6 +14,9 @@ namespace InputSystem
         public List<InputObject2> inputs;
         public List<InputAxisObject> axisObjects;
 
+        public delegate void InputEvent(CharacterInput2 input);
+        public event InputEvent OnInput;
+
         public CharacterEventManager eventManager;
 
 
@@ -46,7 +49,6 @@ namespace InputSystem
                         if (Input.GetKey(inputs[i].inputKey))
                         {
                             eventManager.RaiseEvent(inputs[i].inputEventName);
-                            Debug.Log("Holding down key");
                         }
                         break;
                     case KeyTiming.KeyUp:
