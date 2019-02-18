@@ -9,6 +9,8 @@ namespace CharacterStateSystem
         public CharacterManager character;
 
         public CharacterStateTree stateTree;
+        [Tooltip("Total time spent in the current state")]
+        public float stateTime = 0f;
 
 
         public CharacterState currentState;
@@ -26,30 +28,52 @@ namespace CharacterStateSystem
             ChangeState(stateTree.GetDefaultState());
         }
 
-
-
-        public void Update()
+        public void Start()
         {
-            currentState.Execute(character);
+            World.eventManager.SubscribeEvent("OnAttackButton", CheckTransitions);
+            World.eventManager.SubscribeEvent("OnCastButton", CheckTransitions);
+            World.eventManager.SubscribeEvent("OnFinishCast", CheckTransitions);
+            World.eventManager.SubscribeEvent("OnFinishAttack", CheckTransitions);
+        }
 
-            //Loops through all transitions and transitions if its conditions hold true
-            for (int i = 0; i < currentTransitions.Count; i++) {
+
+
+        public void Update(){
+            currentState.Execute(character);
+            stateTime += Time.deltaTime;
+
+            
+        }
+
+
+
+        /// <summary>
+        /// Loops through all transitions and transitions if its conditions hold true
+        /// </summary>
+        public void CheckTransitions() {
+            Debug.Log("Checking Transitions");
+            for (int i = 0; i < currentTransitions.Count; i++)
+            {
                 currentTransitions[i].Transition(this);
             }
         }
 
 
-
         public void ChangeState(CharacterState state) {
-            if (currentState != null) {
-                currentState.ExitState(character);
-            }
-
             if (state != null)
             {
+                if (currentState != null)
+                {
+                    currentState.ExitState(character);
+                }
+
                 state.EnterState(character);
                 currentState = state;
                 currentTransitions = stateTree.GetTransitions(state);
+
+                stateTime = 0;
+
+                character.RaiseEvent("OnStateChanged");
             }
 
         }

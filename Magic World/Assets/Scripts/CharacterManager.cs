@@ -9,6 +9,7 @@ using StatSystem;
 using CharacterStateSystem;
 using MovementSystem;
 using TargettingSystem;
+using EventSystem;
 
 
 public class CharacterManager : MonoBehaviour {
@@ -52,6 +53,8 @@ public class CharacterManager : MonoBehaviour {
     public ComboManager combos;
     public AbilityManager abilityCaster;
     public CharacterStateManager stateManager;
+    public CharacterEventManager eventManager;
+
     public CharacterAction currentAction;
     public CharacterAction bufferedAction;
 
@@ -109,12 +112,20 @@ public class CharacterManager : MonoBehaviour {
         abilityCaster = transform.GetComponent<AbilityManager>();
         movement = transform.GetComponent<MovementManager>();
         stateManager = transform.GetComponent<CharacterStateManager>();
+        eventManager = transform.GetComponent<CharacterEventManager>();
 
         //prevents the navmesh agent from auto-turning
         agent.updateRotation = false;
 
         mainCamera = Camera.main;
     }
+
+    public void Start()
+    {
+        World.eventManager.SubscribeEvent("OnSwitchNextButton", SwitchNextCombo);
+        World.eventManager.SubscribeEvent("OnSwitchPreviousButton", SwitchPreviousCombo);
+    }
+    
 	
 	// Update is called once per frame
 	void Update () {
@@ -122,6 +133,7 @@ public class CharacterManager : MonoBehaviour {
         SetTrueSpeed();
 
         direction = transform.forward;
+        
 
 	}
 
@@ -245,8 +257,29 @@ public class CharacterManager : MonoBehaviour {
     /// <returns></returns>
     public bool Attack()
     {
-        return combos.PlayCurrentCombo();
+        bool attacking = abilityCaster.Attack();
+
+        if (!attacking) {
+            eventManager.RaiseEvent("OnFinishAttack");
+        }
+
+        return abilityCaster.Attack();
     }
+
+    public void SwitchNextCombo() {
+        abilityCaster.SwitchNextCombo();
+        Debug.Log("Switched next combo");
+    }
+
+    public void SwitchPreviousCombo() {
+        abilityCaster.SwitchPreviousCombo();
+        Debug.Log("Switched previous");
+    }
+
+    public void ResetCombo() {
+        abilityCaster.ResetCombo();
+    }
+
 
     /// <summary>
     /// Runs the current ability to completion and replaces with the buffered ability when done
@@ -255,11 +288,13 @@ public class CharacterManager : MonoBehaviour {
     /// <returns></returns>
     public bool RunAbility()
     {
-        bool playing = false;
+        bool playing = abilityCaster.Cast();
 
-        playing = abilityCaster.Cast();
+        if (!playing) {
+            eventManager.RaiseEvent("OnFinishCast");
+        }
 
-        return playing;
+        return abilityCaster.Cast();
     }
 
     /// <summary>
@@ -324,5 +359,25 @@ public class CharacterManager : MonoBehaviour {
 
 
 
+
+    //*************************************************//
+    //*************************************************//
+    //*************                 *******************//
+    //************  Event Functions  ******************//
+    //*************                 *******************//
+    //*************************************************//
+    //*************************************************//
+
+    public void RaiseEvent(string eventName) {
+        eventManager.RaiseEvent(eventName);
+    }
+
+    public void SubscribeEvent(string eventName, CharacterEventHandler.CharacterEvent method) {
+        eventManager.SubscribeEvent(eventName, method);
+    }
+
+    public void UnsubscribeEvent(string eventName, CharacterEventHandler.CharacterEvent method) {
+        eventManager.UnsubscribeEvent(eventName, method);
+    }
 
 }

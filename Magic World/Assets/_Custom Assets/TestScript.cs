@@ -9,22 +9,21 @@ public class TestScript : MonoBehaviour
     public TestClass t;
 
     private List<TestClass> ts = new List<TestClass>();
-
-    private Dictionary<string, Vector3> testDict = new Dictionary<string, Vector3>();
+    
     private Vector3 testValue = new Vector3(1, 1, 1);
 
 
 
     // Start is called before the first frame update
-    void Start()
+    void Update()
     {
-        testDict["test"] = new Vector3(1, 1, 1);
+        Vector3 test = Vector3.zero;
 
         DateTime newTime = DateTime.Now;
         DateTime time = DateTime.Now;
 
         for (int i = 0; i < 1000000; i++) {
-            //TestWithTypeCast();
+            TestWithTypeCast();
         }
 
         newTime = DateTime.Now;
@@ -34,7 +33,7 @@ public class TestScript : MonoBehaviour
         time = DateTime.Now;
 
         for (int i = 0; i < 1000000; i++) {
-            TestWithTypeCast();
+            TestWithoutTypeCast();
         }
 
         newTime = DateTime.Now;
@@ -42,41 +41,19 @@ public class TestScript : MonoBehaviour
         Debug.Log("Without Typecast: " + (newTime - time).TotalMilliseconds);
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
+    
 
 
 
 
     public void TestWithTypeCast() {
-    }
-
-    public void TestWithoutTypeCast() {
-    }
-
-
-
-
-
-    public interface TestClass{
         
     }
 
-
-    public class TestClass1{
-
-        public virtual void Test() {
-            
-        }
+    public void TestWithoutTypeCast(object ob = null) {
     }
 
-    public class TestClass2{
-        
-    }
+    
 
 
 

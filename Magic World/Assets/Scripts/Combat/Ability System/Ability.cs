@@ -10,7 +10,7 @@ namespace AbilitySystem {
         public int manaCost = 1;
         public AbilityElement spellElement;
         public AbilityType spellType;
-
+        public int spellPower;
 
         /// <summary>
         /// Run every frame to cast the ability

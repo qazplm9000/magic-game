@@ -4,6 +4,7 @@ using UnityEngine;
 using CombatSystem;
 using InputSystem;
 using AbilitySystem;
+using EventSystem;
 
 //Keeps track of all globals needed
 //also runs all required scripts every frame
@@ -15,6 +16,7 @@ public class World : MonoBehaviour {
     //public static OverworldState overworld;
     public static InputManager inputs;
     public InputObject inputObject;
+    public static CharacterEventManager eventManager;
 
     //object pools for various objects
     public ObjectPool<SpellBehaviour> spellPool;
@@ -50,6 +52,8 @@ public class World : MonoBehaviour {
             inputs = new InputManager();
             inputs.inputKeys = inputObject;
         }
+
+        eventManager = transform.GetComponent<CharacterEventManager>();
 
         spellPool = new ObjectPool<SpellBehaviour>();
         hitboxPool = new ObjectPool<Hitbox>();

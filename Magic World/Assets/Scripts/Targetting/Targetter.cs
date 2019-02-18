@@ -47,7 +47,7 @@ namespace TargettingSystem
         }
 
 
-        public abstract float GetTargetCriteria(CharacterManager character, CharacterManager target);
+        protected abstract float GetTargetCriteria(CharacterManager character, CharacterManager target);
 
     }
 }

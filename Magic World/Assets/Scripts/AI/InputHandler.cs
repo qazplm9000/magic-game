@@ -5,9 +5,13 @@ using InputSystem;
 
 namespace ControlSystem
 {
-    public abstract class InputHandler : MonoBehaviour
+    public class InputHandler : MonoBehaviour
     {
-        protected CharacterManager manager;
+        public CharacterManager character;
+        
+
+
+        /*protected CharacterManager manager;
         public float trueSpeed;
         public bool isDead;
         public bool isInvincible;
@@ -57,6 +61,6 @@ namespace ControlSystem
         {
             return trueSpeed != 0;
         }
-
+        */
     }
 }

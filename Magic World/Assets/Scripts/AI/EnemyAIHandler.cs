@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using ControlSystem;
 
-public class EnemyAIHandler : InputHandler
+public class EnemyAIHandler
 {
-    protected override bool IsCharacterMoving()
+    /*protected override bool IsCharacterMoving()
     {
         return base.IsCharacterMoving();
-    }
+    }*/
 }

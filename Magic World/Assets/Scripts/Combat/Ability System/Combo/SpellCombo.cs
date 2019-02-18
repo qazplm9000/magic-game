@@ -18,6 +18,8 @@ namespace AbilitySystem
         [Tooltip("Location relative to caster where the spell will instantiate")]
         public Vector3 offset;
 
+        public SpellController controller;
+
         protected override void StartCast(CharacterManager character)
         {
             character.PlayAnimation(animationName);
@@ -27,6 +29,7 @@ namespace AbilitySystem
         {
             if (previousFrame < spellThrowTime && currentFrame > spellThrowTime) {
                 SpellBehaviour spell = World.PullSpellObject(spellObject);
+                spell.InitSpell(character, character.target, controller, this);
                 
                 SetPosition(character, spell.transform, offset);
             }
