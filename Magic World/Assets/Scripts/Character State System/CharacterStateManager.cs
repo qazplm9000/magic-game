@@ -30,10 +30,10 @@ namespace CharacterStateSystem
 
         public void Start()
         {
-            World.eventManager.SubscribeEvent("OnAttackButton", CheckTransitions);
+            /*World.eventManager.SubscribeEvent("OnAttackButton", CheckTransitions);
             World.eventManager.SubscribeEvent("OnCastButton", CheckTransitions);
             World.eventManager.SubscribeEvent("OnFinishCast", CheckTransitions);
-            World.eventManager.SubscribeEvent("OnFinishAttack", CheckTransitions);
+            World.eventManager.SubscribeEvent("OnFinishAttack", CheckTransitions);*/
         }
 
 
@@ -42,7 +42,7 @@ namespace CharacterStateSystem
             currentState.Execute(character);
             stateTime += Time.deltaTime;
 
-            
+            CheckTransitions();
         }
 
 
@@ -51,7 +51,7 @@ namespace CharacterStateSystem
         /// Loops through all transitions and transitions if its conditions hold true
         /// </summary>
         public void CheckTransitions() {
-            Debug.Log("Checking Transitions");
+            //Debug.Log("Checking Transitions");
             for (int i = 0; i < currentTransitions.Count; i++)
             {
                 currentTransitions[i].Transition(this);
@@ -70,6 +70,7 @@ namespace CharacterStateSystem
                 state.EnterState(character);
                 currentState = state;
                 currentTransitions = stateTree.GetTransitions(state);
+                character.allowedActions = currentState.allowedActions;
 
                 stateTime = 0;
 

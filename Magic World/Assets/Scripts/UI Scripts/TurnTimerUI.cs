@@ -22,7 +22,7 @@ public class TurnTimerUI : MonoBehaviour
 
 
     public float CalculateTurnAmount() {
-        float result = World.world.turnTimer / World.world.turnTime;
+        float result = World.battle.turnTimer / World.battle.turnTime;
         return result;
     }
 }

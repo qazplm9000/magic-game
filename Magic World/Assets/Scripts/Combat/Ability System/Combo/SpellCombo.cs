@@ -30,6 +30,7 @@ namespace AbilitySystem
             if (previousFrame < spellThrowTime && currentFrame > spellThrowTime) {
                 SpellBehaviour spell = World.PullSpellObject(spellObject);
                 spell.InitSpell(character, character.target, controller, this);
+                World.battle.ChangeFieldElement(spellElement);
                 
                 SetPosition(character, spell.transform, offset);
             }

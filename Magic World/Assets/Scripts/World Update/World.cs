@@ -5,33 +5,25 @@ using CombatSystem;
 using InputSystem;
 using AbilitySystem;
 using EventSystem;
+using BattleSystem;
 
 //Keeps track of all globals needed
 //also runs all required scripts every frame
 public class World : MonoBehaviour {
 
     public static World world;
-    public BattleState battle;
-    public WorldUpdate worldUpdate;
+    public static BattleManager battle;
     //public static OverworldState overworld;
     public static InputManager inputs;
     public InputObject inputObject;
     public static CharacterEventManager eventManager;
+    public GlobalInputManager input1;
+    public GlobalInputManager input2;
 
     //object pools for various objects
     public ObjectPool<SpellBehaviour> spellPool;
     public ObjectPool<Hitbox> hitboxPool;
-
-
-    [Header("Combat")]
-    public List<CharacterManager> allCharacters = new List<CharacterManager>();
-    public List<CharacterManager> turnOrder = new List<CharacterManager>();
-
-    public CharacterManager currentTurn;
-    public int turnIndex = 0;
-    public float turnTime;
-    public float turnTimer;
-
+    
 
     //main camera
     public Camera mainCamera;
@@ -54,6 +46,11 @@ public class World : MonoBehaviour {
         }
 
         eventManager = transform.GetComponent<CharacterEventManager>();
+        battle = transform.GetComponent<BattleManager>();
+
+        GlobalInputManager[] allInputs = transform.GetComponents<GlobalInputManager>();
+        input1 = allInputs[0];
+        input2 = allInputs[1];
 
         spellPool = new ObjectPool<SpellBehaviour>();
         hitboxPool = new ObjectPool<Hitbox>();
@@ -69,26 +66,16 @@ public class World : MonoBehaviour {
 
     private void Start()
     {
-        SetAllCharacters();
-        worldUpdate.StartWorld(this);
+        //worldUpdate.StartWorld(this);
     }
 
 
     // Update is called once per frame
     void Update () {
-        worldUpdate.UpdateWorld(this);
+        //worldUpdate.UpdateWorld(this);
 	}
 
-
-
-    public void SetAllCharacters() {
-        CharacterManager[] characters = FindObjectsOfType<CharacterManager>();
-        allCharacters = new List<CharacterManager>();
-
-        for (int i = 0; i < characters.Length; i++) {
-            allCharacters.Add(characters[i]);
-        }
-    }
+    
 
 
     // Pooling functions

@@ -10,7 +10,7 @@ using CharacterStateSystem;
 using MovementSystem;
 using TargettingSystem;
 using EventSystem;
-
+using BuffSystem;
 
 public class CharacterManager : MonoBehaviour {
 
@@ -45,21 +45,22 @@ public class CharacterManager : MonoBehaviour {
 
     // [HideInInspector]
     //public CharacterController controller;
-    public CombatController combat;
-    public Targetter targetter;
+    public TargetManager targetter;
     public MovementManager movement;
-    public CharacterRotation rotation;
     public CharacterStats stats;
-    public ComboManager combos;
     public AbilityManager abilityCaster;
     public CharacterStateManager stateManager;
     public CharacterEventManager eventManager;
+    public CharacterController characterController;
+    public StatusManager statusManager;
 
     public CharacterAction currentAction;
     public CharacterAction bufferedAction;
 
     public Ability currentAbility;
     public Ability bufferedAbility;
+
+    public AllowedActions allowedActions;
 
     public CharacterVariables vars = new CharacterVariables();
 
@@ -101,18 +102,17 @@ public class CharacterManager : MonoBehaviour {
 
     // Use this for initialization
     void Awake () {
-        //controller = transform.GetComponent<CharacterController>();
-        combat = transform.GetComponent<CombatController>();
         anim = transform.GetComponentInChildren<Animator>();
         rb = transform.GetComponent<Rigidbody>();
         agent = transform.GetComponent<NavMeshAgent>();
-        //comboUser = transform.GetComponent<ComboUser>();
-        //targetter = transform.GetComponent<PlayerTargetter>();
-        combos = transform.GetComponent<ComboManager>();
         abilityCaster = transform.GetComponent<AbilityManager>();
         movement = transform.GetComponent<MovementManager>();
         stateManager = transform.GetComponent<CharacterStateManager>();
         eventManager = transform.GetComponent<CharacterEventManager>();
+        characterController = transform.GetComponent<CharacterController>();
+        targetter = transform.GetComponent<TargetManager>();
+        stats = transform.GetComponent<CharacterStats>();
+        statusManager = transform.GetComponent<StatusManager>();
 
         //prevents the navmesh agent from auto-turning
         agent.updateRotation = false;
@@ -124,6 +124,8 @@ public class CharacterManager : MonoBehaviour {
     {
         //World.eventManager.SubscribeEvent("OnSwitchNextButton", SwitchNextCombo);
         //World.eventManager.SubscribeEvent("OnSwitchPreviousButton", SwitchPreviousCombo);
+        World.world.input1.OnInput += characterController.ReceiveInput;
+        World.world.input2.OnInput += characterController.ReceiveInput;
     }
     
 	
@@ -263,7 +265,11 @@ public class CharacterManager : MonoBehaviour {
             eventManager.RaiseEvent("OnFinishAttack");
         }
 
-        return abilityCaster.Attack();
+        return attacking;
+    }
+
+    public void Cast(Ability ability) {
+        abilityCaster.currentSpell = ability;
     }
 
     public void SwitchNextCombo() {
@@ -282,18 +288,25 @@ public class CharacterManager : MonoBehaviour {
 
 
     /// <summary>
-    /// Runs the current ability to completion and replaces with the buffered ability when done
+    /// Runs the current ability to completion
     /// Returns false when done running
+    /// Raises OnFinishCast event
     /// </summary>
     /// <returns></returns>
     public bool RunAbility()
     {
-        bool playing = abilityCaster.Cast();
+        bool playing = false;
 
-        if (!playing) {
-            eventManager.RaiseEvent("OnFinishCast");
+        if (abilityCaster.currentSpell != null)
+        {
+            playing = abilityCaster.Cast();
+
+            if (!playing)
+            {
+                eventManager.RaiseEvent("OnFinishCast");
+            }
         }
-
+        
         return abilityCaster.Cast();
     }
 
@@ -303,23 +316,9 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="ability"></param>
     /// <returns></returns>
-    public bool CastAbility(Ability ability, bool bufferable = true)
+    public bool NotTakingAction()
     {
-        bool result = false;
-
-        if (currentAbility == null)
-        {
-            currentAbility = ability;
-        }
-        else
-        {
-            if (bufferable)
-            {
-                bufferedAbility = ability;
-            }
-        }
-
-        return result;
+        return stateManager.currentState.StateName == "Active";
     }
 
 
@@ -329,7 +328,11 @@ public class CharacterManager : MonoBehaviour {
     }
 
 
+    public void StartTurn() {
+        RaiseEvent("OnTurnStart");
 
+        statusManager.Tick();
+    }
 
 
 

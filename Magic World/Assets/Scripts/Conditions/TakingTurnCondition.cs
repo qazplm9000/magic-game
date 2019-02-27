@@ -7,7 +7,7 @@ public class TakingTurnCondition : Condition
 {
     public override bool _Execute(CharacterManager character)
     {
-        return World.world.currentTurn == character;
+        return World.battle.currentTurn.character == character;
     }
     
 }

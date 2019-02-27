@@ -15,6 +15,8 @@ namespace CharacterStateSystem
         //describes what the current state is for
         public string stateDescription;
 
+        public AllowedActions allowedActions;
+
         
         //plays on the frame the state enters
         public List<StateEventObject> enterEvents;
@@ -23,7 +25,7 @@ namespace CharacterStateSystem
         //plays every frame while in the state
         public List<StateEventObject> updateEvents;
 
-        public CharacterInput inputs;
+        //public CharacterInput inputs;
 
 
         public void EnterState(CharacterManager character) {
@@ -35,9 +37,9 @@ namespace CharacterStateSystem
         }
 
         public void Execute(CharacterManager character) {
-            if (inputs != null) {
+            /*if (inputs != null) {
                 inputs.Execute(character);
-            }
+            }*/
 
             for (int i = 0; i < updateEvents.Count; i++) {
                 StateEventObject currentEvent = updateEvents[i];

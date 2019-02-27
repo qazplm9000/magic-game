@@ -14,7 +14,7 @@ namespace InputSystem
         public List<InputObject2> inputs;
         public List<InputAxisObject> axisObjects;
 
-        public delegate void InputEvent(CharacterInput2 input);
+        public delegate void InputEvent(PlayerInput2 input);
         public event InputEvent OnInput;
 
         public CharacterEventManager eventManager;
@@ -42,19 +42,19 @@ namespace InputSystem
                     case KeyTiming.KeyDown:
                         if (Input.GetKeyDown(inputs[i].inputKey))
                         {
-                            eventManager.RaiseEvent(inputs[i].inputEventName);
+                            RaiseEvent(inputs[i].input);
                         }
                         break;
                     case KeyTiming.KeyHeld:
                         if (Input.GetKey(inputs[i].inputKey))
                         {
-                            eventManager.RaiseEvent(inputs[i].inputEventName);
+                            RaiseEvent(inputs[i].input);
                         }
                         break;
                     case KeyTiming.KeyUp:
                         if (Input.GetKeyUp(inputs[i].inputKey))
                         {
-                            eventManager.RaiseEvent(inputs[i].inputEventName);
+                            RaiseEvent(inputs[i].input);
                         }
                         break;
                 }
@@ -73,23 +73,30 @@ namespace InputSystem
                 switch (axis.timing){
                     case KeyTiming.KeyDown:
                         if (axis.currentValue > 0 && axis.previousValue == 0) {
-                            eventManager.RaiseEvent(axis.eventName);
+                            RaiseEvent(axis.input);
                         }
                         break;
                     case KeyTiming.KeyHeld:
                         if (axis.currentValue >= axis.previousValue && axis.currentValue != 0) {
-                            eventManager.RaiseEvent(axis.eventName);
+                            RaiseEvent(axis.input);
                         }
                         break;
                     case KeyTiming.KeyUp:
                         if (axis.currentValue < axis.previousValue && axis.previousValue == axis.maxValue) {
-                            eventManager.RaiseEvent(axis.eventName);
+                            RaiseEvent(axis.input);
                         }
                         break;
                 }
             }
         }
 
+
+
+        private void RaiseEvent(PlayerInput2 input) {
+            if (OnInput != null) {
+                OnInput(input);
+            }
+        }
 
     }
 }

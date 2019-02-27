@@ -12,6 +12,8 @@ namespace AbilitySystem
         public SpellController controller;
         public Ability ability;
         public float speed;
+        
+        public DamageFormula damageFormula;
 
 
         public void InitSpell(CharacterManager newCaster, CharacterManager newTarget, 
@@ -21,6 +23,7 @@ namespace AbilitySystem
             controller = newController;
             ability = newAbility;
             speed = newSpeed;
+            damageFormula = ability.damageFormula;
         }
 
 
@@ -33,11 +36,13 @@ namespace AbilitySystem
 
         private void OnTriggerEnter(Collider other)
         {
-            TargetPoint colliderTarget = other.GetComponent<TargetPoint>();
+            CharacterManager colliderTarget = other.GetComponent<CharacterManager>();
 
-            if (colliderTarget == target)
+            if (colliderTarget != null && colliderTarget != caster)
             {
-                target.stats.TakeDamage(5);
+                int damage = damageFormula.CalculateDamage(caster, colliderTarget, ability);
+                colliderTarget.stats.TakeDamage(damage);
+                colliderTarget.stats.StaggerDamage(ability.staggerPower);
                 //function for spell disappearing
                 World.RemoveObject(transform.gameObject);
             }

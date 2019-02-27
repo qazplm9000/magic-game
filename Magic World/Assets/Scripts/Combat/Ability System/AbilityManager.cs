@@ -23,6 +23,11 @@ namespace AbilitySystem {
         public Combo currentAttack;
         public Combo nextAttack;
 
+        public Skill skill1;
+        public Skill skill2;
+        public Skill skill3;
+        public Skill skill4;
+
 
         public void Start()
         {
@@ -97,8 +102,12 @@ namespace AbilitySystem {
         /// </summary>
         public void SwitchNextCombo() {
             currentComboIndex = (currentComboIndex + 1) % listOfCombos.Count;
-
             currentCombo = listOfCombos[currentComboIndex];
+
+            //if next combo is a blank space, increment again
+            if (currentCombo == null) {
+                SwitchNextCombo();
+            }
 
             ResetCombo();
         }
@@ -115,6 +124,10 @@ namespace AbilitySystem {
             }
 
             currentCombo = listOfCombos[currentComboIndex];
+
+            if (currentCombo == null) {
+                SwitchPreviousCombo();
+            }
 
             ResetCombo();
         }
@@ -150,6 +163,7 @@ namespace AbilitySystem {
 
             if (!playing) {
                 ResetTimer();
+                currentSpell = null;
             }
 
             return playing;

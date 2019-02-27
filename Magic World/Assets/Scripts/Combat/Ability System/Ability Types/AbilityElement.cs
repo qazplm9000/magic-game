@@ -8,7 +8,7 @@ namespace AbilitySystem
     public class AbilityElement : ScriptableObject
     {
         public string elementName;
-        public Texture elementImage;
+        public Sprite elementImage;
         public AbilityElement compatibleElement;
         public AbilityElement incompatibleElement;
     }

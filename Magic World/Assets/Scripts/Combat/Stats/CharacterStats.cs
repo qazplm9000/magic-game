@@ -7,16 +7,20 @@ using UnityEngine.UI;
 namespace StatSystem
 {
     [System.Serializable]
-    public class CharacterStats
+    public class CharacterStats : MonoBehaviour
     {
+        private CharacterManager character;
+
         [Tooltip("Character's current health")]
         public int currentHealth;
         [Tooltip("Character's maximum health")]
         public int maxHealth;
-        [Tooltip("Character's current mana")]
-        public int currentMana;
-        [Tooltip("Character's maximum mana")]
-        public int maxMana;
+        public int staggerThreshold = 100;
+        public int baseStaggerThreshold = 100;
+        public int staggerAmount = 0;
+        public int staggerLevel = 0;
+        [Range(0, 1)]
+        public float staggerResistance = 0;
         [Tooltip("")]
         public int strength;
         [Tooltip("")]
@@ -36,13 +40,18 @@ namespace StatSystem
         public float healthMultiplier;
 
         public bool isDead = false;
+        public bool hasPrecedence = false;
 
-        
+
+        private void Start()
+        {
+            character = transform.GetComponent<CharacterManager>();
+        }
 
 
 
         public void InitStats(List<int> values) {
-            
+
         }
 
 
@@ -73,16 +82,111 @@ namespace StatSystem
             currentHealth = Mathf.Min(currentHealth, maxHealth);
         }
 
+
+
+
+
+        /***************************************/
+        /***************************************/
+        /************ Staggering ***************/
+        /***************************************/
+        /***************************************/
+
+        /// <summary>
+        /// Increases stagger amount
+        /// </summary>
+        public void StaggerDamage(int stagger) {
+            staggerAmount += stagger;
+
+            if (staggerAmount > staggerThreshold) {
+                StaggerLevelUp();
+            }
+        }
+
+
+        /// <summary>
+        /// Raises the stagger level
+        /// Resets the stagger amount
+        /// Raises the stagger threshold
+        /// </summary>
+        public void StaggerLevelUp() {
+            staggerLevel++;
+            //<Include logic for reducing stagger resistance here if needed>
+            staggerAmount = 0;
+            staggerThreshold = (int)(staggerThreshold * 1.2);
+        }
+
+
+
+        /// <summary>
+        /// Completely resets the current stagger
+        /// </summary>
+        public void StaggerReset() {
+            staggerAmount = 0;
+            staggerThreshold = baseStaggerThreshold;
+            staggerLevel = 0;
+        }
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Returns true if the target has 0 HP.
         /// </summary>
         /// <returns></returns>
         public bool IsDead() {
-            return currentHealth > 0;
+            return currentHealth <= 0;
         }
 
-        
 
+        /// <summary>
+        /// Returns true the frame the character dies in
+        /// </summary>
+        /// <returns></returns>
+        public bool HasDied() {
+            bool hasDied = false;
+
+            if (!isDead && currentHealth <= 0) {
+                hasDied = true;
+                isDead = true;
+                character.RaiseEvent("OnCharacterDeath");
+            }
+
+            return hasDied;
+        }
+
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// Calculates how long for the character's next turn to start
+        /// </summary>
+        /// <param name="previousTurn"></param>
+        /// <returns></returns>
+        public float CalculateNextTurn(float previousTurn) {
+            return previousTurn + (1000f / (agility + 100));
+        }
+
+        /// <summary>
+        /// Calculates how long for the character's first turn
+        /// </summary>
+        /// <param name="previousTurn"></param>
+        /// <returns></returns>
+        public float CalculateFirstTurn() {
+            return hasPrecedence ? 0 : CalculateNextTurn(0);
+        }
         
     }
 }

@@ -7,7 +7,7 @@ namespace InputSystem
 {
     public class PossibleActions : ScriptableObject, ISerializationCallbackReceiver
     {
-
+        /*
         public List<InputAllowed> allowedInputs;
 
         private Dictionary<CharacterInput2, bool> _allowedInputs;
@@ -26,7 +26,7 @@ namespace InputSystem
             for (int i = 0; i < allowedInputs.Count; i++) {
                 
             }
-        }
+        }*/
 
         public void OnAfterDeserialize()
         {

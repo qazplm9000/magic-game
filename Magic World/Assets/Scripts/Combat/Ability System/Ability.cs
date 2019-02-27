@@ -11,6 +11,8 @@ namespace AbilitySystem {
         public AbilityElement spellElement;
         public AbilityType spellType;
         public int spellPower;
+        public int staggerPower;
+        public DamageFormula damageFormula;
 
         /// <summary>
         /// Run every frame to cast the ability

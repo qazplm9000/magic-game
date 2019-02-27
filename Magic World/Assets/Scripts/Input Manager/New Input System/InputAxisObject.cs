@@ -9,9 +9,9 @@ namespace InputSystem
     public class InputAxisObject
     {
         public string axisName;
-        public string eventName;
         public KeyTiming timing;
         public string axis;
+        public PlayerInput2 input;
 
         [HideInInspector]
         public float previousValue = 0;

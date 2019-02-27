@@ -23,7 +23,7 @@ namespace EventSystem
                 _eventDict[eventName].Raise();
             }
             else {
-                throw new EventDoesNotExistException();
+                throw new EventDoesNotExistException(eventName);
             }
         }
 

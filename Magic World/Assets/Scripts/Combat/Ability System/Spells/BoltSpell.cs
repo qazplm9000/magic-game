@@ -5,7 +5,7 @@ using UnityEngine;
 namespace AbilitySystem
 {
     [CreateAssetMenu(menuName = "Abilities/Spells/Bolt Spell")]
-    public class BoltSpell : Ability
+    public class BoltSpell : Skill
     {
         public GameObject spellObject;
         public string animationName;

@@ -8,7 +8,7 @@ namespace AbilitySystem
     [CreateAssetMenu(menuName = "Abilities/Combos/Combo Lists/Basic Combo")]
     public class ComboList : ScriptableObject
     {
-        public Texture image;
+        public Sprite image;
         public List<Combo> combos;
     }
 }

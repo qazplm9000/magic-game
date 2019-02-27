@@ -13,6 +13,7 @@ namespace AbilitySystem
         public List<CharacterManager> targets = new List<CharacterManager>();
         private CharacterManager user;
         public Ability ability;
+        public DamageFormula damageFormula;
         
 
         // Use this for initialization
@@ -41,7 +42,8 @@ namespace AbilitySystem
 
             if (target != null && target != user && !targets.Contains(target)) {
                 targets.Add(target);
-                target.TakeDamage(5);
+                int damage = damageFormula.CalculateDamage(user, target, ability);
+                target.TakeDamage(damage);
             }
         }
 
@@ -50,6 +52,7 @@ namespace AbilitySystem
             //sets the caster
             user = caster;
             ability = abilityUsed;
+            damageFormula = ability.damageFormula;
 
             //sets the lifetime for the hitbox
             this.lifetime = lifetime;

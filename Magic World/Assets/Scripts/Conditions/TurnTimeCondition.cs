@@ -7,7 +7,7 @@ public class TurnTimeCondition : Condition
 {
     public override bool _Execute(CharacterManager character)
     {
-        return World.world.turnTime > 0;
+        return World.battle.turnTimer > 0;
     }
     
 }

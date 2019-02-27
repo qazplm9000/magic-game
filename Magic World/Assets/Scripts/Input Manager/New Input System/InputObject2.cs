@@ -8,10 +8,9 @@ namespace InputSystem
     public class InputObject2
     {
         public string inputName;
-        public string inputEventName;
         public KeyTiming timing;
         public KeyCode inputKey;
-
+        public PlayerInput2 input;
 
     }
 }

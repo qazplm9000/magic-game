@@ -4,49 +4,32 @@ using UnityEngine;
 
 namespace AnimationSystem
 {
-    [System.Serializable]
     public class AnimationManager : MonoBehaviour
     {
-        private enum AnimationType
-        {
-            Attack,
-            Cast,
-            None
-        }
-
-        public List<string> attackAnimations;
-        public List<string> castAnimations;
-
-        private long lastCall = 0;
-        private int lastIndex = -1;
-        private AnimationType lastType = AnimationType.None;
-        
-
         private CharacterManager character;
+        private Animator anim;
 
-        private void Start()
-        {
-            character = transform.GetComponent<CharacterManager>();
-        }
+        public List<CharacterAnimation> animations;
+        private Dictionary<string, string> _animations;
+
+        public float crossFadeTime = 0.2f;
 
         /// <summary>
-        /// Gets the proper casting animation
+        /// Plays the animation mapped to the name 
         /// </summary>
-        /// <returns></returns>
-        public string GetCastAnimation() {
-            string result = "";
+        /// <param name="animation"></param>
+        public void PlayAnimation(string animation) {
+            string mappedAnim = _animations[animation];
+            anim.CrossFade(mappedAnim, crossFadeTime);
+        }
 
-            switch (castAnimations.Count) {
-                case 0:
-                    break;
-                case 1:
-                    result = castAnimations[0];
-                    break;
-                default:
-                    break;
-            }
 
-            return result;
+        /// <summary>
+        /// Plays the animation in the Animator of the given name
+        /// </summary>
+        /// <param name="animation"></param>
+        public void PlayRawAnimation(string animation) {
+            anim.CrossFade(animation, crossFadeTime);
         }
 
     }
