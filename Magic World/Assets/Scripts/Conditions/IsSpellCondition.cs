@@ -9,10 +9,11 @@ public class IsSpellCondition : Condition
     public override bool _Execute(CharacterManager character)
     {
         bool result = false;
-
+        /*
         if (character.currentAbility != null) {
             result = character.currentAbility.GetType() == typeof(Ability);
-        }
+        }*/
+        throw new System.Exception("Condition not implemented");
 
         return result;
     }

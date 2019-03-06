@@ -9,8 +9,9 @@ namespace AbilitySystem {
         protected CharacterManager character;
         protected float previousFrame = 0;
         protected float currentFrame = 0;
+        protected Animator anim;
 
-        [Tooltip("Used to swap between different combos")]
+        /*[Tooltip("Used to swap between different combos")]
         public List<ComboList> listOfCombos;
         [Tooltip("The current combo list that has been selected")]
         public ComboList currentCombo;
@@ -18,21 +19,24 @@ namespace AbilitySystem {
         public int currentComboIndex = 0;
         [Tooltip("The index of the current attack in the combo")]
         public int currentAttackIndex = 0;
+        */
 
-        public Ability currentSpell;
+        [Tooltip("Contains all combos and their corresponding skills")]
+        public List<SkillPreset> presets;
+        public int currentPresetIndex = 0;
+        public int currentComboIndex = 0;
+        
         public Combo currentAttack;
         public Combo nextAttack;
-
-        public Skill skill1;
-        public Skill skill2;
-        public Skill skill3;
-        public Skill skill4;
+        public Skill currentSkill;
+        
 
 
         public void Start()
         {
             character = transform.GetComponent<CharacterManager>();
-            currentCombo = listOfCombos[currentComboIndex];
+            anim = transform.GetComponentInChildren<Animator>();
+            //currentCombo = listOfCombos[currentComboIndex];
             ResetCombo();
         }
 
@@ -48,14 +52,14 @@ namespace AbilitySystem {
 
         public void ChangeCombo(ComboList newCombos)
         {
-            currentCombo = newCombos;
+            //currentCombo = newCombos;
             ResetCombo();
         }
 
         public Combo GetNextAttack()
         {
-            currentAttackIndex = (currentAttackIndex + 1) % currentCombo.combos.Count;
-            Combo nextCombo = currentCombo.combos[currentAttackIndex];
+            currentComboIndex++;
+            Combo nextCombo = presets[currentPresetIndex].GetComboAtIndex(currentComboIndex);
             return nextCombo;
         }
 
@@ -92,22 +96,16 @@ namespace AbilitySystem {
         /// </summary>
         public void ResetCombo()
         {
-            currentAttackIndex = 0;
-            nextAttack = currentCombo.combos[0];
+            currentComboIndex = 0;
+            nextAttack = presets[currentPresetIndex].GetComboAtIndex(currentComboIndex);
         }
 
 
         /// <summary>
         /// Switches to the next combo
         /// </summary>
-        public void SwitchNextCombo() {
-            currentComboIndex = (currentComboIndex + 1) % listOfCombos.Count;
-            currentCombo = listOfCombos[currentComboIndex];
-
-            //if next combo is a blank space, increment again
-            if (currentCombo == null) {
-                SwitchNextCombo();
-            }
+        public void SwitchNextPreset() {
+            currentPresetIndex = (currentPresetIndex + 1) % presets.Count;
 
             ResetCombo();
         }
@@ -117,16 +115,10 @@ namespace AbilitySystem {
         /// Switches to the previous combo
         /// </summary>
         public void SwitchPreviousCombo() {
-            currentComboIndex = currentComboIndex - 1;
+            currentPresetIndex--;
 
-            if (currentComboIndex == -1) {
-                currentComboIndex = listOfCombos.Count - 1;
-            }
-
-            currentCombo = listOfCombos[currentComboIndex];
-
-            if (currentCombo == null) {
-                SwitchPreviousCombo();
+            if (currentPresetIndex == -1) {
+                currentPresetIndex = presets.Count - 1;
             }
 
             ResetCombo();
@@ -143,7 +135,17 @@ namespace AbilitySystem {
         //*************************************************//
 
 
-
+        /// <summary>
+        /// Selects the skill at the specified index
+        /// Will do nothing if current skill is not null
+        /// </summary>
+        /// <param name="index"></param>
+        public void SelectSkill(int index) {
+            if (currentSkill == null)
+            {
+                currentSkill = presets[currentPresetIndex].GetSkillAtIndex(index);
+            }
+        }
 
 
         /// <summary>
@@ -156,14 +158,14 @@ namespace AbilitySystem {
 
             bool playing = false;
 
-            if (currentSpell != null)
+            if (currentSkill != null)
             {
-                playing = currentSpell.UseAbility(character, previousFrame, currentFrame);
+                playing = currentSkill.UseAbility(character, previousFrame, currentFrame);
             }
 
             if (!playing) {
                 ResetTimer();
-                currentSpell = null;
+                currentSkill = null;
             }
 
             return playing;

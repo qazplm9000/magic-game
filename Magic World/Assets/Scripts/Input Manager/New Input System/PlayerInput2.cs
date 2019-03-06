@@ -18,8 +18,10 @@ public class PlayerInput2 : ScriptableObject
                 character.currentAction = CharacterAction.Attack;
                 break;
             case InputType.Cast:
-                character.Cast(character.abilityCaster.skill1);
+                character.Cast(0);
+                //Will probably have errors later without checking the current state or something
                 character.currentAction = CharacterAction.Cast;
+                Debug.Log("Reminder to fix this at some point");
                 break;
             case InputType.SwitchNext:
                 character.SwitchNextCombo();

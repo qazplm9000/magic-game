@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SpellSystem;
 using UnityEngine.UI;
+using AbilitySystem;
 
 namespace StatSystem
 {
@@ -11,9 +12,8 @@ namespace StatSystem
     {
         private CharacterManager character;
 
-        [Tooltip("Character's current health")]
+
         public int currentHealth;
-        [Tooltip("Character's maximum health")]
         public int maxHealth;
         public int staggerThreshold = 100;
         public int baseStaggerThreshold = 100;
@@ -21,20 +21,16 @@ namespace StatSystem
         public int staggerLevel = 0;
         [Range(0, 1)]
         public float staggerResistance = 0;
-        [Tooltip("")]
         public int strength;
-        [Tooltip("")]
         public int defense;
-        [Tooltip("")]
         public int magic;
-        [Tooltip("")]
         public int magicDefense;
-        [Tooltip("")]
         public int agility;
-        [Tooltip("")]
-        public int delay;
-        [Tooltip("")]
         public float attackTime;
+        public float incompatibleElementBonus;
+        public float compatibleElementBonus;
+        public float sameElementBonus;
+        public AbilityElement element;
 
         //stat multipliers go here
         public float healthMultiplier;
@@ -161,7 +157,9 @@ namespace StatSystem
         }
 
 
-
+        public AbilityElement GetElement() {
+            return element;
+        }
 
 
 

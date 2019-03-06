@@ -18,7 +18,7 @@ public class ComboUI : MonoBehaviour
     void Start()
     {
         if (target != null) {
-            sprite = target.abilityCaster.listOfCombos[comboIndex].image;
+            //sprite = target.abilityCaster.listOfCombos[comboIndex].image;
             comboImage.sprite = sprite;
         }
     }
@@ -26,12 +26,6 @@ public class ComboUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (target.abilityCaster.currentComboIndex == comboIndex)
-        {
-            comboBackground.color = activeColor;
-        }
-        else {
-            comboBackground.color = inactiveColor;
-        }
+        
     }
 }

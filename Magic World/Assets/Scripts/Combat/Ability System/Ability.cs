@@ -7,12 +7,12 @@ namespace AbilitySystem {
     public abstract class Ability : ScriptableObject {
 
         public string spellName = "";
-        public int manaCost = 1;
         public AbilityElement spellElement;
         public AbilityType spellType;
         public int spellPower;
         public int staggerPower;
         public DamageFormula damageFormula;
+        public TargetType targetType;
 
         /// <summary>
         /// Run every frame to cast the ability
@@ -66,6 +66,7 @@ namespace AbilitySystem {
         /// </summary>
         /// <param name="character"></param>
         protected virtual void EndCast(CharacterManager character) { }
+        
 
 
         /// <summary>
@@ -89,6 +90,61 @@ namespace AbilitySystem {
                                         caster.transform.right * offset.x +
                                         caster.transform.up * offset.y;
             go.transform.rotation = caster.transform.rotation;
+        }
+
+
+
+        /// <summary>
+        /// Damage boost from compatible and same element boost
+        /// </summary>
+        /// <param name="fieldElement"></param>
+        /// <returns></returns>
+        public float GetElementDamageBoost(CharacterManager character, AbilityElement fieldElement) {
+            float result = 1;
+            AbilityElement element = spellElement;
+
+            //Checks if null element, using compatible element instead for faster checks
+            if (element.compatibleElement == null) {
+                element = character.GetElement();
+            }
+
+            if (fieldElement == spellElement.compatibleElement){
+                result += 0.5f;
+            }else if(fieldElement == spellElement){
+                result += 0.2f;
+            }
+             
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Stagger boost from incompatible and same element boost
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="fieldElement"></param>
+        /// <returns></returns>
+        public float GetElementStaggerBoost(CharacterManager character, AbilityElement fieldElement) {
+            float result = 1;
+            AbilityElement element = spellElement;
+
+            //Checks if null element, using compatible element instead for faster checks
+            if (element.compatibleElement == null)
+            {
+                element = character.GetElement();
+            }
+
+            if (fieldElement == spellElement.incompatibleElement)
+            {
+                result += 0.5f;
+            }
+            else if (fieldElement == spellElement)
+            {
+                result += 0.2f;
+            }
+
+            return result;
         }
 
     }

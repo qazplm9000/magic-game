@@ -12,6 +12,7 @@ namespace AbilitySystem
         [Range(0, 1)]
         [Tooltip("How long the hit lasts")]
         public float totalTime;
+        public int manaRegenerated = 1;
 
 
         //public abstract bool Execute(CharacterManager character, float previousFrame, float currentFrame);

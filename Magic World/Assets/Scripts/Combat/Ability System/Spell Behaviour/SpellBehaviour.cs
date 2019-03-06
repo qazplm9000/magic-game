@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BattleSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,12 +38,13 @@ namespace AbilitySystem
         private void OnTriggerEnter(Collider other)
         {
             CharacterManager colliderTarget = other.GetComponent<CharacterManager>();
+            BattleManager battleState = World.battle;
 
             if (colliderTarget != null && colliderTarget != caster)
             {
-                int damage = damageFormula.CalculateDamage(caster, colliderTarget, ability);
-                colliderTarget.stats.TakeDamage(damage);
-                colliderTarget.stats.StaggerDamage(ability.staggerPower);
+                int damage = damageFormula.CalculateDamage(caster, colliderTarget, battleState, ability);
+                colliderTarget.TakeDamage(damage);
+                colliderTarget.StaggerDamage(ability.staggerPower);
                 //function for spell disappearing
                 World.RemoveObject(transform.gameObject);
             }

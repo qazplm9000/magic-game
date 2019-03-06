@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AbilitySystem;
-
+using PartySystem;
 
 namespace BattleSystem
 {
@@ -12,6 +12,10 @@ namespace BattleSystem
         public List<CharacterManager> allEnemies;
         public List<CharacterManager> allAllies;
 
+        public Party enemyParty;
+        public Party playerParty;
+        public Party neutralParty;
+
         public List<CharacterTurn> turnOrder;
         private List<CharacterTurn> allCharactersNextTurns;
 
@@ -20,6 +24,9 @@ namespace BattleSystem
         public float turnTime = 0;
         public float turnTimer = 0;
 
+
+        [Header("Field Element")]
+        public bool lockFieldElement = false;
         public AbilityElement fieldElement;
         public AbilityElement nullElement;
 
@@ -62,7 +69,7 @@ namespace BattleSystem
 
         private void InitTurn(CharacterTurn nextTurn) {
             currentTurn = nextTurn;
-            turnTime = currentTurn.character.stats.attackTime;
+            turnTime = currentTurn.character.GetAttackTime();
             turnTimer = turnTime;
 
             nextTurn.character.StartTurn();
@@ -101,6 +108,17 @@ namespace BattleSystem
         }
 
 
+
+
+        /*******************************************/
+        /*******************************************/
+        /************                  *************/
+        /***********  Element Functions ************/
+        /*************                 *************/
+        /*******************************************/
+        /*******************************************/
+
+
         public void ChangeFieldElement(AbilityElement newElement)
         {
             if (newElement != nullElement)
@@ -116,6 +134,25 @@ namespace BattleSystem
 
 
 
+        public AbilityElement GetFieldElement() {
+            return fieldElement;
+        }
+
+
+
+
+
+
+
+        /**********************************************/
+        /**********************************************/
+        /************                     *************/
+        /***********  Turn Order Functions ************/
+        /*************                    *************/
+        /**********************************************/
+        /**********************************************/
+
+
 
         /// <summary>
         /// Initializes the first turns for all characters
@@ -124,7 +161,7 @@ namespace BattleSystem
             allCharactersNextTurns = new List<CharacterTurn>();
 
             for (int i = 0; i < allCharacters.Count; i++) {
-                CharacterTurn nextTurn = new CharacterTurn(allCharacters[i], allCharacters[i].stats.CalculateFirstTurn());
+                CharacterTurn nextTurn = new CharacterTurn(allCharacters[i], allCharacters[i].CalculateFirstTurn());
                 allCharactersNextTurns.Add(nextTurn);
             }
         }
@@ -173,7 +210,7 @@ namespace BattleSystem
         /// <returns></returns>
         private CharacterTurn IncrementTurn(CharacterTurn turn) {
             CharacterManager character = turn.character;
-            float nextTurnTime = character.stats.CalculateNextTurn(turn.turnTime);
+            float nextTurnTime = character.CalculateNextTurn(turn.turnTime);
 
             return new CharacterTurn(character, nextTurnTime);
         }

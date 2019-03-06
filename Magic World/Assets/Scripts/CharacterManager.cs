@@ -11,6 +11,10 @@ using MovementSystem;
 using TargettingSystem;
 using EventSystem;
 using BuffSystem;
+using PartySystem;
+using BattleSystem;
+using AnimationSystem;
+using InventorySystem;
 
 public class CharacterManager : MonoBehaviour {
 
@@ -45,36 +49,51 @@ public class CharacterManager : MonoBehaviour {
 
     // [HideInInspector]
     //public CharacterController controller;
-    public TargetManager targetter;
-    public MovementManager movement;
-    public CharacterStats stats;
-    public AbilityManager abilityCaster;
-    public CharacterStateManager stateManager;
-    public CharacterEventManager eventManager;
-    public CharacterController characterController;
-    public StatusManager statusManager;
+    private TargetManager targetter;
+    private MovementManager movement;
+    private CharacterStats stats;
+    private AbilityManager abilityCaster;
+    private CharacterStateManager stateManager;
+    private CharacterEventManager eventManager;
+    private CharacterController characterController;
+    private StatusManager statusManager;
+    private AnimationManager animationManager;
+    private Inventory inventory;
+
+    public Party party;
+    public BattleManager battleState;
 
     public CharacterAction currentAction;
     public CharacterAction bufferedAction;
 
-    public Ability currentAbility;
-    public Ability bufferedAbility;
+    /*public Ability currentAbility;
+    public Ability bufferedAbility;*/
 
     public AllowedActions allowedActions;
 
-    public CharacterVariables vars = new CharacterVariables();
+    //public CharacterVariables vars = new CharacterVariables();
 
     //used for allowing different character models
-    public GameObject activeModel;
+    //public GameObject activeModel;
 
-    [HideInInspector]
-    public Animator anim;
-    [HideInInspector]
-    public Rigidbody rb;
-    [HideInInspector]
-    public NavMeshAgent agent;
-    [HideInInspector]
-    public Vector3 direction;
+    /*  Eventually used to load in a character
+     *  Should include:
+     *      Character Model
+     *      Stats
+     *      AI
+     *      
+     */
+    //public CharacterPreset characterPreset;
+    
+
+    //[HideInInspector]
+    //public Animator anim;
+    //[HideInInspector]
+    //public Rigidbody rb;
+    //[HideInInspector]
+    //public NavMeshAgent agent;
+    //[HideInInspector]
+    //public Vector3 direction;
     //public CharacterState state;
 
     [Header("Movement")]
@@ -102,9 +121,9 @@ public class CharacterManager : MonoBehaviour {
 
     // Use this for initialization
     void Awake () {
-        anim = transform.GetComponentInChildren<Animator>();
-        rb = transform.GetComponent<Rigidbody>();
-        agent = transform.GetComponent<NavMeshAgent>();
+        //anim = transform.GetComponentInChildren<Animator>();
+        //rb = transform.GetComponent<Rigidbody>();
+        //agent = transform.GetComponent<NavMeshAgent>();
         abilityCaster = transform.GetComponent<AbilityManager>();
         movement = transform.GetComponent<MovementManager>();
         stateManager = transform.GetComponent<CharacterStateManager>();
@@ -113,9 +132,10 @@ public class CharacterManager : MonoBehaviour {
         targetter = transform.GetComponent<TargetManager>();
         stats = transform.GetComponent<CharacterStats>();
         statusManager = transform.GetComponent<StatusManager>();
+        animationManager = transform.GetComponent<AnimationManager>();
 
         //prevents the navmesh agent from auto-turning
-        agent.updateRotation = false;
+        //agent.updateRotation = false;
 
         mainCamera = Camera.main;
     }
@@ -134,31 +154,13 @@ public class CharacterManager : MonoBehaviour {
         SetAnimationMovement();
         SetTrueSpeed();
 
-        direction = transform.forward;
+        //direction = transform.forward;
         
 
 	}
 
     
 
-    private void SetAnimationMovement() {
-        if (anim != null)
-        {
-            anim.SetFloat("Horizontal", horizontal);
-            anim.SetFloat("Vertical", vertical);
-        }
-    }
-
-    
-
-    public void SetTrueSpeed() {
-        trueSpeed = rb.velocity.magnitude;
-        try
-        {
-            anim.SetFloat("Speed", trueSpeed);
-        }
-        catch (System.Exception e) { }
-    }
     
 
     
@@ -168,28 +170,6 @@ public class CharacterManager : MonoBehaviour {
 
 
 
-    /// <summary>
-    /// Adjusts the direction in relation to camera
-    /// </summary>
-    /// <param name="direction"></param>
-    /// <returns></returns>
-    public Vector3 DirectionFromCamera(Vector3 direction)
-    {
-        Vector3 camForward = mainCamera.transform.forward;
-        camForward = new Vector3(camForward.x, 0, camForward.z);
-        camForward /= camForward.magnitude;
-        Vector3 camRight = mainCamera.transform.right;
-
-        Vector3 result = camForward * direction.z;
-        result += camRight * direction.x;
-
-        if (result.magnitude > 1)
-        {
-            result /= result.magnitude;
-        }
-
-        return result;
-    }
     
 
 
@@ -200,6 +180,7 @@ public class CharacterManager : MonoBehaviour {
 
 
 
+    #region Movement
 
     //*************************************************//
     //*************************************************//
@@ -216,9 +197,9 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="speed"></param>
-    public void Move(Vector3 direction)
+    public void MoveInDirection(Vector3 direction)
     {
-        movement.Move(direction);
+        movement.MoveInDirection(World.world.mainCamera, direction);
     }
 
     /// <summary>
@@ -231,16 +212,19 @@ public class CharacterManager : MonoBehaviour {
     }
 
 
+    public Vector3 GetVelocity() {
+        return movement.GetHorizontalVelocity();
+    }
+
+    public void SetVelocity(Vector3 newVelocity) {
+        movement.SetHorizontalVelocity(newVelocity);
+    }
 
 
+    #endregion
 
-
-
-
-
-
-
-
+    
+    #region Combat
 
 
     //*************************************************//
@@ -268,12 +252,12 @@ public class CharacterManager : MonoBehaviour {
         return attacking;
     }
 
-    public void Cast(Ability ability) {
-        abilityCaster.currentSpell = ability;
+    public void Cast(int index) {
+        abilityCaster.SelectSkill(index);
     }
 
     public void SwitchNextCombo() {
-        abilityCaster.SwitchNextCombo();
+        abilityCaster.SwitchNextPreset();
         Debug.Log("Switched next combo");
     }
 
@@ -297,7 +281,7 @@ public class CharacterManager : MonoBehaviour {
     {
         bool playing = false;
 
-        if (abilityCaster.currentSpell != null)
+        if (abilityCaster.currentSkill != null)
         {
             playing = abilityCaster.Cast();
 
@@ -327,6 +311,9 @@ public class CharacterManager : MonoBehaviour {
         stats.TakeDamage(damage);
     }
 
+    public void StaggerDamage(int damage) {
+        stats.StaggerDamage(damage);
+    }
 
     public void StartTurn() {
         RaiseEvent("OnTurnStart");
@@ -337,6 +324,124 @@ public class CharacterManager : MonoBehaviour {
 
 
 
+    public void RemoveStatus(StatusEffect status) {
+        statusManager.RemoveStatus(status);
+    }
+
+
+
+    #endregion
+
+
+    #region Stats
+
+    //***********************************************//
+    //***********************************************//
+    //*************                ******************//
+    //************  Stat Functions  *****************//
+    //*************                ******************//
+    //***********************************************//
+    //***********************************************//
+
+
+    public void UseMana(int mana) {
+        party.UseMana(mana);
+    }
+
+    public void RestoreMana(int mana) {
+        party.RestoreMana(mana);
+    }
+
+    public bool HasEnoughMana(int mana) {
+        return party.HasEnoughMana(mana);
+    }
+
+    //Likely make get functions inside CharacterStats that calculates the current total
+
+    public int GetMaxHealth() {
+        return stats.maxHealth;
+    }
+
+    public int GetCurrentHealth() {
+        return stats.maxHealth;
+    }
+
+    public bool IsDead() {
+        return stats.IsDead();
+    }
+
+    //Maybe add an enum in args to choose between strength or magic for attack stat (and maybe others ones as well)
+    public int GetAttackStat() {
+        return stats.strength;
+    }
+
+    public int GetAgility() {
+        return stats.agility;
+    }
+
+    public float GetAttackTime() {
+        return stats.attackTime;
+    }
+
+    public AbilityElement GetElement() {
+        return stats.element;
+    }
+
+    #endregion
+
+
+    #region Inventory
+
+    //*************************************************//
+    //*************************************************//
+    //***********                     *****************//
+    //**********  Inventory Functions  ****************//
+    //***********                     *****************//
+    //*************************************************//
+    //*************************************************//
+
+    public void RemoveItem(Item item, int quantity = 1) {
+        inventory.RemoveItem(item, quantity);
+    }
+
+    public void AddItem(Item item, int quantity = 1) {
+        inventory.AddItem(item, quantity);
+    }
+
+    public bool HasEnoughOfItem(Item item, int quantity = 1) {
+        return inventory.HasEnoughOfItem(item, quantity);
+    }
+
+    #endregion
+
+
+    #region Targetting
+
+    //*************************************************//
+    //*************************************************//
+    //***********                     *****************//
+    //**********  Targetting Functions  ****************//
+    //***********                     *****************//
+    //*************************************************//
+    //*************************************************//
+
+
+    public CharacterManager GetTarget() {
+        return targetter.GetNextTarget();
+    }
+
+    public float CalculateFirstTurn() {
+        return stats.CalculateFirstTurn();
+    }
+
+    public float CalculateNextTurn(float previousTurn) {
+        return stats.CalculateNextTurn(previousTurn);
+    }
+
+    #endregion
+
+
+    #region Animation
 
     //*************************************************//
     //*************************************************//
@@ -357,11 +462,54 @@ public class CharacterManager : MonoBehaviour {
         //later on maybe extend functionality to a separate animation class
         //  that allows the same animator to be used across characters with separate
         //  but with different animations assigned to different names
-        anim.CrossFade(animationName, 0.1f, layer);
+        animationManager.PlayAnimation(animationName, layer);
+    }
+
+
+    private void SetAnimationMovement()
+    {
+        /*if (anim != null)
+        {
+            anim.SetFloat("Horizontal", horizontal);
+            anim.SetFloat("Vertical", vertical);
+        }*/
     }
 
 
 
+    public void SetTrueSpeed()
+    {
+        /*trueSpeed = rb.velocity.magnitude;
+        try
+        {
+            anim.SetFloat("Speed", trueSpeed);
+        }
+        catch (System.Exception e) { }*/
+    }
+
+    #endregion
+
+
+    #region States
+
+    //*************************************************//
+    //*************************************************//
+    //*************                 *******************//
+    //************  State Functions  ******************//
+    //*************                 *******************//
+    //*************************************************//
+    //*************************************************//
+
+
+
+    public float GetStateTime() {
+        return stateManager.stateTime;
+    }
+
+    #endregion
+
+
+    #region Events
 
     //*************************************************//
     //*************************************************//
@@ -383,4 +531,5 @@ public class CharacterManager : MonoBehaviour {
         eventManager.UnsubscribeEvent(eventName, method);
     }
 
+    #endregion
 }

@@ -10,7 +10,7 @@ namespace InputSystem
         public override void Execute(CharacterManager character)
         {
             //character.targetter.target = character.targetter.GetNearestTarget();
-            character.target = character.targetter.GetTarget(character);
+            character.target = character.GetTarget();
         }
     }
 }

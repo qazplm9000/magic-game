@@ -39,8 +39,8 @@ public class HealthBar : MonoBehaviour {
 	}
 
     public void UpdateHealth() {
-        int currentHealth = target.stats.currentHealth;
-        int maxHealth = target.stats.maxHealth;
+        int currentHealth = target.GetCurrentHealth();
+        int maxHealth = target.GetMaxHealth();
 
         healthBar.value = Mathf.InverseLerp(0, maxHealth, currentHealth);
 

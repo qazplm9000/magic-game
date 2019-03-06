@@ -9,7 +9,7 @@ public class StateTimeCondition : Condition
 
     public override bool _Execute(CharacterManager character)
     {
-        return character.stateManager.stateTime >= threshold;
+        return character.GetStateTime() >= threshold;
     }
     
 }

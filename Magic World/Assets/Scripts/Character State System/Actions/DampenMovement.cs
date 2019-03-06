@@ -12,7 +12,7 @@ namespace InputSystem
 
         public override void Execute(CharacterManager character)
         {
-            character.rb.velocity = character.rb.velocity * dampenModifier;
+            character.SetVelocity(character.GetVelocity() * dampenModifier);
         }
     }
 }

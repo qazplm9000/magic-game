@@ -7,7 +7,7 @@ namespace AbilitySystem
 {
     public class ComboManager : MonoBehaviour
     {
-        private CharacterManager character;
+        /*private CharacterManager character;
         public ComboList combo;
         public Combo currentCombo;
         private int currentComboCount = 0;
@@ -64,7 +64,7 @@ namespace AbilitySystem
         public void ResetTimer() {
             previousFrame = 0;
             currentFrame = 0;
-        }
+        }*/
         
     }
 }

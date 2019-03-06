@@ -18,7 +18,7 @@ namespace AnimationSystem
         /// Plays the animation mapped to the name 
         /// </summary>
         /// <param name="animation"></param>
-        public void PlayAnimation(string animation) {
+        public void PlayAnimation(string animation, int layer = 0) {
             string mappedAnim = _animations[animation];
             anim.CrossFade(mappedAnim, crossFadeTime);
         }
@@ -30,6 +30,11 @@ namespace AnimationSystem
         /// <param name="animation"></param>
         public void PlayRawAnimation(string animation) {
             anim.CrossFade(animation, crossFadeTime);
+        }
+
+
+        public void SetAnimator(Animator newAnim) {
+            anim = newAnim;
         }
 
     }

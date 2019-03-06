@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BattleSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,10 +40,11 @@ namespace AbilitySystem
         private void OnTriggerEnter(Collider other) {
             Debug.Log("Entered trigger");
             CharacterManager target = other.transform.GetComponent<CharacterManager>();
+            BattleManager battleState = World.battle;
 
             if (target != null && target != user && !targets.Contains(target)) {
                 targets.Add(target);
-                int damage = damageFormula.CalculateDamage(user, target, ability);
+                int damage = damageFormula.CalculateDamage(user, target, battleState, ability);
                 target.TakeDamage(damage);
             }
         }

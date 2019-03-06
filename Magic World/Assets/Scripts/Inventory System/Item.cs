@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+namespace InventorySystem
 {
-    // Start is called before the first frame update
-    void Start()
+    public interface Item
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        bool IsConsumable();
+        ItemType GetItemType();
     }
 }

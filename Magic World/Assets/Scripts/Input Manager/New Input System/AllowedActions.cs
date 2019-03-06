@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace InputSystem
 {
-    [CreateAssetMenu(menuName = "Inputs/Actions Allowed")]
-    public class AllowedActions : ScriptableObject
+    [System.Serializable]
+    public class AllowedActions
     {
         [System.Serializable]
         public class ActionBools {
@@ -15,7 +15,13 @@ namespace InputSystem
         }
 
         public List<ActionBools> actions;
+        
         private Dictionary<PlayerInput2, bool> actionsDict;
+
+
+        public AllowedActions() {
+            InitDict();
+        }
 
 
         public bool ActionIsAllowed(PlayerInput2 input) {
@@ -28,17 +34,7 @@ namespace InputSystem
             return allowed;
         }
 
-
-
-        public void OnEnable()
-        {
-            InitDict();
-        }
-
-        public void OnDisable()
-        {
-            
-        }
+        
 
         private void InitDict() {
             actionsDict = new Dictionary<PlayerInput2, bool>();

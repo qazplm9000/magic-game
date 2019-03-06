@@ -13,8 +13,7 @@ namespace InputSystem
             direction += new Vector3(0, 0, 1) * World.inputs.GetAxis("Vertical Left");
 
             //Debug.Log(direction.magnitude);
-            Vector3 trueDirection = character.DirectionFromCamera(direction);
-            character.Move(trueDirection);
+            character.MoveInDirection(direction);
             //Debug.Log(trueDirection.magnitude);
             
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BattleSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace AbilitySystem
     public abstract class DamageFormula : ScriptableObject
     {
 
-        public abstract int CalculateDamage(CharacterManager caster, CharacterManager target, Ability ability);
+        public abstract int CalculateDamage(CharacterManager caster, CharacterManager target, BattleManager battleState, Ability ability);
 
     }
 }

@@ -59,7 +59,7 @@ namespace BuffSystem
 
             if (duration == 0)
             {
-                caster.statusManager.RemoveStatus(this);
+                caster.RemoveStatus(this);
             }
         }
 

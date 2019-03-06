@@ -12,7 +12,7 @@ namespace InputSystem
 
         public override void Execute(CharacterManager character)
         {
-            character.stateManager.ChangeState(jumpState);
+            //character.stateManager.ChangeState(jumpState);
         }
     }
 }
