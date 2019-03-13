@@ -13,28 +13,45 @@ namespace MovementSystem
 
         private Rigidbody rb;
         private NavMeshAgent agent;
-        [Header("How fast the character moves")]
+        [Tooltip("How fast the character moves")]
         public float movementSpeed = 5;
-        [Header("How fast the character turns in degrees/sec")]
+        [Tooltip("How fast the character turns in degrees/sec")]
         public float turnSpeed = 100f;
         public bool isJumping = false;
 
         //public bool canTurnInPlace = true;
-        public Vector3 direction;
+        public Vector3 turnDirection;
 
         private NavMeshPath path;
         private int pathIndex = 0;
 
+        [Tooltip("How far away can the character be before considering a point reached")]
         public float pathSensitivity = 0.1f;
+        [Tooltip("How many degrees can the character be turned before considered facing a target")]
+        public float minAngle = 2f;
 
         public void Start()
         {
-            direction = transform.forward;
+            turnDirection = transform.forward;
             rb = transform.GetComponent<Rigidbody>();
             agent = transform.GetComponent<NavMeshAgent>();
             agent.updatePosition = false;
             agent.updateRotation = false;
             
+        }
+
+
+        private void Update()
+        {
+            if (path != null) {
+                for (int i = 0; i < path.corners.Length; i++) {
+                    Debug.DrawRay(path.corners[i], Vector3.up * 3, Color.blue);
+                    //Debug.Log(path.corners[i].x);
+                }
+                Debug.Log("Path has " + path.corners.Length + " points");
+            }
+
+            //Debug.DrawRay(transform.position, transform.forward * 3, Color.black);
         }
 
 
@@ -47,11 +64,6 @@ namespace MovementSystem
         {
             Vector3 trueDirection = DirectionFromCamera(camera, direction);
             SetHorizontalVelocity(trueDirection * movementSpeed);
-
-            if (trueDirection.magnitude != 0)
-            {
-                this.direction = trueDirection;
-            }
         }
 
 
@@ -61,9 +73,29 @@ namespace MovementSystem
         /// </summary>
         /// <param name="destination"></param>
         public bool SetDestination(Vector3 destination) {
-            return agent.CalculatePath(destination, path);
+            path = new NavMeshPath();
+            RaycastHit characterHit;
+            RaycastHit targetHit;
+
+            Physics.Raycast(transform.position, -transform.up, out characterHit, 100);
+            Physics.Raycast(destination, -transform.up, out targetHit, 100);
+
+            return NavMesh.CalculatePath(characterHit.point, destination, NavMesh.AllAreas, path);
         }
 
+
+        public bool HasPath() {
+            return path != null;
+        }
+
+
+        /// <summary>
+        /// Returns true if path index < length of corners in path
+        /// </summary>
+        /// <returns></returns>
+        public bool HasReachedPathEnd() {
+            return pathIndex >= path.corners.Length;
+        }
 
         /// <summary>
         /// Moves towards the destination
@@ -73,11 +105,15 @@ namespace MovementSystem
         public bool MoveTowardsDestination() {
             bool hasReachedDestination = false;
 
-            if (path != null && pathIndex < path.corners.Length)
+            if (HasPath() && !HasReachedPathEnd())
             {
                 Vector3 currentDestination = path.corners[pathIndex];
 
                 GoToPoint(currentDestination);
+
+                Debug.DrawRay(currentDestination, Vector3.up * 3, Color.red);
+                Debug.Log("Distance from corner:" + (currentDestination - transform.position).magnitude);
+                //Debug.DrawLine(transform.position, currentDestination, Color.red);
 
                 if ((currentDestination - transform.position).magnitude < pathSensitivity)
                 {
@@ -87,6 +123,7 @@ namespace MovementSystem
             else {
                 hasReachedDestination = true;
                 path = null;
+                pathIndex = 0;
             }
 
             return !hasReachedDestination;
@@ -97,7 +134,8 @@ namespace MovementSystem
         /// Goes to the point
         /// </summary>
         /// <param name="point"></param>
-        private void GoToPoint(Vector3 point) {
+        private void GoToPoint(Vector3 point)
+        {
             TurnTowards(point);
             MoveForward();
         }
@@ -112,15 +150,26 @@ namespace MovementSystem
         }
 
 
+        public void FaceDirection(Vector3 direction) {
+            if (direction.magnitude != 0) {
+                turnDirection = direction;
+            }
+        }
+
+
         /// <summary>
         /// Turns towards the direction
         /// </summary>
-        /// <param name="direction"></param>
-        public void TurnTowards(Vector3 direction) {
-            Vector3 currentDirection = transform.forward;
-            float angleBetween = Vector3.SignedAngle(currentDirection, direction, transform.up);
+        /// <param name="position"></param>
+        public void TurnTowards(Vector3 position) {
+            float angleBetween = Vector3.SignedAngle(transform.forward, (position - transform.position), transform.up);
 
             float turnAngle = Mathf.Min(turnSpeed * Time.deltaTime, Mathf.Abs(angleBetween));
+
+            if (turnAngle < minAngle) {
+                turnAngle = 0;
+            }
+
             turnAngle = angleBetween < 0 ? -turnAngle : turnAngle;
 
             transform.Rotate(transform.up, turnAngle);
@@ -131,7 +180,7 @@ namespace MovementSystem
         /// </summary>
         /// <param name="character"></param>
         public void Rotate() {
-            TurnTowards(direction);
+            TurnTowards(turnDirection);
         }
 
 

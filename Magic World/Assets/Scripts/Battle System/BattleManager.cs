@@ -19,7 +19,7 @@ namespace BattleSystem
         public List<CharacterTurn> turnOrder;
         private List<CharacterTurn> allCharactersNextTurns;
 
-        public CharacterTurn currentTurn;
+        public CharacterManager currentTurn;
         public int turnIndex = -1;
         public float turnTime = 0;
         public float turnTimer = 0;
@@ -46,33 +46,38 @@ namespace BattleSystem
 
         private void Start()
         {
-            for (int i = 0; i < allCharacters.Count; i++)
-            {
-                allCharacters[i].gameObject.SetActive(true);
-            }
+            
         }
 
 
-        private void Update()
+        public void Update()
         {
             turnTimer -= Time.deltaTime;
 
+            
             if (turnTimer <= 0)
             {
-                if (currentTurn.character.NotTakingAction())
+                if (currentTurn.NotTakingAction())
                 {
                     ChangeTurn();
                 }
+            }
+
+
+            for (int i = 0; i < allCharacters.Count; i++)
+            {
+                //Debug.Log(allCharacters[i].transform.name + " has taken their turn");
+                allCharacters[i].TakeTurn();
             }
         }
 
 
         private void InitTurn(CharacterTurn nextTurn) {
-            currentTurn = nextTurn;
-            turnTime = currentTurn.character.GetAttackTime();
+            currentTurn = nextTurn.character;
+            turnTime = currentTurn.GetAttackTime();
             turnTimer = turnTime;
 
-            nextTurn.character.StartTurn();
+            currentTurn.StartTurn();
         }
 
 
@@ -210,7 +215,7 @@ namespace BattleSystem
         /// <returns></returns>
         private CharacterTurn IncrementTurn(CharacterTurn turn) {
             CharacterManager character = turn.character;
-            float nextTurnTime = character.CalculateNextTurn(turn.turnTime);
+            int nextTurnTime = character.CalculateNextTurn(turn.turnTime);
 
             return new CharacterTurn(character, nextTurnTime);
         }
@@ -222,7 +227,7 @@ namespace BattleSystem
         /// </summary>
         /// <param name="character"></param>
         /// <param name="delay"></param>
-        public void AddDelay(CharacterManager character, float delay) {
+        public void AddDelay(CharacterManager character, int delay) {
             for (int i = 0; i < allCharactersNextTurns.Count; i++){
                 CharacterTurn nextTurn = allCharactersNextTurns[i];
 
@@ -232,6 +237,15 @@ namespace BattleSystem
                     break;
                 }
             }
+        }
+
+
+
+        /// <summary>
+        /// Called to completely reset the battle manager's data after a battle ends
+        /// </summary>
+        public void ResetBattleManager() {
+
         }
     }
 }

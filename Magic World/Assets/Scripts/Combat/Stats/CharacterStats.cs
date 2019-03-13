@@ -20,16 +20,16 @@ namespace StatSystem
         public int staggerAmount = 0;
         public int staggerLevel = 0;
         [Range(0, 1)]
-        public float staggerResistance = 0;
+        public int staggerResistance = 0;
         public int strength;
         public int defense;
         public int magic;
         public int magicDefense;
         public int agility;
         public float attackTime;
-        public float incompatibleElementBonus;
-        public float compatibleElementBonus;
-        public float sameElementBonus;
+        public int incompatibleElementBonus;
+        public int compatibleElementBonus;
+        public int sameElementBonus;
         public AbilityElement element;
 
         //stat multipliers go here
@@ -173,8 +173,8 @@ namespace StatSystem
         /// </summary>
         /// <param name="previousTurn"></param>
         /// <returns></returns>
-        public float CalculateNextTurn(float previousTurn) {
-            return previousTurn + (1000f / (agility + 100));
+        public int CalculateNextTurn(int previousTurn) {
+            return previousTurn + GetTurnPeriod();
         }
 
         /// <summary>
@@ -182,8 +182,17 @@ namespace StatSystem
         /// </summary>
         /// <param name="previousTurn"></param>
         /// <returns></returns>
-        public float CalculateFirstTurn() {
+        public int CalculateFirstTurn() {
             return hasPrecedence ? 0 : CalculateNextTurn(0);
+        }
+
+
+        /// <summary>
+        /// Gets how many ticks it takes before the character's next turn
+        /// </summary>
+        /// <returns></returns>
+        public int GetTurnPeriod() {
+            return 1000 / (agility + 100);
         }
         
     }

@@ -7,5 +7,11 @@ public enum CharacterAction
 {
     Attack,
     Cast,
+    Move,
+    SwapPresets,
+    Guard,
+    Dodge,
+    Counter,
+    UseItem,
     None
 }

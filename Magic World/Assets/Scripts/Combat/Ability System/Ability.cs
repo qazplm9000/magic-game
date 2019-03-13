@@ -13,6 +13,7 @@ namespace AbilitySystem {
         public int staggerPower;
         public DamageFormula damageFormula;
         public TargetType targetType;
+        public float range = 10;
 
         /// <summary>
         /// Run every frame to cast the ability

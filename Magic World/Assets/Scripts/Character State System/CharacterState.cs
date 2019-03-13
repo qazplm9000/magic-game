@@ -15,7 +15,6 @@ namespace CharacterStateSystem
         //describes what the current state is for
         public string stateDescription;
 
-        public AllowedActions allowedActions;
 
         
         //plays on the frame the state enters
@@ -25,7 +24,8 @@ namespace CharacterStateSystem
         //plays every frame while in the state
         public List<StateEventObject> updateEvents;
 
-        //public CharacterInput inputs;
+        //List of inputs allowed
+        public AllowedActions allowedActions;
 
 
         public void EnterState(CharacterManager character) {
@@ -57,5 +57,7 @@ namespace CharacterStateSystem
                 }
             }
         }
+
+        
     }
 }

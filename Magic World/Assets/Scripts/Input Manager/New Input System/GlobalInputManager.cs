@@ -13,21 +13,22 @@ namespace InputSystem
 
         public List<InputObject2> inputs;
         public List<InputAxisObject> axisObjects;
+        
 
-        public delegate void InputEvent(PlayerInput2 input);
-        public event InputEvent OnInput;
-
-        public CharacterEventManager eventManager;
+        public delegate void OnInputTrue(string input);
+        public event OnInputTrue OnInput;
+        
 
 
         public void Start()
         {
-            eventManager = transform.GetComponent<CharacterEventManager>();
+            
         }
 
         public void Update()
         {
             CheckKeyEvents();
+            RunAxes();
         }
 
 
@@ -37,26 +38,10 @@ namespace InputSystem
         public void CheckKeyEvents() {
             for (int i = 0; i < inputs.Count; i++)
             {
-                switch (inputs[i].timing)
-                {
-                    case KeyTiming.KeyDown:
-                        if (Input.GetKeyDown(inputs[i].inputKey))
-                        {
-                            RaiseEvent(inputs[i].input);
-                        }
-                        break;
-                    case KeyTiming.KeyHeld:
-                        if (Input.GetKey(inputs[i].inputKey))
-                        {
-                            RaiseEvent(inputs[i].input);
-                        }
-                        break;
-                    case KeyTiming.KeyUp:
-                        if (Input.GetKeyUp(inputs[i].inputKey))
-                        {
-                            RaiseEvent(inputs[i].input);
-                        }
-                        break;
+                InputObject2 input = inputs[i];
+
+                if (input.UpdateInput()) {
+                    RaiseEvent(input.inputName);
                 }
             }
         }
@@ -68,31 +53,34 @@ namespace InputSystem
         public void RunAxes() {
             for (int i = 0; i < axisObjects.Count; i++) {
                 InputAxisObject axis = axisObjects[i];
-                axis.UpdateAxis();
 
-                switch (axis.timing){
-                    case KeyTiming.KeyDown:
-                        if (axis.currentValue > 0 && axis.previousValue == 0) {
-                            RaiseEvent(axis.input);
-                        }
-                        break;
-                    case KeyTiming.KeyHeld:
-                        if (axis.currentValue >= axis.previousValue && axis.currentValue != 0) {
-                            RaiseEvent(axis.input);
-                        }
-                        break;
-                    case KeyTiming.KeyUp:
-                        if (axis.currentValue < axis.previousValue && axis.previousValue == axis.maxValue) {
-                            RaiseEvent(axis.input);
-                        }
-                        break;
+                if (axis.UpdateAxis()) {
+                    RaiseEvent(axis.axisName);
                 }
             }
         }
 
 
+        /// <summary>
+        /// Returns the current value of the axis
+        /// </summary>
+        /// <param name="axis"></param>
+        /// <returns></returns>
+        public float GetAxis(string axis) {
+            float result = 0;
 
-        private void RaiseEvent(PlayerInput2 input) {
+            for (int i = 0; i < axisObjects.Count; i++) {
+                if (axisObjects[i].axisName == axis) {
+                    result = axisObjects[i].currentValue;
+                }
+            }
+
+            return result;
+        }
+
+
+
+        private void RaiseEvent(string input) {
             if (OnInput != null) {
                 OnInput(input);
             }

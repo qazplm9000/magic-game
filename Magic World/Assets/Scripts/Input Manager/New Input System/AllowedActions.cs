@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,52 +7,138 @@ using UnityEngine;
 namespace InputSystem
 {
     [System.Serializable]
-    public class AllowedActions
+    public class AllowedActions : ISerializationCallbackReceiver
     {
-        [System.Serializable]
-        public class ActionBools {
-            public PlayerInput2 action;
-            public bool allowed;
-        }
-
-        public List<ActionBools> actions;
-        
-        private Dictionary<PlayerInput2, bool> actionsDict;
+        [SerializeField]
+        private bool[] actions;
+        public static CharacterAction[] allActions;
 
 
         public AllowedActions() {
-            InitDict();
+            InitAllActions();
+            InitActions(false);
+        }
+
+        public AllowedActions(bool[] allowedActions) {
+            InitAllActions();
+            InitActions(allowedActions);
         }
 
 
-        public bool ActionIsAllowed(PlayerInput2 input) {
-            bool allowed = false;
+        /// <summary>
+        /// Checks if a given action is allowed
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool ActionIsAllowed(CharacterAction action) {
+            int actionIndex = action.GetHashCode();
+            //Debug.Log(actionIndex);
+            //Debug.Log(allActions.Length);
+            return actions[actionIndex];
+        }
 
-            if (actionsDict.ContainsKey(input)) {
-                allowed = actionsDict[input];
+        public void ChangeBool(CharacterAction action, bool allowed) {
+            int actionIndex = action.GetHashCode();
+            actions[actionIndex] = allowed;
+        }
+
+
+        /// <summary>
+        /// Gets a list of all allowed actions
+        /// </summary>
+        /// <returns></returns>
+        public List<CharacterAction> GetAllowedActions() {
+            List<CharacterAction> allowedActions = new List<CharacterAction>(actions.Length);
+
+            for (int i = 0; i < allActions.Length; i++) {
+                if (actions[i]) {
+                    allowedActions.Add(allActions[i]);
+                }
             }
 
-            return allowed;
+            return allowedActions;
         }
 
-        
 
-        private void InitDict() {
-            actionsDict = new Dictionary<PlayerInput2, bool>();
+        /// <summary>
+        /// Returns the union between this list of bools and another list of bools
+        /// </summary>
+        /// <param name="otherActions"></param>
+        /// <returns></returns>
+        public AllowedActions GetUnion(AllowedActions otherActions) {
+            bool[] newActions = new bool[actions.Length];
 
-            int index = 0;
-            while (index < actions.Count) {
-                ActionBools currentAction = actions[index];
+            bool[] otherActionBools = otherActions.GetActionBools();
+            for (int i = 0; i < actions.Length; i++) {
+                newActions[i] = actions[i] && otherActionBools[i];
+            }
 
-                if (!actionsDict.ContainsKey(currentAction.action))
+            return new AllowedActions(newActions);
+        }
+
+
+        /// <summary>
+        /// Gets the list of bools
+        /// </summary>
+        /// <returns></returns>
+        public bool[] GetActionBools() {
+            return actions;
+        }
+
+
+        private void InitActions(bool[] allowedActions) {
+            actions = new bool[allowedActions.Length];
+
+            for (int i = 0; i < allowedActions.Length; i++) {
+                actions[i] = allowedActions[i];
+            }
+        }
+
+        private void InitActions(bool allowedAction) {
+            actions = new bool[allActions.Length];
+
+            for (int i = 0; i < actions.Length; i++) {
+                actions[i] = allowedAction;
+            }
+        }
+
+        /// <summary>
+        /// Used to fix the actions array when CharacterAction is changed
+        /// </summary>
+        private void IncludeNewActions() {
+            bool[] newActions = new bool[allActions.Length];
+
+            for (int i = 0; i < allActions.Length; i++) {
+                if (i < actions.Length)
                 {
-                    actionsDict[currentAction.action] = currentAction.allowed;
-                    index++;
+                    newActions[i] = actions[i];
                 }
                 else {
-                    actions.RemoveAt(index);
+                    newActions[i] = false;
                 }
             }
         }
+
+        private void InitAllActions() {
+            allActions = (CharacterAction[])Enum.GetValues(typeof(CharacterAction));
+        }
+
+
+
+        #region ISerializationCallbackReceiver
+
+        public void OnBeforeSerialize()
+        {
+            if (actions.Length < allActions.Length) {
+                IncludeNewActions();
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
+            //throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

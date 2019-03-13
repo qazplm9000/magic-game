@@ -17,7 +17,7 @@ public class TestScript : MonoBehaviour
     // Start is called before the first frame update
     void Update()
     {
-        Vector3 test = Vector3.zero;
+        /*Vector3 test = Vector3.zero;
 
         DateTime newTime = DateTime.Now;
         DateTime time = DateTime.Now;
@@ -39,7 +39,8 @@ public class TestScript : MonoBehaviour
         newTime = DateTime.Now;
 
         Debug.Log("Without Typecast: " + (newTime - time).TotalMilliseconds);
-
+        */
+        //InputSystem.AllowedActions actions = new InputSystem.AllowedActions();
     }
     
 

@@ -8,9 +8,9 @@ namespace BattleSystem
     public class CharacterTurn
     {
         public CharacterManager character;
-        public float turnTime;
+        public int turnTime;
 
-        public CharacterTurn(CharacterManager newCharacter, float newTurnTime) {
+        public CharacterTurn(CharacterManager newCharacter, int newTurnTime) {
             character = newCharacter;
             turnTime = newTurnTime;
         }

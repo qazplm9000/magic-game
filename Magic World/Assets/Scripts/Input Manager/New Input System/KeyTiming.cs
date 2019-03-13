@@ -9,6 +9,7 @@ namespace InputSystem
     {
         KeyDown,
         KeyHeld,
-        KeyUp
+        KeyUp,
+        None
     }
 }

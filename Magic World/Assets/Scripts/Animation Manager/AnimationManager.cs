@@ -14,6 +14,20 @@ namespace AnimationSystem
 
         public float crossFadeTime = 0.2f;
 
+
+        public void Awake()
+        {
+            character = transform.GetComponent<CharacterManager>();
+            anim = transform.GetComponentInChildren<Animator>();
+        }
+
+
+        public void Update()
+        {
+            anim.SetFloat("Speed", character.GetCurrentSpeed());
+        }
+
+
         /// <summary>
         /// Plays the animation mapped to the name 
         /// </summary>

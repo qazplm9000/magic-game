@@ -59,6 +59,7 @@ public class CharacterManager : MonoBehaviour {
     private StatusManager statusManager;
     private AnimationManager animationManager;
     private Inventory inventory;
+    private Collider hurtbox;
 
     public Party party;
     public BattleManager battleState;
@@ -133,6 +134,7 @@ public class CharacterManager : MonoBehaviour {
         stats = transform.GetComponent<CharacterStats>();
         statusManager = transform.GetComponent<StatusManager>();
         animationManager = transform.GetComponent<AnimationManager>();
+        hurtbox = transform.GetComponent<Collider>();
 
         //prevents the navmesh agent from auto-turning
         //agent.updateRotation = false;
@@ -144,8 +146,6 @@ public class CharacterManager : MonoBehaviour {
     {
         //World.eventManager.SubscribeEvent("OnSwitchNextButton", SwitchNextCombo);
         //World.eventManager.SubscribeEvent("OnSwitchPreviousButton", SwitchPreviousCombo);
-        World.world.input1.OnInput += characterController.ReceiveInput;
-        World.world.input2.OnInput += characterController.ReceiveInput;
     }
     
 	
@@ -199,7 +199,13 @@ public class CharacterManager : MonoBehaviour {
     /// <param name="speed"></param>
     public void MoveInDirection(Vector3 direction)
     {
+        Debug.Log("Character is moving");
         movement.MoveInDirection(World.world.mainCamera, direction);
+    }
+
+
+    public void FaceDirection(Vector3 direction) {
+        movement.FaceDirection(direction);
     }
 
     /// <summary>
@@ -208,7 +214,20 @@ public class CharacterManager : MonoBehaviour {
     /// <param name="direction"></param>
     public void Rotate()
     {
-        movement.Rotate();
+        //movement.Rotate();
+    }
+
+
+    public bool SetDestination(Vector3 destination) {
+        return movement.SetDestination(destination);
+    }
+
+    public bool MoveTowardsDestination() {
+        return movement.MoveTowardsDestination();
+    }
+
+    public bool HasPath() {
+        return movement.HasPath();
     }
 
 
@@ -220,6 +239,10 @@ public class CharacterManager : MonoBehaviour {
         movement.SetHorizontalVelocity(newVelocity);
     }
 
+
+    public float GetCurrentSpeed() {
+        return GetVelocity().magnitude;
+    }
 
     #endregion
 
@@ -305,6 +328,13 @@ public class CharacterManager : MonoBehaviour {
         return stateManager.currentState.StateName == "Active";
     }
 
+    /// <summary>
+    /// Returns true if character is currently taking their turn and turn timer > 0
+    /// </summary>
+    /// <returns></returns>
+    public bool IsTakingTurn() {
+        return World.battle.currentTurn == this && World.battle.turnTime > 0;
+    }
 
     public void TakeDamage(int damage)
     {
@@ -321,6 +351,14 @@ public class CharacterManager : MonoBehaviour {
         statusManager.Tick();
     }
 
+    /// <summary>
+    /// Called every frame during combat
+    /// </summary>
+    public void TakeTurn() {
+        characterController.CallInput();
+
+        stateManager.UpdateState();
+    }
 
 
 
@@ -328,6 +366,11 @@ public class CharacterManager : MonoBehaviour {
         statusManager.RemoveStatus(status);
     }
 
+
+
+    public Collider GetHurtBox() {
+        return hurtbox;
+    }
 
 
     #endregion
@@ -430,11 +473,11 @@ public class CharacterManager : MonoBehaviour {
         return targetter.GetNextTarget();
     }
 
-    public float CalculateFirstTurn() {
+    public int CalculateFirstTurn() {
         return stats.CalculateFirstTurn();
     }
 
-    public float CalculateNextTurn(float previousTurn) {
+    public int CalculateNextTurn(int previousTurn) {
         return stats.CalculateNextTurn(previousTurn);
     }
 
@@ -492,6 +535,7 @@ public class CharacterManager : MonoBehaviour {
 
     #region States
 
+
     //*************************************************//
     //*************************************************//
     //*************                 *******************//
@@ -504,6 +548,17 @@ public class CharacterManager : MonoBehaviour {
 
     public float GetStateTime() {
         return stateManager.stateTime;
+    }
+
+
+    public AllowedActions GetAllowedActions() {
+        return stateManager.currentState.allowedActions;
+    }
+
+
+    public bool ActionAllowed(CharacterAction action) {
+        AllowedActions allowedActions = GetAllowedActions();
+        return allowedActions.ActionIsAllowed(action);
     }
 
     #endregion

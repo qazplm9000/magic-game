@@ -38,7 +38,7 @@ namespace CharacterStateSystem
 
 
 
-        public void Update(){
+        public void UpdateState(){
             currentState.Execute(character);
             stateTime += Time.deltaTime;
 

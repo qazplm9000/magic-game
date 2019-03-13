@@ -14,11 +14,9 @@ public class World : MonoBehaviour {
     public static World world;
     public static BattleManager battle;
     //public static OverworldState overworld;
-    public static InputManager inputs;
-    public InputObject inputObject;
+    //public static InputManager inputs;
     public static CharacterEventManager eventManager;
-    public GlobalInputManager input1;
-    public GlobalInputManager input2;
+    public static GlobalInputManager inputs;
 
     //object pools for various objects
     public ObjectPool<SpellBehaviour> spellPool;
@@ -40,17 +38,11 @@ public class World : MonoBehaviour {
         else {
             Destroy(this);
         }
-        if (inputs == null) {
-            inputs = new InputManager();
-            inputs.inputKeys = inputObject;
-        }
 
         eventManager = transform.GetComponent<CharacterEventManager>();
         battle = transform.GetComponent<BattleManager>();
 
-        GlobalInputManager[] allInputs = transform.GetComponents<GlobalInputManager>();
-        input1 = allInputs[0];
-        input2 = allInputs[1];
+        inputs = transform.GetComponent<GlobalInputManager>();
 
         spellPool = new ObjectPool<SpellBehaviour>();
         hitboxPool = new ObjectPool<Hitbox>();
