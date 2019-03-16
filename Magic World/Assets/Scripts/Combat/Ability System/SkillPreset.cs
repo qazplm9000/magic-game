@@ -9,20 +9,18 @@ namespace AbilitySystem
     public class SkillPreset
     {
         public ComboList combo;
-        public Skill[] skills;
-        public static int maxSkills = 2;
-
+        public List<Skill> skills;
 
 
         public SkillPreset() {
             combo = null;
-            skills = new Skill[maxSkills];
+            skills = new List<Skill>();
         }
 
 
         public SkillPreset(ComboList newCombo) {
             combo = newCombo;
-            skills = new Skill[maxSkills];
+            skills = new List<Skill>();
         }
 
         /// <summary>
@@ -31,12 +29,12 @@ namespace AbilitySystem
         /// </summary>
         /// <param name="newCombo"></param>
         /// <param name="newSkills"></param>
-        public SkillPreset(ComboList newCombo, Skill[] newSkills) {
+        public SkillPreset(ComboList newCombo, List<Skill> newSkills) {
             combo = newCombo;
-            skills = new Skill[maxSkills];
+            skills = new List<Skill>();
             
-            for (int i = 0; i < newSkills.Length && i < maxSkills; i++) {
-                AssignSkill(newSkills[i], i);
+            for (int i = 0; i < newSkills.Count; i++) {
+                skills.Add(newSkills[i]);
             }
         }
 
@@ -50,9 +48,9 @@ namespace AbilitySystem
             if (newCombo != null) {
                 combo = newCombo;
 
-                for (int i = 0; i < skills.Length; i++) {
+                for (int i = 0; i < skills.Count; i++) {
                     if (!IsValidSkill(combo, skills[i])) {
-                        skills[i] = null;
+                        skills.RemoveAt(i);
                     }
                 }
             }
@@ -66,7 +64,7 @@ namespace AbilitySystem
         /// <param name="newSkill"></param>
         /// <param name="index"></param>
         public void AssignSkill(Skill newSkill, int index) {
-            if (index >= 0 && index < maxSkills) {
+            if (index >= 0 && index < skills.Count) {
                 if (IsValidSkill(combo, newSkill)) {
                     skills[index] = newSkill;
                 }
@@ -83,7 +81,7 @@ namespace AbilitySystem
         public bool HasInvalidSkill(ComboList newCombo) {
             bool result = false;
 
-            for (int i = 0; i < skills.Length; i++) {
+            for (int i = 0; i < skills.Count; i++) {
                 if (!IsValidSkill(newCombo, skills[i])) {
                     result = true;
                     break;
@@ -144,8 +142,8 @@ namespace AbilitySystem
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public Combo GetComboAtIndex(int index) {
-            return combo.GetComboAtIndex(index);
+        public Combo GetNextCombo() {
+            return combo.GetNextCombo();
         }
 
 
@@ -153,7 +151,7 @@ namespace AbilitySystem
         public Skill GetSkillAtIndex(int index) {
             Skill result = null;
 
-            if (index < maxSkills && index >= 0) {
+            if (index >= 0 && index < skills.Count) {
                 result = skills[index];
             }
 

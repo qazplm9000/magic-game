@@ -17,6 +17,9 @@ public class TestScript : MonoBehaviour
     // Start is called before the first frame update
     void Update()
     {
+        Debug.Log(-2 % 5);
+        Debug.Log(-10 % 5);
+        Debug.Log(-9 % 5);
         /*Vector3 test = Vector3.zero;
 
         DateTime newTime = DateTime.Now;

@@ -10,11 +10,7 @@ namespace InputSystem
     {
         public override void Execute(CharacterManager character)
         {
-            bool attacking = character.Attack();
-
-            if (!attacking) {
-                character.currentAction = CharacterAction.None;
-            }
+            character.Attack();
         }
     }
 }

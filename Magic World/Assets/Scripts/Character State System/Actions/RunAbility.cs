@@ -9,8 +9,7 @@ namespace InputSystem
     {
         public override void Execute(CharacterManager character)
         {
-            bool result = character.RunAbility();
-            
+            character.RunAbility();
         }
     }
 }

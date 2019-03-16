@@ -9,11 +9,7 @@ namespace InputSystem
     {
         public override void Execute(CharacterManager character)
         {
-            bool casting = character.RunAbility();
-
-            if (!casting) {
-                character.currentAction = CharacterAction.None;
-            }
+            character.RunAbility();
         }
     }
 }

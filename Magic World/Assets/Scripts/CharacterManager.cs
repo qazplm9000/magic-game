@@ -261,18 +261,12 @@ public class CharacterManager : MonoBehaviour {
 
 
     /// <summary>
-    /// Plays the current combo in the combo manager
+    /// Sets the character's next action to attacking
     /// </summary>
     /// <returns></returns>
-    public bool Attack()
+    public void Attack()
     {
-        bool attacking = abilityCaster.Attack();
-
-        if (!attacking) {
-            eventManager.RaiseEvent("OnFinishAttack");
-        }
-
-        return attacking;
+        abilityCaster.Attack();
     }
 
     public void Cast(int index) {
@@ -280,17 +274,17 @@ public class CharacterManager : MonoBehaviour {
     }
 
     public void SwitchNextCombo() {
-        abilityCaster.SwitchNextPreset();
+        abilityCaster.IncrementPreset(1);
         Debug.Log("Switched next combo");
     }
 
     public void SwitchPreviousCombo() {
-        abilityCaster.SwitchPreviousCombo();
+        abilityCaster.IncrementPreset(-1);
         Debug.Log("Switched previous");
     }
 
     public void ResetCombo() {
-        abilityCaster.ResetCombo();
+        abilityCaster.ResetCurrentCombo();
     }
 
 
@@ -300,26 +294,30 @@ public class CharacterManager : MonoBehaviour {
     /// Raises OnFinishCast event
     /// </summary>
     /// <returns></returns>
-    public bool RunAbility()
+    public void RunAbility()
     {
-        bool playing = false;
-
-        if (abilityCaster.currentSkill != null)
-        {
-            playing = abilityCaster.Cast();
-
-            if (!playing)
-            {
-                eventManager.RaiseEvent("OnFinishCast");
-            }
-        }
-        
-        return abilityCaster.Cast();
+        abilityCaster.PlayCurrentAbility();    
     }
 
     /// <summary>
-    /// Casts the ability if not currently casting
-    /// Returns false if already casting
+    /// Returns true if character is not casting
+    /// </summary>
+    /// <returns></returns>
+    public bool IsCasting() {
+        return abilityCaster.IsUsingAbility();
+    }
+
+    /// <summary>
+    /// Returns true if ability is a combo
+    /// </summary>
+    /// <returns></returns>
+    public bool AbilityIsCombo() {
+        return abilityCaster.IsCombo();
+    }
+
+
+    /// <summary>
+    /// Returns true if character can move to Idle state
     /// </summary>
     /// <param name="ability"></param>
     /// <returns></returns>

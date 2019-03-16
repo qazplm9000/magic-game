@@ -13,15 +13,26 @@ namespace AbilitySystem
         private List<Combo> combos;
         public TargetType targetType;
 
+        private int comboIndex = 0;
 
         /// <summary>
-        /// Returns the combo at the specified index
-        /// Automatically applies modulo
+        /// Returns the next combo in the list
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public Combo GetComboAtIndex(int index) {
-            return combos[index % combos.Count];
+        public Combo GetNextCombo() {
+            Combo result = null;
+
+            if (combos.Count > 0) {
+                result = combos[comboIndex % combos.Count];
+            }
+
+            return result;
         }
+
+        public void ResetCombo() {
+            comboIndex = 0;
+        }
+
     }
 }

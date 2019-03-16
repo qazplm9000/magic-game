@@ -23,13 +23,12 @@ namespace AbilitySystem {
 
         [Tooltip("Contains all combos and their corresponding skills")]
         public List<SkillPreset> presets;
+        public SkillPreset currentPreset;
         public int currentPresetIndex = 0;
         public int currentComboIndex = 0;
-        
-        public Combo currentAttack;
-        public Combo nextAttack;
-        public Skill currentSkill;
-        
+
+        private Ability currentAbility;
+        public bool isCombo = false;
 
 
         public void Start()
@@ -37,8 +36,9 @@ namespace AbilitySystem {
             character = transform.GetComponent<CharacterManager>();
             anim = transform.GetComponentInChildren<Animator>();
             //currentCombo = listOfCombos[currentComboIndex];
-            ResetCombo();
+            ResetCurrentCombo();
         }
+        
 
 
         //*************************************************//
@@ -53,78 +53,111 @@ namespace AbilitySystem {
         public void ChangeCombo(ComboList newCombos)
         {
             //currentCombo = newCombos;
-            ResetCombo();
+            ResetCurrentCombo();
         }
 
         public Combo GetNextAttack()
         {
             currentComboIndex++;
-            Combo nextCombo = presets[currentPresetIndex].GetComboAtIndex(currentComboIndex);
+            Combo nextCombo = presets[currentPresetIndex].GetNextCombo();
             return nextCombo;
         }
 
+
         /// <summary>
-        /// Returns true while combo is playing
-        /// Returns false once combo has ended
-        /// Automatically increments the combo once the current combo has ended
+        /// Plays the current ability
+        /// Returns true while running
+        /// Returns false when done
+        /// </summary>
+        public void PlayCurrentAbility() {
+            
+            if (currentAbility != null)
+            {
+                bool isPlaying = currentAbility.UseAbility(character, previousFrame, currentFrame);
+                IncrementTimer();
+
+                if (!isPlaying) {
+                    ResetSkill();
+                    ResetTimer();
+                }
+            }
+            
+        }
+
+
+        /// <summary>
+        /// Returns true when using an ability
         /// </summary>
         /// <returns></returns>
-        public bool Attack()
+        public bool IsUsingAbility() {
+            return currentAbility != null;
+        }
+
+        /// <summary>
+        /// sets the current ability to the next hit in the combo
+        /// </summary>
+        /// <returns></returns>
+        public void Attack()
         {
-            previousFrame = currentFrame;
-            currentFrame += Time.deltaTime;
-
-            if (currentAttack == null) {
-                currentAttack = nextAttack;
-                nextAttack = GetNextAttack();
-            }
-
-            bool playing = currentAttack.UseAbility(character, previousFrame, currentFrame);
-
-            if (!playing)
+            if (currentAbility != null)
             {
-                currentAttack = null;
-                ResetTimer();
+                currentAbility = currentPreset.GetNextCombo();
+                isCombo = true;
             }
-
-            return playing;
         }
 
         /// <summary>
         /// Resets the combo
         /// Call this when exiting attack state
         /// </summary>
-        public void ResetCombo()
+        public void ResetCombo(ComboList combo)
         {
-            currentComboIndex = 0;
-            nextAttack = presets[currentPresetIndex].GetComboAtIndex(currentComboIndex);
+            combo.ResetCombo();
+        }
+
+
+        public void ResetCurrentCombo() {
+            currentPreset.combo.ResetCombo();
         }
 
 
         /// <summary>
-        /// Switches to the next combo
+        /// Adds to the index of the preset
+        /// Automatically loops around the list
         /// </summary>
-        public void SwitchNextPreset() {
-            currentPresetIndex = (currentPresetIndex + 1) % presets.Count;
+        /// <param name="increment"></param>
+        public void IncrementPreset(int increment) {
+            currentPresetIndex += increment;
 
-            ResetCombo();
-        }
-
-
-        /// <summary>
-        /// Switches to the previous combo
-        /// </summary>
-        public void SwitchPreviousCombo() {
-            currentPresetIndex--;
-
-            if (currentPresetIndex == -1) {
-                currentPresetIndex = presets.Count - 1;
+            if (presets.Count > 0) {
+                currentPresetIndex %= presets.Count;
             }
 
-            ResetCombo();
+            if (currentPresetIndex < 0) {
+                currentPresetIndex += presets.Count;
+            }
+
+            SetCurrentPreset(currentPresetIndex);
+            ResetCurrentCombo();
         }
 
 
+        /// <summary>
+        /// Sets the current preset to the one located at index
+        /// </summary>
+        /// <param name="index"></param>
+        public void SetCurrentPreset(int index) {
+            currentPreset = presets[index];
+        }
+
+
+        /// <summary>
+        /// Returns true if ability used is a combo
+        /// </summary>
+        /// <returns></returns>
+        public bool IsCombo() {
+            return isCombo;
+        }
 
         //*************************************************//
         //*************************************************//
@@ -141,9 +174,9 @@ namespace AbilitySystem {
         /// </summary>
         /// <param name="index"></param>
         public void SelectSkill(int index) {
-            if (currentSkill == null)
+            if (currentAbility == null)
             {
-                currentSkill = presets[currentPresetIndex].GetSkillAtIndex(index);
+                currentAbility = presets[currentPresetIndex].GetSkillAtIndex(index);
             }
         }
 
@@ -152,7 +185,7 @@ namespace AbilitySystem {
         /// Casts the spell
         /// </summary>
         /// <returns></returns>
-        public virtual bool Cast() {
+        /*public virtual bool Cast() {
             previousFrame = currentFrame;
             currentFrame += Time.deltaTime;
 
@@ -169,7 +202,7 @@ namespace AbilitySystem {
             }
 
             return playing;
-        }
+        }*/
 
 
 
@@ -181,8 +214,20 @@ namespace AbilitySystem {
             currentFrame = 0;
         }
 
+        private void IncrementTimer() {
+            previousFrame = currentFrame;
+            currentFrame += Time.deltaTime;
+        }
 
+        private void ResetSkill() {
+            currentAbility = null;
+            isCombo = false;
+        }
 
+        public void CancelAbility() {
+            ResetTimer();
+            ResetSkill();
+        }
 
     }
 }
