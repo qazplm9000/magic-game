@@ -12,46 +12,27 @@ namespace MovementSystem
     {
 
         private Rigidbody rb;
-        private NavMeshAgent agent;
         [Tooltip("How fast the character moves")]
         public float movementSpeed = 5;
         [Tooltip("How fast the character turns in degrees/sec")]
         public float turnSpeed = 100f;
-        public bool isJumping = false;
 
         //public bool canTurnInPlace = true;
         public Vector3 turnDirection;
 
-        private NavMeshPath path;
-        private int pathIndex = 0;
-
-        [Tooltip("How far away can the character be before considering a point reached")]
-        public float pathSensitivity = 0.1f;
-        [Tooltip("How many degrees can the character be turned before considered facing a target")]
-        public float minAngle = 2f;
+        
 
         public void Start()
         {
             turnDirection = transform.forward;
             rb = transform.GetComponent<Rigidbody>();
-            agent = transform.GetComponent<NavMeshAgent>();
-            agent.updatePosition = false;
-            agent.updateRotation = false;
             
         }
 
 
         private void Update()
         {
-            if (path != null) {
-                for (int i = 0; i < path.corners.Length; i++) {
-                    Debug.DrawRay(path.corners[i], Vector3.up * 3, Color.blue);
-                    //Debug.Log(path.corners[i].x);
-                }
-                Debug.Log("Path has " + path.corners.Length + " points");
-            }
-
-            //Debug.DrawRay(transform.position, transform.forward * 3, Color.black);
+            
         }
 
 
@@ -60,85 +41,18 @@ namespace MovementSystem
         /// All NPCs should only move forward while turning towards destination
         /// </summary>
         /// <param name="direction"></param>
-        public void MoveInDirection(Camera camera, Vector3 direction)
+        public void MoveInDirection(Vector3 direction, float distance = 9999)
         {
-            Vector3 trueDirection = DirectionFromCamera(camera, direction);
-            SetHorizontalVelocity(trueDirection * movementSpeed);
-        }
-
-
-        /// <summary>
-        /// Calculates a path to the destination
-        /// Returns false if path not possible
-        /// </summary>
-        /// <param name="destination"></param>
-        public bool SetDestination(Vector3 destination) {
-            path = new NavMeshPath();
-            RaycastHit characterHit;
-            RaycastHit targetHit;
-
-            Physics.Raycast(transform.position, -transform.up, out characterHit, 100);
-            Physics.Raycast(destination, -transform.up, out targetHit, 100);
-
-            return NavMesh.CalculatePath(characterHit.point, destination, NavMesh.AllAreas, path);
-        }
-
-
-        public bool HasPath() {
-            return path != null;
-        }
-
-
-        /// <summary>
-        /// Returns true if path index < length of corners in path
-        /// </summary>
-        /// <returns></returns>
-        public bool HasReachedPathEnd() {
-            return pathIndex >= path.corners.Length;
-        }
-
-        /// <summary>
-        /// Moves towards the destination
-        /// Returns false when done
-        /// </summary>
-        /// <returns></returns>
-        public bool MoveTowardsDestination() {
-            bool hasReachedDestination = false;
-
-            if (HasPath() && !HasReachedPathEnd())
+            if (distance > Time.deltaTime * movementSpeed)
             {
-                Vector3 currentDestination = path.corners[pathIndex];
-
-                GoToPoint(currentDestination);
-
-                Debug.DrawRay(currentDestination, Vector3.up * 3, Color.red);
-                Debug.Log("Distance from corner:" + (currentDestination - transform.position).magnitude);
-                //Debug.DrawLine(transform.position, currentDestination, Color.red);
-
-                if ((currentDestination - transform.position).magnitude < pathSensitivity)
-                {
-                    pathIndex++;
-                }
+                SetHorizontalVelocity(direction * movementSpeed);
             }
             else {
-                hasReachedDestination = true;
-                path = null;
-                pathIndex = 0;
+                TranslateInDirection(direction, distance);
+                rb.velocity = Vector3.zero;
             }
-
-            return !hasReachedDestination;
         }
-        
 
-        /// <summary>
-        /// Goes to the point
-        /// </summary>
-        /// <param name="point"></param>
-        private void GoToPoint(Vector3 point)
-        {
-            TurnTowards(point);
-            MoveForward();
-        }
 
         
 
@@ -146,7 +60,7 @@ namespace MovementSystem
         /// Moves the character forward
         /// </summary>
         public void MoveForward() {
-            rb.velocity = transform.forward * movementSpeed;
+            SetHorizontalVelocity(transform.forward * movementSpeed);
         }
 
 
@@ -162,25 +76,40 @@ namespace MovementSystem
         /// </summary>
         /// <param name="position"></param>
         public void TurnTowards(Vector3 position) {
-            float angleBetween = Vector3.SignedAngle(transform.forward, (position - transform.position), transform.up);
+            Vector3 fromAngle = transform.forward;
+            fromAngle.y = 0;
+            Vector3 toAngle = position - transform.position;
+            toAngle.y = 0;
+            Vector3 axis = Vector3.up;
+
+            float angleBetween = Vector3.SignedAngle(fromAngle, toAngle, axis);
 
             float turnAngle = Mathf.Min(turnSpeed * Time.deltaTime, Mathf.Abs(angleBetween));
-
-            if (turnAngle < minAngle) {
-                turnAngle = 0;
-            }
+            
 
             turnAngle = angleBetween < 0 ? -turnAngle : turnAngle;
 
             transform.Rotate(transform.up, turnAngle);
         }
+        
 
         /// <summary>
         /// Turn towards the direction the character was moving in
         /// </summary>
         /// <param name="character"></param>
-        public void Rotate() {
-            TurnTowards(turnDirection);
+        public void Rotate(float angle) {
+            float turnOverTime = turnSpeed * Time.deltaTime;
+            float finalTurn = 0;
+
+            if (turnOverTime > Mathf.Abs(angle))
+            {
+                finalTurn = angle;
+            }
+            else {
+                finalTurn = turnOverTime;
+            }
+
+            transform.Rotate(transform.up, finalTurn);
         }
 
 
@@ -212,6 +141,10 @@ namespace MovementSystem
             Vector3 currentVelocity = rb.velocity;
 
             return new Vector3(currentVelocity.x, 0, currentVelocity.z);
+        }
+
+        private void TranslateInDirection(Vector3 direction, float distance) {
+            rb.MovePosition(transform.position + direction / direction.magnitude * distance);
         }
 
         /// <summary>

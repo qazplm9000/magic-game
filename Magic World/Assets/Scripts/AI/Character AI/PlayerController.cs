@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlayerController : CharacterAI
 {
 
-    public override void GetAction(CharacterManager character, CharacterController controller)
+    public override ActionList GetActionList(CharacterManager character, CharacterController controller)
     {
-        
+        return new ActionList();
     }
     
 }

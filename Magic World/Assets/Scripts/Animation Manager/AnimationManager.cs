@@ -19,6 +19,7 @@ namespace AnimationSystem
         {
             character = transform.GetComponent<CharacterManager>();
             anim = transform.GetComponentInChildren<Animator>();
+            InitDictionary();
         }
 
 
@@ -33,7 +34,12 @@ namespace AnimationSystem
         /// </summary>
         /// <param name="animation"></param>
         public void PlayAnimation(string animation, int layer = 0) {
-            string mappedAnim = _animations[animation];
+            string mappedAnim = animation;
+
+            if (_animations.ContainsKey(animation))
+            {
+                mappedAnim = _animations[animation];
+            }
             anim.CrossFade(mappedAnim, crossFadeTime);
         }
 
@@ -49,6 +55,14 @@ namespace AnimationSystem
 
         public void SetAnimator(Animator newAnim) {
             anim = newAnim;
+        }
+
+        private void InitDictionary() {
+            _animations = new Dictionary<string, string>();
+
+            for (int i = 0; i < animations.Count; i++) {
+                _animations[animations[i].animationName] = animations[i].characterAnimName;
+            }
         }
 
     }

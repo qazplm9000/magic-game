@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AbilitySystem;
 using PartySystem;
+using System;
 
 namespace BattleSystem
 {
@@ -66,8 +67,20 @@ namespace BattleSystem
 
             for (int i = 0; i < allCharacters.Count; i++)
             {
-                //Debug.Log(allCharacters[i].transform.name + " has taken their turn");
-                allCharacters[i].TakeTurn();
+                CharacterManager character = allCharacters[i];
+
+                if (character == currentTurn)
+                {
+                    character.TakeTurn(this);
+                }
+                else if (IsEnemy(currentTurn, character) && IsTargetted(character))
+                {
+                    character.Defend(this);
+                }
+                else {
+                    //run when either not enemy, or not being targetted
+                    character.Idle(this);
+                }
             }
         }
 
@@ -77,7 +90,7 @@ namespace BattleSystem
             turnTime = currentTurn.GetAttackTime();
             turnTimer = turnTime;
 
-            currentTurn.StartTurn();
+            //currentTurn.OnTurnStart();
         }
 
 
@@ -166,7 +179,7 @@ namespace BattleSystem
             allCharactersNextTurns = new List<CharacterTurn>();
 
             for (int i = 0; i < allCharacters.Count; i++) {
-                CharacterTurn nextTurn = new CharacterTurn(allCharacters[i], allCharacters[i].CalculateFirstTurn());
+                CharacterTurn nextTurn = new CharacterTurn(allCharacters[i], CalculateInitiative(allCharacters[i]));
                 allCharactersNextTurns.Add(nextTurn);
             }
         }
@@ -246,6 +259,30 @@ namespace BattleSystem
         /// </summary>
         public void ResetBattleManager() {
 
+        }
+
+
+
+        private int CalculateInitiative(CharacterManager character) {
+            return 0;
+        }
+
+        private int CalculateNextTurn(CharacterManager character, int currentTurn) {
+            return currentTurn + 1000 / character.GetAgility();
+        }
+
+
+        //Likely take in character, target type (friend, enemy, etc), radius, etc
+        public void Target() {
+
+        }
+
+        public bool IsTargetted(CharacterManager target) {
+            return true;
+        }
+
+        public bool IsEnemy(CharacterManager character, CharacterManager target) {
+            return true;
         }
     }
 }

@@ -31,13 +31,18 @@ namespace AbilitySystem
         {
             if (previousFrame < hitboxStartTime && currentFrame >= hitboxStartTime)
             {
-                Hitbox newHitbox = World.PullHitboxObject(hitbox);
-                newHitbox.CreateHitbox(character, this, hitboxLifetime);
-
-                SetPosition(character, newHitbox.transform, offset);
+                PullHitbox(character);
             }
 
             return currentFrame < totalTime;
+        }
+
+        private void PullHitbox(CharacterManager character) {
+            Hitbox newHitbox = World.PullHitboxObject(hitbox);
+            newHitbox.CreateHitbox(character, this, hitboxLifetime);
+            Vector3 newOffset = offset;
+
+            SetPosition(character, newHitbox.transform, newOffset);
         }
     }
 }

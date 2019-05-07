@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AbilitySystem;
-
+using UnityEngine.AI;
 
 
 public class CharacterController : MonoBehaviour
@@ -15,12 +15,32 @@ public class CharacterController : MonoBehaviour
     public Ability nextSkill = null;
     public Vector3 nextLocation;
 
+
+    private NavMeshPath path;
+    private int pathIndex = 1;
+
+    [SerializeField]
+    private ActionList actions;
+
+    [Tooltip("How far away can the character be before considering a point reached")]
+    public float pathSensitivity = 0.1f;
+    public float angleSensitivity = 2f;
+
+
     public void Awake()
     {
         character = transform.GetComponent<CharacterManager>();
         if (isPlayer) {
-            World.inputs.OnInput += ReceiveInput;
+            //World.inputs.OnInput += ReceiveInput;
         }
+        path = new NavMeshPath();
+
+        actions = null;
+    }
+
+    private void Update()
+    {
+        DebugCorners();
     }
 
 
@@ -28,7 +48,9 @@ public class CharacterController : MonoBehaviour
     /// AI that controls the character
     /// </summary>
     public void CallInput() {
-        if (!isPlayer)
+        ControlAI();
+        Debug.Log("Calling input on " + character.name);
+        /*if (!isPlayer)
         {
             if (ai != null)
             {
@@ -39,12 +61,24 @@ public class CharacterController : MonoBehaviour
         else {
             //Debug.Log("Player taking action");
             MovePlayer();  
-        }
+        }*/
     }
 
 
     public void ControlAI() {
-        switch (currentAction)
+        if (actions == null) {
+            actions = ai.GetActionList(character, this);
+        }
+
+        bool acting = actions.PerformCurrentAction(character);
+        //Debug.Log(character.name + " has " + actions.GetActions().Count + " actions");
+
+        if (!acting) {
+            actions = null;
+            Debug.Log("Reset actions");
+        }
+
+        /*switch (currentAction)
         {
             case CharacterAction.Attack:
 
@@ -68,19 +102,20 @@ public class CharacterController : MonoBehaviour
 
                     if (reachedDestination) {
                         currentAction = CharacterAction.None;
+                        Debug.Log("Character has reached destination");
                     }
                 }
                 else {
-                    character.SetDestination(character.GetTarget().transform.position);
+                    SetDestinationToNearestPoint(character.GetTarget());
                 }
                 break;
             case CharacterAction.None:
-                ai.GetAction(character, this);
+                ai.GetActionList(character, this);
                 break;
             default:
                 currentAction = CharacterAction.None;
                 break;
-        }
+        }*/
     }
 
 
@@ -114,7 +149,7 @@ public class CharacterController : MonoBehaviour
             if (isPlayer)
             {
                 this.isPlayer = true;
-                World.inputs.OnInput += ReceiveInput;
+                //World.inputs.OnInput += ReceiveInput;
             }
         }
         else
@@ -122,7 +157,7 @@ public class CharacterController : MonoBehaviour
             if (!isPlayer)
             {
                 this.isPlayer = false;
-                World.inputs.OnInput -= ReceiveInput;
+                //World.inputs.OnInput -= ReceiveInput;
             }
         }
     }
@@ -137,7 +172,7 @@ public class CharacterController : MonoBehaviour
     }
 
 
-    public void ReceiveInput(string input) {
+    /*public void ReceiveInput(string input) {
         Debug.Log(input);
         switch (input) {
             case "Cast":
@@ -164,6 +199,162 @@ public class CharacterController : MonoBehaviour
                     character.SwitchPreviousCombo();
                 }
                 break;
+        }
+    }*/
+
+
+
+
+
+
+    /********************
+        **************
+         Path Finding
+        **************
+    *********************
+         */
+
+    
+    public bool SetDestinationToNearestPoint(CharacterManager target) {
+        Vector3 targetPosition = target.GetNearestPointFromPosition(transform.position);
+        float characterSize = character.GetDistanceFromFront();
+
+        Vector3 targetToCharacterDirection = transform.position - target.transform.position;
+        targetToCharacterDirection = targetToCharacterDirection / targetToCharacterDirection.magnitude;
+
+        Vector3 destination = targetPosition + targetToCharacterDirection*(characterSize + 0.5f);
+        
+        bool destinationSet = SetDestination(destination);
+
+        return destinationSet;
+    }
+
+    public Vector3 NearestPointFromTarget(CharacterManager target, float distance) {
+        return target.GetNearestPointFromPosition(transform.position);
+    }
+
+
+    /// <summary>
+    /// Calculates a path to the destination
+    /// Returns false if path not possible
+    /// </summary>
+    /// <param name="destination"></param>
+    public bool SetDestination(Vector3 destination)
+    {
+        RaycastHit characterHit;
+        RaycastHit targetHit;
+
+        if (Physics.Raycast(transform.position, -transform.up, out characterHit, 100)) {
+            //Debug.Log(characterHit.transform.name);
+        }
+        if (Physics.Raycast(destination, -transform.up, out targetHit, 100)) {
+            //Debug.Log(targetHit.transform.name);
+        }
+
+        return NavMesh.CalculatePath(characterHit.point, targetHit.point, NavMesh.AllAreas, path);
+    }
+
+
+    public bool HasPath()
+    {
+        return path.corners.Length > 0;
+    }
+
+
+    /// <summary>
+    /// Returns true if path index < length of corners in path
+    /// </summary>
+    /// <returns></returns>
+    public bool HasReachedPathEnd()
+    {
+        return pathIndex >= path.corners.Length;
+    }
+
+    /// <summary>
+    /// Moves towards the destination
+    /// Returns false when done
+    /// </summary>
+    /// <returns></returns>
+    public bool MoveTowardsDestination()
+    {
+        bool hasReachedDestination = false;
+
+        if (HasPath() && !HasReachedPathEnd())
+        {
+            Vector3 currentDestination = path.corners[pathIndex];
+
+            float angleBetween = AngleFromPoint(currentDestination);
+            Rotate(angleBetween);
+            angleBetween = AngleFromPoint(currentDestination);
+
+            if (angleBetween < 5) {
+                MoveInDirection(transform.forward, DistanceFromPoint(currentDestination));
+            }
+
+            if (DistanceFromPoint(currentDestination) <= pathSensitivity && angleBetween < angleSensitivity)
+            {
+                pathIndex++;
+            }
+        }
+        else
+        {
+            hasReachedDestination = true;
+            path.ClearCorners();
+            pathIndex = 1;
+        }
+
+        return !hasReachedDestination;
+    }
+
+
+    /// <summary>
+    /// Goes to the point
+    /// </summary>
+    /// <param name="point"></param>
+    private void GoToPoint(Vector3 point)
+    {
+        Vector3 direction = DirectionFromPoint(point);
+        character.FaceDirection(direction);
+        character.MoveForward();
+    }
+
+    private void TurnTowardsDirection(Vector3 direction) {
+        character.FaceDirection(direction);
+    }
+
+
+    private Vector3 DirectionFromPoint(Vector3 point) {
+        return point - transform.position;
+    }
+
+    private float DistanceFromPoint(Vector3 point) {
+        Vector3 distanceVector = transform.position - point;
+        distanceVector.y = 0;
+        return distanceVector.magnitude;
+    }
+
+    private float AngleFromPoint(Vector3 point) {
+        Vector3 direction = DirectionFromPoint(point);
+        direction.y = 0;
+        Vector3 forward = transform.forward;
+        forward.y = 0;
+
+        return Vector3.SignedAngle(forward, direction, Vector3.up);
+    }
+
+    private void MoveInDirection(Vector3 direction, float distance) {
+        character.MoveInDirection(direction, distance);
+    }
+
+    private void Rotate(float angle) {
+        character.Rotate(angle);
+    }
+
+
+    private void DebugCorners() {
+        for (int i = 0; i < path.corners.Length; i++)
+        {
+            Debug.DrawRay(path.corners[i], Vector3.up * 3, Color.blue);
         }
     }
 

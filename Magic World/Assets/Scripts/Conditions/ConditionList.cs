@@ -21,7 +21,14 @@ public class ConditionList
         }
         else {
             for (int i = 0; i < conditions.Count; i++) {
-                if (!conditions[i].Execute(character)) {
+                Condition condition = conditions[i];
+
+                if(condition == null)
+                {
+                    Debug.Log("There is no condition set in " + character.name);
+                    
+                }
+                else if (!conditions[i].Execute(character)) {
                     result = false;
                     break;
                 }

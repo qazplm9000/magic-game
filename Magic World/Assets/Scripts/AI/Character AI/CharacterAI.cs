@@ -7,6 +7,6 @@ using UnityEngine;
 public abstract class CharacterAI : ScriptableObject
 {
         
-    public abstract void GetAction(CharacterManager character, CharacterController controller);
+    public abstract ActionList GetActionList(CharacterManager character, CharacterController controller);
 
 }

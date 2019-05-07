@@ -86,7 +86,7 @@ namespace AbilitySystem {
         /// <param name="go"></param>
         /// <param name="offset"></param>
         public void SetPosition(CharacterManager caster, Transform go, Vector3 offset) {
-            go.transform.position = caster.transform.position +
+            go.transform.position = caster.GetNearestPointFromDirection(caster.transform.forward) +
                                         caster.transform.forward * offset.z +
                                         caster.transform.right * offset.x +
                                         caster.transform.up * offset.y;

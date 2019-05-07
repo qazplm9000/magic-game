@@ -27,6 +27,7 @@ namespace AbilitySystem {
         public int currentPresetIndex = 0;
         public int currentComboIndex = 0;
 
+        
         private Ability currentAbility;
         public bool isCombo = false;
 
@@ -99,11 +100,8 @@ namespace AbilitySystem {
         /// <returns></returns>
         public void Attack()
         {
-            if (currentAbility != null)
-            {
-                currentAbility = currentPreset.GetNextCombo();
-                isCombo = true;
-            }
+            currentAbility = currentPreset.GetNextCombo();
+            isCombo = true;
         }
 
         /// <summary>

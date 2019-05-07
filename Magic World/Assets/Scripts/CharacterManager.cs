@@ -15,6 +15,7 @@ using PartySystem;
 using BattleSystem;
 using AnimationSystem;
 using InventorySystem;
+using HitboxSystem;
 
 public class CharacterManager : MonoBehaviour {
 
@@ -59,7 +60,7 @@ public class CharacterManager : MonoBehaviour {
     private StatusManager statusManager;
     private AnimationManager animationManager;
     private Inventory inventory;
-    private Collider hurtbox;
+    private HitboxManager hitbox;
 
     public Party party;
     public BattleManager battleState;
@@ -101,18 +102,9 @@ public class CharacterManager : MonoBehaviour {
     public float movementSpeed = 5;
     public bool movementLocked = false;
     public float trueSpeed = 0;
-    
 
-    public CharacterManager target {
-        get { return _target; }
-        set {
-            _target = value;
-            if (OnNewTarget != null) {
-                OnNewTarget(value);
-            }
-        }
-    }
-    public CharacterManager _target;
+
+    public CharacterManager target;
 
     
 
@@ -134,7 +126,7 @@ public class CharacterManager : MonoBehaviour {
         stats = transform.GetComponent<CharacterStats>();
         statusManager = transform.GetComponent<StatusManager>();
         animationManager = transform.GetComponent<AnimationManager>();
-        hurtbox = transform.GetComponent<Collider>();
+        hitbox = transform.GetComponent<HitboxManager>();
 
         //prevents the navmesh agent from auto-turning
         //agent.updateRotation = false;
@@ -153,24 +145,89 @@ public class CharacterManager : MonoBehaviour {
 	void Update () {
         SetAnimationMovement();
         SetTrueSpeed();
-
         //direction = transform.forward;
         
 
 	}
 
-    
-
-    
-
-    
 
 
 
+    public void OnTurnStart(BattleManager battle)
+    {
+        RaiseEvent("OnTurnStart");
+
+        statusManager.Tick();
+    }
+
+    /// <summary>
+    /// Called every frame during combat
+    /// </summary>
+    public void TakeTurn(BattleManager battle)
+    {
+        /*if (!characterController.isPlayer)
+        {
+            characterController.CallInput();
+        }
+
+        stateManager.UpdateState();*/
+    }
+
+    public void OnTurnEnd(BattleManager battle) {
+
+    }
+
+
+    //Defend functions
+
+    /// <summary>
+    /// Called as soon as the character is targetted by a skill
+    /// </summary>
+    /// <param name="battle"></param>
+    public void OnDefend(BattleManager battle) {
+        //for player, throw a prompt to defend
+        //for enemy, maybe get a random float for when to defend
+            //Time should depend on chance of defending and how long before attack lands
+    }
+
+    /// <summary>
+    /// Called every frame when a character is being targetted by a skill
+    /// </summary>
+    /// <param name="battle"></param>
+    public void Defend(BattleManager battle)
+    {
+        //player:
+        //press button to defend, dodge, or counter
+        //maybe defend can be held down and blocks partial damage, but can't block attacks from behind
+            //should have some way to modify this easily
+        //dodge avoids all damage and can face any direction
+        //counter does damage, maybe has to be after a dodge
+    }
+
+    public void OnDefendEnd(BattleManager battle) {
+        //go back to idle animation
+    }
+
+
+    //Idle functions
+
+    public void OnIdle(BattleManager battle) {
+
+    }
+
+    public void Idle(BattleManager battle)
+    {
+
+    }
+
+    public void OnIdleEnd(BattleManager battle) {
+
+    }
 
 
 
-    
+
+
 
 
 
@@ -197,10 +254,13 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="speed"></param>
-    public void MoveInDirection(Vector3 direction)
+    public void MoveInDirection(Vector3 direction, float distance = 9999)
     {
-        Debug.Log("Character is moving");
-        movement.MoveInDirection(World.world.mainCamera, direction);
+        movement.MoveInDirection(direction, distance);
+    }
+
+    public void MoveForward() {
+        movement.MoveForward();
     }
 
 
@@ -212,22 +272,26 @@ public class CharacterManager : MonoBehaviour {
     /// Rotates the character in the direction relative to the character
     /// </summary>
     /// <param name="direction"></param>
-    public void Rotate()
+    public void Rotate(float angle)
     {
-        //movement.Rotate();
+        movement.Rotate(angle);
     }
 
 
     public bool SetDestination(Vector3 destination) {
-        return movement.SetDestination(destination);
+        return characterController.SetDestination(destination);
+    }
+
+    public bool SetDestinationToNearestPoint() {
+        return characterController.SetDestinationToNearestPoint(GetTarget());
     }
 
     public bool MoveTowardsDestination() {
-        return movement.MoveTowardsDestination();
+        return characterController.MoveTowardsDestination();
     }
 
     public bool HasPath() {
-        return movement.HasPath();
+        return characterController.HasPath();
     }
 
 
@@ -243,6 +307,11 @@ public class CharacterManager : MonoBehaviour {
     public float GetCurrentSpeed() {
         return GetVelocity().magnitude;
     }
+
+
+    
+
+
 
     #endregion
 
@@ -343,21 +412,14 @@ public class CharacterManager : MonoBehaviour {
         stats.StaggerDamage(damage);
     }
 
-    public void StartTurn() {
-        RaiseEvent("OnTurnStart");
+    
 
-        statusManager.Tick();
+    
+
+    public bool IsEnemy(CharacterManager character)
+    {
+        return false;
     }
-
-    /// <summary>
-    /// Called every frame during combat
-    /// </summary>
-    public void TakeTurn() {
-        characterController.CallInput();
-
-        stateManager.UpdateState();
-    }
-
 
 
     public void RemoveStatus(StatusEffect status) {
@@ -365,10 +427,7 @@ public class CharacterManager : MonoBehaviour {
     }
 
 
-
-    public Collider GetHurtBox() {
-        return hurtbox;
-    }
+    
 
 
     #endregion
@@ -585,4 +644,25 @@ public class CharacterManager : MonoBehaviour {
     }
 
     #endregion
+
+
+    #region Hitbox
+
+    public Vector3 GetNearestPointFromDirection(Vector3 direction) {
+        return hitbox.GetNearestPointFromDirection(direction);
+    }
+
+    public Vector3 GetNearestPointFromPosition(Vector3 position) {
+        return hitbox.GetNearestPointFromPosition(position);
+    }
+
+    public float GetDistanceFromFront() {
+        return hitbox.GetDistanceFromFront();
+    }
+
+    #endregion
+
+
+
+
 }

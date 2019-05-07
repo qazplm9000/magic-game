@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AbilitySystem;
 
+[System.Serializable]
 public class CharacterAIAction
 {
 
@@ -14,5 +15,10 @@ public class CharacterAIAction
     [Tooltip("Ability to cast")]
     public Ability ability;
 
-
+    public CharacterAIAction(CharacterAIAction newAction) {
+        action = newAction.action;
+        delay = newAction.delay;
+        distance = newAction.distance;
+        ability = newAction.ability;
+    }
 }
