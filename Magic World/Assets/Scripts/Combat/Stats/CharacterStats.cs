@@ -31,6 +31,7 @@ namespace StatSystem
         public int compatibleElementBonus;
         public int sameElementBonus;
         public AbilityElement element;
+        public int turnTime;
 
         //stat multipliers go here
         public float healthMultiplier;
@@ -47,7 +48,7 @@ namespace StatSystem
 
 
         public void InitStats(List<int> values) {
-
+            turnTime = 1000 / agility;
         }
 
 

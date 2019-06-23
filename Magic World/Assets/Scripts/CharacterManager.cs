@@ -153,17 +153,17 @@ public class CharacterManager : MonoBehaviour {
 
 
 
-    public void OnTurnStart(BattleManager battle)
+    public void OnTurnStart(BattleContext battle)
     {
-        RaiseEvent("OnTurnStart");
+        //RaiseEvent("OnTurnStart");
 
-        statusManager.Tick();
+        //statusManager.Tick();
     }
 
     /// <summary>
     /// Called every frame during combat
     /// </summary>
-    public void TakeTurn(BattleManager battle)
+    public void TakeTurn(BattleContext battle)
     {
         /*if (!characterController.isPlayer)
         {
@@ -171,9 +171,22 @@ public class CharacterManager : MonoBehaviour {
         }
 
         stateManager.UpdateState();*/
+
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        transform.position +=   vertical   * movementSpeed * Time.deltaTime * transform.forward +
+                                horizontal * movementSpeed * Time.deltaTime * transform.right;
+
+
+        if (Input.GetKeyDown(KeyCode.K)) {
+            Debug.Log("Attacked target");
+            //starts casting skill
+            //when dodge time starts, warn 
+        }
     }
 
-    public void OnTurnEnd(BattleManager battle) {
+    public void OnTurnEnd(BattleContext battle) {
 
     }
 
@@ -184,7 +197,7 @@ public class CharacterManager : MonoBehaviour {
     /// Called as soon as the character is targetted by a skill
     /// </summary>
     /// <param name="battle"></param>
-    public void OnDefend(BattleManager battle) {
+    public void OnDefend(BattleContext battle) {
         //for player, throw a prompt to defend
         //for enemy, maybe get a random float for when to defend
             //Time should depend on chance of defending and how long before attack lands
@@ -194,7 +207,7 @@ public class CharacterManager : MonoBehaviour {
     /// Called every frame when a character is being targetted by a skill
     /// </summary>
     /// <param name="battle"></param>
-    public void Defend(BattleManager battle)
+    public void Defend(BattleContext battle)
     {
         //player:
         //press button to defend, dodge, or counter
@@ -204,23 +217,23 @@ public class CharacterManager : MonoBehaviour {
         //counter does damage, maybe has to be after a dodge
     }
 
-    public void OnDefendEnd(BattleManager battle) {
+    public void OnDefendEnd(BattleContext battle) {
         //go back to idle animation
     }
 
 
     //Idle functions
 
-    public void OnIdle(BattleManager battle) {
+    public void OnIdle(BattleContext battle) {
 
     }
 
-    public void Idle(BattleManager battle)
+    public void Idle(BattleContext battle)
     {
 
     }
 
-    public void OnIdleEnd(BattleManager battle) {
+    public void OnIdleEnd(BattleContext battle) {
 
     }
 
@@ -664,5 +677,37 @@ public class CharacterManager : MonoBehaviour {
 
 
 
+    /// <summary>
+    /// Returns time for character's next turn
+    /// </summary>
+    /// <returns></returns>
+    public int NextTurnTime() {
+        return 0;
+    }
+
+    /// <summary>
+    /// Returns time for character's future turn
+    /// 1 turn = turn after next
+    /// 2 turns = turn after
+    /// etc.
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <returns></returns>
+    public int FutureTurnTime(int turns = 1) {
+        return 1000 * turns;
+    }
+
+    /// <summary>
+    /// Gets the time for an upcoming turn
+    /// turnNumber = 0 means next turn
+    /// turnNumber = 1 means 1 turn later
+    /// </summary>
+    /// <param name="turnsInFuture"></param>
+    /// <returns></returns>
+    public int GetTurnTime(int turnNumber = 0) {
+        //turnTime + period * turnNumber
+        //Can consider things like speed buffs etc later on
+        return 0;
+    }
 
 }

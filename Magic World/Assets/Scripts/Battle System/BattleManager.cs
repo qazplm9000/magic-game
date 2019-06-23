@@ -9,6 +9,8 @@ namespace BattleSystem
 {
     public class BattleManager : MonoBehaviour
     {
+        BattleContext battleContext;
+
         public List<CharacterManager> allCharacters;
         public List<CharacterManager> allEnemies;
         public List<CharacterManager> allAllies;
@@ -58,10 +60,10 @@ namespace BattleSystem
             
             if (turnTimer <= 0)
             {
-                if (currentTurn.NotTakingAction())
-                {
+                //if (currentTurn.NotTakingAction())
+                //{
                     ChangeTurn();
-                }
+                //}
             }
 
 
@@ -71,15 +73,15 @@ namespace BattleSystem
 
                 if (character == currentTurn)
                 {
-                    character.TakeTurn(this);
+                    character.TakeTurn(battleContext);
                 }
-                else if (IsEnemy(currentTurn, character) && IsTargetted(character))
+                else if (IsTargetted(character))
                 {
-                    character.Defend(this);
+                    character.Defend(battleContext);
                 }
                 else {
                     //run when either not enemy, or not being targetted
-                    character.Idle(this);
+                    character.Idle(battleContext);
                 }
             }
         }
@@ -278,7 +280,7 @@ namespace BattleSystem
         }
 
         public bool IsTargetted(CharacterManager target) {
-            return true;
+            return battleContext.IsTargetted(target);
         }
 
         public bool IsEnemy(CharacterManager character, CharacterManager target) {
