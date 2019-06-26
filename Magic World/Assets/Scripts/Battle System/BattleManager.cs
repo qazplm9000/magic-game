@@ -77,7 +77,7 @@ namespace BattleSystem
                 }
                 else if (IsTargetted(character))
                 {
-                    character.Defend(battleContext);
+                    //character.Defend(battleContext);
                 }
                 else {
                     //run when either not enemy, or not being targetted

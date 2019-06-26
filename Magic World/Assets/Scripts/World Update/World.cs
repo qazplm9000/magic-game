@@ -12,7 +12,7 @@ using BattleSystem;
 public class World : MonoBehaviour {
 
     public static World world;
-    public static BattleManager battle;
+    public static BattleSystem.BattleManager battle;
     //public static OverworldState overworld;
     //public static InputManager inputs;
     public static CharacterEventManager eventManager;
@@ -40,7 +40,7 @@ public class World : MonoBehaviour {
         }
 
         eventManager = transform.GetComponent<CharacterEventManager>();
-        battle = transform.GetComponent<BattleManager>();
+        battle = transform.GetComponent<BattleSystem.BattleManager>();
 
         inputs = transform.GetComponent<GlobalInputManager>();
 

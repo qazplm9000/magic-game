@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using AbilitySystem;
 using InputSystem;
-using CombatSystem;
+//using CombatSystem;
 using StatSystem;
 using CharacterStateSystem;
 using MovementSystem;
@@ -207,7 +207,7 @@ public class CharacterManager : MonoBehaviour {
     /// Called every frame when a character is being targetted by a skill
     /// </summary>
     /// <param name="battle"></param>
-    public void Defend(BattleContext battle)
+    public void Defend(BattleContext battle, float remainingTime)
     {
         //player:
         //press button to defend, dodge, or counter
@@ -413,7 +413,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public bool IsTakingTurn() {
-        return World.battle.currentTurn == this && World.battle.turnTime > 0;
+        return true;//World.battle.currentTurn == this && World.battle.turnTime > 0;
     }
 
     public void TakeDamage(int damage)

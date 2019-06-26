@@ -42,7 +42,7 @@ namespace BattleSystem
 
                 for (int j = 0; j < characters.Count; j++) {
                     CharacterManager character = characters[i];
-                    int time = character.FutureTurnTime()
+                    int time = character.FutureTurnTime();
                 }
             }
         }
