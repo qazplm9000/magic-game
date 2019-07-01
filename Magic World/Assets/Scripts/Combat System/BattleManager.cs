@@ -11,7 +11,7 @@ namespace CombatSystem
         // Start is called before the first frame update
         void Start()
         {
-
+            characters = new List<CharacterManager>(GameObject.FindObjectsOfType<CharacterManager>());
         }
 
         // Update is called once per frame
