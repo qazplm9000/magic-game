@@ -22,12 +22,6 @@ namespace CombatSystem
 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
 
         public void TakeTurn(BattleManager battleState) {
             Move(battleState.camera);

@@ -4,12 +4,16 @@ using UnityEngine;
 
 
 
-namespace CombatSystem.SpellSystem
+namespace CombatSystem.SkillSystem
 {
     public abstract class Skill : ScriptableObject
     {
         public string SpellName;
         public int potency;
+        [HideInInspector]
+        public List<SkillEffect> effects;
+        [HideInInspector]
+        public List<bool> effectToggled;
 
         public abstract void CastSkill(SkillCaster caster, float previousFrame, float currentFrame);
         public abstract bool IsSkillFinished(SkillCaster caster, float previousFrame, float currentFrame);

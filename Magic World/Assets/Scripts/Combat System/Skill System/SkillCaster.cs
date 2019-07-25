@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace CombatSystem.SpellSystem
+namespace CombatSystem.SkillSystem
 {
     public class SkillCaster : MonoBehaviour
     {
