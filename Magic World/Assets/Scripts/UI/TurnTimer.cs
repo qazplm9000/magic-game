@@ -7,13 +7,13 @@ namespace CombatSystem
 {
     public class TurnTimer : MonoBehaviour
     {
-        private BattleManager battleState;
+        private CombatManager battleState;
         private Slider timerBar; 
 
         // Start is called before the first frame update
         void Start()
         {
-            battleState = FindObjectOfType<BattleManager>();
+            battleState = FindObjectOfType<CombatManager>();
             timerBar = transform.GetComponent<Slider>();
         }
 

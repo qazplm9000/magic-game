@@ -7,14 +7,14 @@ namespace CombatSystem
 {
     public class TurnName : MonoBehaviour
     {
-        private BattleManager battleState;
+        private CombatManager battleState;
         private TextMeshProUGUI text;
 
 
         // Start is called before the first frame update
         void Start()
         {
-            battleState = FindObjectOfType<BattleManager>();
+            battleState = FindObjectOfType<CombatManager>();
             text = transform.GetComponent<TextMeshProUGUI>();
         }
 
