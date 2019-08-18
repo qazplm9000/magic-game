@@ -13,6 +13,7 @@ namespace CombatSystem.SkillSystem
         public int potency;
         public float castTime;
         public List<SkillEffect> effects;
+        public List<SkillObject> skillObjects;
 
         public void CastSkill(CombatManager combat, Combatant caster, float previousFrame, float currentFrame) {
             if (previousFrame == 0) {

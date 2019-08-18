@@ -17,6 +17,9 @@ namespace CombatSystem.SkillSystem
         public List<Skill> skillList;
         public List<GameObject> spellObjects;
 
+        public delegate void CastFinish();
+        public event CastFinish OnCastFinished;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -80,6 +83,14 @@ namespace CombatSystem.SkillSystem
             }
         }
 
+
+        public void FinishCasting() {
+
+            if (OnCastFinished != null) {
+                OnCastFinished();
+            }
+
+        }
         
     }
 }
