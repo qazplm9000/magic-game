@@ -23,7 +23,7 @@ namespace NewSkillSystem
 
 
         public GameObject CreateSkillObject(Combatant caster, Combatant target) {
-            GameObject result = caster.gameObject;
+            GameObject result = null;
 
             if (skillObject != null)
             {

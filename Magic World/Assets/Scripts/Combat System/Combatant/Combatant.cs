@@ -3,7 +3,7 @@ using CombatSystem.AI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CombatSystem.SkillSystem;
+using NewSkillSystem;
 using CombatSystem.StatSystem;
 using CombatSystem.CastLocationSystem;
 
@@ -24,7 +24,7 @@ namespace CombatSystem
 
         private CombatantController controller;
         private MovementManager movement;
-        private SkillCaster caster;
+        private CastManager caster;
         private StatManager stats;
         private CastLocationManager skeleton;
         
@@ -34,7 +34,7 @@ namespace CombatSystem
         {
             controller = transform.GetComponent<CombatantController>();
             movement = transform.GetComponent<MovementManager>();
-            caster = transform.GetComponent<SkillCaster>();
+            caster = transform.GetComponent<CastManager>();
             stats = transform.GetComponent<StatManager>();
         }
 
@@ -51,11 +51,11 @@ namespace CombatSystem
         }
 
         public void Cast(Skill skill) {
-            caster.CastSkill(skill, null);
+            caster.CastSkill(skill);
         }
 
         public List<Skill> GetSkillList() {
-            return caster.GetSkillList();
+            return null;
         }
 
         public void Move(CombatManager battle, Vector3 direction)
@@ -143,6 +143,21 @@ namespace CombatSystem
         /// <returns></returns>
         public GameObject GetBodyPart(CastLocation part) {
             return skeleton.GetBodyPart(part);
+        }
+
+        public Combatant GetTarget() {
+            Combatant result = null;
+
+            Combatant[] targets = GameObject.FindObjectsOfType<Combatant>();
+
+            for (int i = 0; i < targets.Length; i++) {
+                if (targets[i] != this) {
+                    result = targets[i];
+                    break;
+                }
+            }
+
+            return result;
         }
     }
 }

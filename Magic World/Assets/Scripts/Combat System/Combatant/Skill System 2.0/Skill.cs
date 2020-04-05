@@ -10,6 +10,9 @@ namespace NewSkillSystem
         public List<SkillObject> skillObjects;
 
 
+        public void CastSkill(CastManager caster, float previousFrame, float currentFrame) {
+
+        }
 
 
     }
