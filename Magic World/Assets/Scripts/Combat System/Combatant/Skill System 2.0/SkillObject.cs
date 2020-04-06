@@ -22,7 +22,7 @@ namespace NewSkillSystem
         public float maxDuration;
 
 
-        public GameObject CreateSkillObject(Combatant caster, Combatant target) {
+        public GameObject CreateSkillObject(CastManager caster, CastManager target) {
             GameObject result = null;
 
             if (skillObject != null)
@@ -56,6 +56,35 @@ namespace NewSkillSystem
             else {
                 result = target.gameObject;
             }
+
+            return result;
+        }
+
+        public bool IsStarting(float previousFrame, float currentFrame) {
+            bool result = false;
+
+            if (startTime == 0)
+            {
+                if (currentFrame == 0)
+                {
+                    result = true;
+                }
+            }
+            else if (previousFrame <= startTime && currentFrame > startTime) {
+                result = true;
+            }
+
+            return result;
+        }
+
+        public bool IsRunning(float previousFrame, float currentFrame) {
+            bool result = false;
+
+            return result;
+        }
+
+        public bool IsDone(float previousFrame, float currentFrame) {
+            bool result = true;
 
             return result;
         }
