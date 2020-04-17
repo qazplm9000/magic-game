@@ -9,6 +9,7 @@ namespace SkillSystem
     [System.Serializable]
     public class SkillEffect
     {
+        private Skill skill;
         public SkillEffectTiming timing;
         public SkillEffectType effectType;
         [Tooltip("How much time to wait when Timing is set to \"After Delay\"")]
@@ -17,14 +18,15 @@ namespace SkillSystem
         public float speed = 5;
 
         [Tooltip("Skill object created when Type is set to \"Create Skill Object\"")]
-        public SkillObjectData data;
+        public int objIndex;
 
 
         public SkillEffect(SkillEffect effect) {
+            skill = effect.GetSkill();
             timing = effect.GetSkillEffectTiming();
             effectType = effect.GetSkillEffectType();
             delay = effect.GetDelay();
-            data = effect.GetSkillObjectData();
+            objIndex = effect.GetObjectIndex();
         }
 
         public void ApplyEffect(SkillObject so, Combatant caster, Combatant target) {
@@ -37,12 +39,7 @@ namespace SkillSystem
                     target.TakeDamage(-5);
                     break;
                 case SkillEffectType.CreateSkillObject:
-                    SkillObject obj = data.CreateSkillObject(caster, target, so);
-                    break;
-                case SkillEffectType.MoveForward:
-                    
-                    break;
-                case SkillEffectType.TurnTowardsTarget:
+                    //SkillObject obj = new SkillObject(skill, caster, target);
                     break;
             }
         }
@@ -54,10 +51,10 @@ namespace SkillSystem
             return result;
         }
 
-
+        public Skill GetSkill() { return skill; }
         public SkillEffectTiming GetSkillEffectTiming() { return timing; }
         public SkillEffectType GetSkillEffectType() { return effectType; }
         public float GetDelay() { return delay; }
-        public SkillObjectData GetSkillObjectData() { return data; }
+        public int GetObjectIndex() { return objIndex; }
     }
 }

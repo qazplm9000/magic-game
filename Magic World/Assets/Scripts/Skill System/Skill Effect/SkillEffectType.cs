@@ -8,8 +8,6 @@ namespace SkillSystem
     {
         DealDamage,
         HealHealth,
-        CreateSkillObject,
-        MoveForward,
-        TurnTowardsTarget
+        CreateSkillObject
     }
 }

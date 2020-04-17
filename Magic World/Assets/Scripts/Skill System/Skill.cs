@@ -9,28 +9,30 @@ namespace SkillSystem
     {
         public string skillName;
         public SkillTargetType targetType;
-        public List<SkillCasterAnimation> casterAnimations;
-        public List<SkillObjectData> skillObjects;
+        public List<bool> animationsFoldouts;
+        public List<SkillAnimation> animations;
+        public List<GameObject> skillObjects;
+        public List<SkillEffect> effects;
         [Range(0,5)]
         public float castTime;
+        public int animationType;
 
+        public List<SkillAnimation> GetAnimations() { return animations; }
+        public GameObject GetGameObject(int index) { return skillObjects[index]; }
+        public SkillTargetType GetTargetType() { return targetType; }
         
 
-        public List<SkillObjectData> GetSkillObjects() { return skillObjects; }
-        public List<SkillCasterAnimation> GetCasterAnimations() { return casterAnimations; }
-        public SkillTargetType GetTargetType() { return targetType; }
+        public SkillEffect GetSkillEffect(int index) {
+            return new SkillEffect(effects[index]);
+        }
 
 
         public void OnBeforeSerialize()
         {
             float highest = 0;
 
-            for (int i = 0; i < casterAnimations.Count; i++) {
-                highest = Mathf.Max(casterAnimations[i].startTime, highest);
-            }
-
-            for (int i = 0; i < skillObjects.Count; i++) {
-                highest = Mathf.Max(skillObjects[i].startTime, highest);
+            for (int i = 0; i < animations.Count; i++) {
+                highest = Mathf.Max(animations[i].startTime, highest);
             }
 
             if (castTime < highest) {

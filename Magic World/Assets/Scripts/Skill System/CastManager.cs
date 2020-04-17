@@ -19,10 +19,10 @@ namespace SkillSystem
 
         private bool isCasting = false;
 
-        private List<SkillObjectData> skillObjectData;
-        private List<SkillCasterAnimation> casterAnimations;
+        private List<SkillAnimation> animations;
         public int maxSpellObjects = 10;
 
+        public SkillObject soPrefab;
 
         public Skill testSkill;
 
@@ -51,8 +51,8 @@ namespace SkillSystem
         public void CastSkill(Skill skill) {
             if (currentSkill == null) {
                 currentSkill = skill;
-                skillObjectData = skill.GetSkillObjects();
-                casterAnimations = skill.GetCasterAnimations();
+                animations = skill.GetAnimations();
+                
                 isCasting = true;
                 SetProperTarget(skill.GetTargetType());
             }
@@ -81,26 +81,24 @@ namespace SkillSystem
         /// Plays the current skill
         /// </summary>
         private void RunCurrentSkill() {
-            bool skillIsDone = true;
+            for (int i = 0; i < animations.Count; i++) {
+                SkillAnimation anim = animations[i];
 
-
-            //Loops through and creates all skill objects when they should be instantiated
-            for (int i = 0; i < skillObjectData.Count; i++) {
-                SkillObjectData data = skillObjectData[i];
-
-                if (TimeReached(data.startTime)) {
-                    SkillObject so = data.CreateSkillObject(caster, target);
-                    Debug.Log("Remember to have this function choose an appropriate target");
-                }
-
-                skillIsDone &= data.HasStarted(previousFrame, currentFrame);
-            }
-
-            for (int i = 0; i < casterAnimations.Count; i++) {
-                SkillCasterAnimation anim = casterAnimations[i];
-
-                if (TimeReached(anim.startTime)) {
-                    caster.PlayAnimation(anim.animationName);
+                if (TimeReached(anim.startTime))
+                {
+                    switch (anim.animationType)
+                    {
+                        case SkillAnimationType.PlayAnimation:
+                            string animName = anim.animationName;
+                            caster.PlayAnimation(animName);
+                            break;
+                        case SkillAnimationType.PlaySound:
+                            break;
+                        case SkillAnimationType.CreateObject:
+                            SkillObject so = Instantiate(soPrefab);
+                            so.StartSkill(currentSkill, caster, target, anim);
+                            break;
+                    }
                 }
             }
         }
