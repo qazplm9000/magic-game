@@ -6,6 +6,8 @@ namespace EffectSystem
 {
     public enum EffectType
     {
-        
+        DealDamage,
+        HealHealth,
+        SetFlag
     }
 }

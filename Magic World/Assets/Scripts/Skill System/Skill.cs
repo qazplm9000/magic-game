@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using EffectSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace SkillSystem
         public List<bool> animationsFoldouts;
         public List<SkillAnimation> animations;
         public List<GameObject> skillObjects;
-        public List<SkillEffect> effects;
+        public List<StatusEffect> effects;
         [Range(0,5)]
         public float castTime;
         public int animationType;
@@ -22,8 +23,8 @@ namespace SkillSystem
         public SkillTargetType GetTargetType() { return targetType; }
         
 
-        public SkillEffect GetSkillEffect(int index) {
-            return new SkillEffect(effects[index]);
+        public StatusEffect GetSkillEffect(int index) {
+            return effects[index];
         }
 
 

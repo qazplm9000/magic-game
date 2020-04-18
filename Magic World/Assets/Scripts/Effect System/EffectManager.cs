@@ -9,9 +9,12 @@ namespace EffectSystem
     {
         private Combatant user;
 
+        public List<Effect> currentEffects;
+
         // Start is called before the first frame update
         void Start()
         {
+            currentEffects = new List<Effect>();
             user = transform.GetComponent<Combatant>();
         }
 

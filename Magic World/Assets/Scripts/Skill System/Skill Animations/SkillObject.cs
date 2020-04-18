@@ -327,29 +327,13 @@ namespace SkillSystem
         }
 
         private void RotateTowardsTarget() {
-            Quaternion finalRotation = new Quaternion();
-            float angle = Vector3.Angle(transform.forward, target.transform.position - transform.position);
-
-            if (Mathf.Abs(angle) > 170) {
-                
-                finalRotation = Quaternion.FromToRotation(transform.forward, -transform.right);
-            }
-            else if (angle > 90)
-            {
-                finalRotation = Quaternion.FromToRotation(transform.position + transform.forward, transform.position + transform.right);
-            }
-            else if (angle < -90) {
-                finalRotation = Quaternion.FromToRotation(transform.forward, -transform.right);
-            }
-            else
-            {
-                finalRotation = Quaternion.FromToRotation(transform.forward, target.transform.position - transform.position);
-            }
-
+            Quaternion finalRotation = Quaternion.LookRotation(target.transform.position - transform.position);
+            
             Quaternion clampedRotation = Quaternion.RotateTowards(transform.rotation, finalRotation, anim.rotationSpeed * Time.deltaTime);
             transform.rotation = clampedRotation;
         }
 
+        
 
         public void SetSpeed(float speed) {
             anim.movementSpeed = speed;
@@ -361,7 +345,7 @@ namespace SkillSystem
             effects = new List<SkillEffect>();
             for (int i = 0; i < anim.effectIds.Count; i++) {
                 int id = anim.effectIds[i];
-                effects.Add(skill.GetSkillEffect(id));
+                //effects.Add(skill.GetSkillEffect(id));
             }
         }
 
