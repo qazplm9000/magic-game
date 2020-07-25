@@ -9,6 +9,7 @@ namespace CombatSystem.AI
     public class PlayerAI : CharacterAI
     {
 
+        public KeyCode castSpellKey = KeyCode.T;
 
         public override void ControlCharacter(CombatantController controller, Combatant combatant)
         {
@@ -23,7 +24,7 @@ namespace CombatSystem.AI
                 direction.Normalize();
             }
 
-            if (Input.GetKeyDown(KeyCode.T)) {
+            if (Input.GetKeyDown(castSpellKey)) {
                 combatant.Cast(controller.testSkill);
             }
 
