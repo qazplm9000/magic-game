@@ -14,25 +14,49 @@ namespace EffectSystem
         public float duration;
         public float period;
 
+        public Combatant user;
 
-        public void RunEffect(float previousFrame, float currentFrame, Combatant user, Combatant target) {
+
+        public Effect(EffectType newType, EffectTiming newTiming)
+        {
+            type = newType;
+            timing = newTiming;
+        }
+
+        public void RunEffect(float previousFrame, float currentFrame, Combatant target) {
             if (EffectShouldBeApplied(previousFrame, currentFrame))
             {
                 if (timing == EffectTiming.Periodically)
                 {
                     for (int j = 0; j < TimesToRun(previousFrame, currentFrame); j++)
                     {
-                        ApplyEffect(user, target);
+                        ApplyEffect(target);
                     }
                 }
                 else
                 {
-                    ApplyEffect(user, target);
+                    ApplyEffect(target);
                 }
             }
         }
 
-        public void ApplyEffect(Combatant user, Combatant target) {
+
+        public bool EffectIsFinished(float previousFrame, float currentFrame)
+        {
+            return currentFrame > duration;
+        }
+
+
+
+
+
+
+        /*********************
+            private functions
+         *********************/
+
+
+        private void ApplyEffect(Combatant target) {
             switch (type)
             {
                 case EffectType.DealDamage:
@@ -47,7 +71,7 @@ namespace EffectSystem
             }
         }
 
-        public bool EffectShouldBeApplied(float previousFrame, float currentFrame) {
+        private bool EffectShouldBeApplied(float previousFrame, float currentFrame) {
             bool result = false;
 
             switch (timing)
@@ -78,7 +102,7 @@ namespace EffectSystem
             return result;
         }
 
-        public int TimesToRun(float previousFrame, float currentFrame) {
+        private int TimesToRun(float previousFrame, float currentFrame) {
             int result = 0;
 
             switch (timing)
@@ -109,9 +133,7 @@ namespace EffectSystem
             return result;
         }
 
-        public bool EffectIsFinished(float previousFrame, float currentFrame) {
-            return currentFrame > duration;
-        }
+        
 
 
     }

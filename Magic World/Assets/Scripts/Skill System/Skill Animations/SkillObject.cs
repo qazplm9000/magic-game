@@ -1,4 +1,5 @@
 ﻿using CombatSystem;
+using EffectSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,8 @@ namespace SkillSystem
         private Combatant target;
         public GameObject skillGo;
         public List<SkillObjectAnimation> animations;
-        public List<SkillEffect> effects;
+        public List<SkillEffect> skillEffects;
+        public List<Effect> effects = new List<Effect>();
         private List<Combatant> targetsHit;
         private SphereCollider sphereCollider;
         private SkillObject creatorOverload;
@@ -68,11 +70,12 @@ namespace SkillSystem
             this.target = target;
             this.anim = anim;
             sphereCollider.enabled = true;
+            effects = skill.effects;
 
             LoadEffects();
 
             _SetupSkill();
-            RunEffects(SkillEffectTiming.OnCreate);
+            RunSkillEffects(SkillEffectTiming.OnCreate);
         }
 
 
@@ -95,7 +98,7 @@ namespace SkillSystem
         {
             Tick();
             RunAnimations();
-            RunEffects(SkillEffectTiming.AfterDelay);
+            RunSkillEffects(SkillEffectTiming.AfterDelay);
 
             if (anim.moveForwards)
             {
@@ -115,7 +118,7 @@ namespace SkillSystem
             target = null;
             creatorOverload = null;
             targetsHit = new List<Combatant>(5);
-            effects = new List<SkillEffect>(5);
+            skillEffects = new List<SkillEffect>(5);
             gameObject.SetActive(false);
             transform.parent = null;
 
@@ -124,13 +127,22 @@ namespace SkillSystem
 
 
 
-        private void RunEffects(SkillEffectTiming timing, Combatant newTarget = null)
+        private void RunEffects(Combatant target)
+        {
+            for(int i = 0; i < effects.Count; i++)
+            {
+                target.ApplyEffect(effects[i]);
+            }
+        }
+
+
+        private void RunSkillEffects(SkillEffectTiming timing, Combatant newTarget = null)
         {
             Combatant currentTarget = newTarget == null ? target : newTarget;
 
-            for (int i = 0; i < effects.Count; i++)
+            for (int i = 0; i < skillEffects.Count; i++)
             {
-                SkillEffect se = effects[i];
+                SkillEffect se = skillEffects[i];
 
                 if (se.GetSkillEffectTiming() == timing)
                 {
@@ -316,7 +328,7 @@ namespace SkillSystem
         /// </summary>
         /// <param name="newEffects"></param>
         private void SetSkillEffects(List<SkillEffect> newEffects) {
-            effects = newEffects;
+            skillEffects = newEffects;
         }
 
 
@@ -342,7 +354,7 @@ namespace SkillSystem
 
 
         private void LoadEffects() {
-            effects = new List<SkillEffect>();
+            skillEffects = new List<SkillEffect>();
             for (int i = 0; i < anim.effectIds.Count; i++) {
                 int id = anim.effectIds[i];
                 //effects.Add(skill.GetSkillEffect(id));
@@ -353,11 +365,13 @@ namespace SkillSystem
         private void TargetCollided(Combatant target) {
             if (ValidTargetHit(target)) {
                 targetsHit.Add(target);
-                RunEffects(SkillEffectTiming.OnCollision, target);
+                RunSkillEffects(SkillEffectTiming.OnCollision, target);
+                
 
                 if (anim.destroyOnCollision)
                 {
-                    RunEffects(SkillEffectTiming.OnDestroy);
+                    RunSkillEffects(SkillEffectTiming.OnDestroy);
+                    RunEffects(target);
                     gameObject.SetActive(false);
                 }
             }

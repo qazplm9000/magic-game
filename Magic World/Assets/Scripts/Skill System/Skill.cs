@@ -13,17 +13,18 @@ namespace SkillSystem
         public List<bool> animationsFoldouts;
         public List<SkillAnimation> animations;
         public List<GameObject> skillObjects;
-        public List<StatusEffect> effects;
+        public List<Effect> effects = new List<Effect>();
         [Range(0,5)]
         public float castTime;
         public int animationType;
 
-        public List<SkillAnimation> GetAnimations() { return animations; }
+        public virtual List<SkillAnimation> GetAnimations() { return animations; }
         public GameObject GetGameObject(int index) { return skillObjects[index]; }
         public SkillTargetType GetTargetType() { return targetType; }
+        public virtual float GetCastTime() { return castTime; }
         
 
-        public StatusEffect GetSkillEffect(int index) {
+        public Effect GetSkillEffect(int index) {
             return effects[index];
         }
 

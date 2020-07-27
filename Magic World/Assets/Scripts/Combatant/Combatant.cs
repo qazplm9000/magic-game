@@ -6,6 +6,7 @@ using UnityEngine;
 using SkillSystem;
 using CombatSystem.StatSystem;
 using CombatSystem.CastLocationSystem;
+using EffectSystem;
 
 namespace CombatSystem
 {
@@ -25,6 +26,7 @@ namespace CombatSystem
         private CastManager caster;
         private StatManager stats;
         private CastLocationManager skeleton;
+        private StateManager state;
 
         private Animator anim;
         
@@ -36,6 +38,7 @@ namespace CombatSystem
             movement = transform.GetComponent<MovementManager>();
             caster = transform.GetComponent<CastManager>();
             stats = transform.GetComponent<StatManager>();
+            state = transform.GetComponent<StateManager>();
 
             anim = transform.GetComponentInChildren<Animator>();
         }
@@ -65,9 +68,12 @@ namespace CombatSystem
 
         public void Move(Vector3 direction)
         {
-            movement.Move(direction);
-            movement.Rotate(direction);
-            Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
+            if (state.canMove)
+            {
+                movement.Move(direction);
+                movement.Rotate(direction);
+                Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
+            }
         }
 
         
@@ -119,6 +125,16 @@ namespace CombatSystem
             }
 
             return result;
+        }
+
+
+        public void ApplyEffect(Effect effect) {
+            transform.GetComponent<EffectManager>().AddEffect(effect);
+        }
+
+        public void SetCastFlag(bool flagValue)
+        {
+            state.isCasting = flagValue;
         }
     }
 }

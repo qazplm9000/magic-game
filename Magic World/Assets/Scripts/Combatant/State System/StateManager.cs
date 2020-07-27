@@ -10,7 +10,7 @@ public class StateManager : MonoBehaviour
 
     public bool isCasting = false;
     public bool canMove = true;
-    public bool isGrounded = false;
+    public bool isGrounded = true;
 
 
 
@@ -23,6 +23,13 @@ public class StateManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isCasting)
+        {
+            canMove = false;
+        }
+        else
+        {
+            canMove = true;
+        }
     }
 }

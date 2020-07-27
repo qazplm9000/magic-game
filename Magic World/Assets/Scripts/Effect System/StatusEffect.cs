@@ -13,7 +13,7 @@ namespace EffectSystem
         public void RunStatus(float previousFrame, float currentFrame, Combatant user, Combatant target) {
             for (int i = 0; i < effects.Count; i++) {
                 Effect effect = effects[i];
-                effect.RunEffect(previousFrame, currentFrame, user, target);
+                effect.RunEffect(previousFrame, currentFrame, target);
             }
         }
 

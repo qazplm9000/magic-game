@@ -9,12 +9,21 @@ namespace CombatSystem.AI
     public class PlayerAI : CharacterAI
     {
 
-        public KeyCode castSpellKey = KeyCode.T;
+        public string horizontalKeyboardAxis = "Horizontal";
+        public string verticalKeyboardAxis = "Vertical";
+        public string horizontalControllerAxis = "Controller Horizontal";
+        public string verticalControllerAxis = "Controller Vertical";
+
+        public KeyCode castSpellKeyboardKey = KeyCode.T;
+        public KeyCode castSpellControllerKey = KeyCode.Joystick1Button3;
+
+        public KeyCode comboKeyboardKey = KeyCode.Return;
+        public KeyCode comboControllerKey = KeyCode.Joystick1Button0;
 
         public override void ControlCharacter(CombatantController controller, Combatant combatant)
         {
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
+            float horizontal = Mathf.Clamp(Input.GetAxis(horizontalKeyboardAxis) + Input.GetAxis(horizontalControllerAxis), -1, 1);
+            float vertical = Mathf.Clamp(Input.GetAxis(verticalKeyboardAxis) + Input.GetAxis(verticalControllerAxis), -1, 1);
             Vector3 inputDirection = new Vector3(horizontal, 0, vertical);
             
             Vector3 direction = GetDirectionFromCamera(inputDirection, Camera.main);
@@ -24,8 +33,13 @@ namespace CombatSystem.AI
                 direction.Normalize();
             }
 
-            if (Input.GetKeyDown(castSpellKey)) {
-                combatant.Cast(controller.testSkill);
+            if (Input.GetKeyDown(castSpellKeyboardKey) || Input.GetKeyDown(castSpellControllerKey)) {
+                combatant.Cast(controller.characterSkill);
+            }
+
+            if(Input.GetKeyDown(comboKeyboardKey) || Input.GetKeyDown(comboControllerKey))
+            {
+                combatant.Cast(controller.characterCombo);
             }
 
             combatant.Move(direction);

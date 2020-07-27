@@ -9,7 +9,8 @@ namespace CombatSystem.AI
     public class CombatantController : MonoBehaviour
     {
         public Combatant character;
-        public Skill testSkill;
+        public Skill characterSkill;
+        public Skill characterCombo;
         public Combatant currentTarget = null;
 
         public CharacterAI ai;
