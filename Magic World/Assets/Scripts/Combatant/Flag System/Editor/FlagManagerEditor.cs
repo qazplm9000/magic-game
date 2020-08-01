@@ -1,10 +1,11 @@
-﻿using System;
+﻿using StateSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-
+[CustomEditor(typeof(FlagManager))]
 public class FlagManagerEditor : Editor
 {
     FlagManager fm;
@@ -18,21 +19,33 @@ public class FlagManagerEditor : Editor
     {
         fm = (FlagManager)target;
 
-        EditorGUILayout.Foldout(fm.foldout, "Flags");
+        fm.foldout = EditorGUILayout.Foldout(fm.foldout, "Flags", true);
 
         EditorGUI.indentLevel++;
-        FlagGUI();
+        if (fm.foldout)
+        {
+            FlagGUI();
+        }
         EditorGUI.indentLevel--;
 
-        EditorUtility.SetDirty(target);
+        
     }
 
     private void FlagGUI()
     {
-        Flag[] flagEnum = (Flag[])Enum.GetValues(typeof(Flag));
+        string[] flagNames = FlagManager.flagNames;
         for (int i = 0; i < fm.flagValues.Count; i++)
         {
-            EditorGUI.Toggle()
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(flagNames[i]);
+            bool temp = EditorGUILayout.Toggle(fm.flagValues[i]);
+            
+            if(temp != fm.flagValues[i])
+            {
+                EditorUtility.SetDirty(target);
+                fm.flagValues[i] = temp;
+            }
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

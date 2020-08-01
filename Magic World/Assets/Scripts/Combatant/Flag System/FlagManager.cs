@@ -3,53 +3,92 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum Flag
+
+namespace StateSystem
 {
-    character_is_moving,
-    character_can_move,
-    character_is_casting,
-    character_can_cast
-}
-
-public class FlagManager : MonoBehaviour, ISerializationCallbackReceiver
-{
-    public bool foldout;
-    public List<bool> flagValues = new List<bool>();
-
-
-    private void Awake()
+    public enum Flag
     {
-        
-        
+        character_is_moving,
+        character_can_move,
+        character_is_casting,
+        character_can_cast
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public class FlagManager : MonoBehaviour, ISerializationCallbackReceiver
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        public bool foldout = true;
+        public static string[] flagNames;
+        public List<bool> flagValues = new List<bool>();
 
 
-
-    public void OnAfterDeserialize()
-    {
-        
-    }
-
-    public void OnBeforeSerialize()
-    {
-        int numOfFlags = Enum.GetNames(typeof(Flag)).Length;
-        if (numOfFlags != flagValues.Count)
+        private void Awake()
         {
-            flagValues = new List<bool>(numOfFlags);
-            bool[] tempFlags = new bool[numOfFlags];
-            flagValues.AddRange(tempFlags);
+
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+
+        public bool GetFlag(Flag flag)
+        {
+            int index = (int)flag;
+            return flagValues[index];
+        }
+
+        public void SetFlag(Flag flag, bool value)
+        {
+            int index = (int)flag;
+            bool flagValue = flagValues[index];
+            if (flagValue != value)
+            {
+                flagValues[index] = value;
+                Debug.Log($"Flag \"{flag.ToString()}\" set to {value.ToString().ToUpper()}");
+            }
+        }
+
+        public void DisableFlag(Flag flag)
+        {
+            SetFlag(flag, false);
+        }
+
+        public void EnableFlag(Flag flag)
+        {
+            SetFlag(flag, true);
+        }
+
+        public bool CompareFlag(Flag flag, bool value)
+        {
+            int index = (int)flag;
+            return flagValues[index] == value;
+        }
+
+
+
+        public void OnAfterDeserialize()
+        {
+
+        }
+
+        public void OnBeforeSerialize()
+        {
+            flagNames = Enum.GetNames(typeof(Flag));
+            int numOfFlags = flagNames.Length;
+            if (numOfFlags != flagValues.Count)
+            {
+                flagValues = new List<bool>(numOfFlags);
+                bool[] tempFlags = new bool[numOfFlags];
+                flagValues.AddRange(tempFlags);
+            }
         }
     }
 }

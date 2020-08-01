@@ -43,7 +43,7 @@ namespace SkillSystem
 
                 if (TimeReached(currentSkill.GetCastTime()))
                 {
-                    caster.SetCastFlag(false);
+                    caster.ChangeFlag(StateSystem.Flag.character_is_casting, false);
                     ResetCast();
                 }
             }
@@ -55,7 +55,7 @@ namespace SkillSystem
                 animations = skill.GetAnimations();
                 
                 isCasting = true;
-                caster.SetCastFlag(true);
+                caster.ChangeFlag(StateSystem.Flag.character_is_casting, true);
                 SetProperTarget(skill.GetTargetType());
             }
         }

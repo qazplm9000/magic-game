@@ -7,6 +7,7 @@ using SkillSystem;
 using CombatSystem.StatSystem;
 using CombatSystem.CastLocationSystem;
 using EffectSystem;
+using StateSystem;
 
 namespace CombatSystem
 {
@@ -29,7 +30,7 @@ namespace CombatSystem
         private StateManager state;
 
         private Animator anim;
-        
+
 
         // Start is called before the first frame update
         void Start()
@@ -56,7 +57,7 @@ namespace CombatSystem
             }
         }
 
-        
+
 
         public void Cast(Skill skill) {
             caster.CastSkill(skill);
@@ -68,7 +69,7 @@ namespace CombatSystem
 
         public void Move(Vector3 direction)
         {
-            if (state.canMove)
+            if (state.GetFlag(Flag.character_can_move))
             {
                 movement.Move(direction);
                 movement.Rotate(direction);
@@ -76,8 +77,8 @@ namespace CombatSystem
             }
         }
 
-        
-        
+
+
         public void TakeDamage(int damage) {
             stats.AddStat(Stat.CurrentHealth, -damage);
             Debug.Log($"Character took {damage} damage");
@@ -87,8 +88,8 @@ namespace CombatSystem
             return stats.GetStat(stat);
         }
 
-        
-        
+
+
 
         public bool IsEnemy(Combatant target) {
             return true;
@@ -132,9 +133,9 @@ namespace CombatSystem
             transform.GetComponent<EffectManager>().AddEffect(effect);
         }
 
-        public void SetCastFlag(bool flagValue)
+        public void ChangeFlag(Flag flag, bool flagValue)
         {
-            state.isCasting = flagValue;
+            state.ChangeFlag(flag, flagValue);
         }
     }
 }

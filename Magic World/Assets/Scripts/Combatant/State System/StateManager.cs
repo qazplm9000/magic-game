@@ -3,33 +3,63 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
-
-public class StateManager : MonoBehaviour
+namespace StateSystem
 {
+    
 
-    public bool isCasting = false;
-    public bool canMove = true;
-    public bool isGrounded = true;
-
-
-
-    // Start is called before the first frame update
-    void Start()
+    public class StateManager : MonoBehaviour
     {
-        
-    }
+        public StateData stateData;
+        public CharacterStateSO states;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (isCasting)
+
+        // Start is called before the first frame update
+        void Start()
         {
-            canMove = false;
+            stateData = new StateData();
+            stateData.characterFlags = transform.GetComponent<FlagManager>();
+            SetupStartState();
         }
-        else
+
+        // Update is called once per frame
+        void Update()
         {
-            canMove = true;
+            stateData.currentDuration += Time.deltaTime;
+            CheckIfStateChanged();
+        }
+
+        public void ChangeFlag(Flag flag, bool value)
+        {
+            stateData.characterFlags.SetFlag(flag, value);
+        }
+
+        public bool GetFlag(Flag flag)
+        {
+            return stateData.characterFlags.GetFlag(flag);
+        }
+
+
+
+        /*
+            Private functions
+             */
+
+        private void SetupStartState()
+        {
+            stateData.currentState = states.defaultState;
+            stateData.currentState.EnterState(stateData.characterFlags);
+        }
+
+        private void CheckIfStateChanged()
+        {
+            State newState = states.CheckStateTransitions(stateData);
+
+            if(newState != null && newState != stateData.currentState)
+            {
+                stateData.currentState = newState;
+                stateData.currentDuration = 0;
+                newState.EnterState(stateData.characterFlags);
+            }
         }
     }
 }
