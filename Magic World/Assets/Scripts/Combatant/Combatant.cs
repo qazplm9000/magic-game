@@ -55,6 +55,11 @@ namespace CombatSystem
             {
                 anim.SetFloat("Speed", movement.GetCurrentSpeed());
             }
+
+            if(GetStat(Stat.CurrentHealth) <= 0)
+            {
+                gameObject.SetActive(false);
+            }
         }
 
 
