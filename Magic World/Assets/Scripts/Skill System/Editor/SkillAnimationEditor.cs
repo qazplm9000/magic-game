@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SkillSystem
 {
-    [CustomEditor(typeof(SkillAnimation))]
+    //[CustomEditor(typeof(SkillAnimation))]
     public class SkillAnimationEditor : Editor
     {
         SerializedProperty animationType;

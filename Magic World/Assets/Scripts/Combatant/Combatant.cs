@@ -28,6 +28,7 @@ namespace CombatSystem
         private StatManager stats;
         private CastLocationManager skeleton;
         private StateManager state;
+        private AudioSource audio;
 
         private Animator anim;
 
@@ -40,6 +41,7 @@ namespace CombatSystem
             caster = transform.GetComponent<CastManager>();
             stats = transform.GetComponent<StatManager>();
             state = transform.GetComponent<StateManager>();
+            audio = transform.GetComponent<AudioSource>();
 
             anim = transform.GetComponentInChildren<Animator>();
         }
@@ -141,6 +143,12 @@ namespace CombatSystem
         public void ChangeFlag(Flag flag, bool flagValue)
         {
             state.ChangeFlag(flag, flagValue);
+        }
+
+
+        public void PlayAudio(AudioClip clip)
+        {
+            audio.PlayOneShot(clip);
         }
     }
 }

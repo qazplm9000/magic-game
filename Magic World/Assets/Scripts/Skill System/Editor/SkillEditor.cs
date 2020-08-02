@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SkillSystem
 {
-    [CustomEditor(typeof(Skill))]
+    //[CustomEditor(typeof(Skill))]
     public class SkillEditor : Editor
     {
         Skill skill;
@@ -141,7 +141,7 @@ namespace SkillSystem
                 case SkillAnimationType.PlaySound:
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField("Sound");
-                    EditorGUILayout.ObjectField(animation.sound, typeof(AudioClip), true);
+                    EditorGUILayout.ObjectField(animation.clip, typeof(AudioClip), true);
                     EditorGUILayout.EndHorizontal();
                     break;
                 case SkillAnimationType.CreateObject:

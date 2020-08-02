@@ -6,6 +6,29 @@ using UnityEngine;
 
 namespace SkillSystem
 {
+
+    public class SkillCastData
+    {
+        public Combatant caster;
+        public Combatant target;
+        public Skill skill;
+        public float previousFrame = 0;
+        public float currentFrame = 0;
+
+        public SkillCastData(Combatant caster, Combatant target)
+        {
+            this.caster = caster;
+            this.target = target;
+        }
+
+        public void Tick()
+        {
+            previousFrame = currentFrame;
+            currentFrame += Time.deltaTime;
+        }
+    }
+
+
     public class CastManager : MonoBehaviour
     {
 
