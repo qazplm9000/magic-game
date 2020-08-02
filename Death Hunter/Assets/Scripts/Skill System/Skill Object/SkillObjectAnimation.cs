@@ -6,6 +6,16 @@ using UnityEngine;
 
 namespace SkillSystem
 {
+    public enum SkillObjectAnimationType
+    {
+        MoveForwards,
+        TurnTowardsTarget,
+        ChangeMovementSpeed,
+        ChangeRotationSpeed,
+        ChangeMovementAcceleration
+    }
+
+
     [System.Serializable]
     public class SkillObjectAnimation
     {

@@ -12,19 +12,37 @@ namespace SkillSystem
         public Combatant caster;
         public Combatant target;
         public Skill skill;
-        public float previousFrame = 0;
-        public float currentFrame = 0;
+        public Timer timer;
 
-        public SkillCastData(Combatant caster, Combatant target)
+        public SkillCastData(Combatant caster, Combatant target, Skill skill)
         {
             this.caster = caster;
             this.target = target;
+            this.skill = skill;
+            timer = new Timer();
+        }
+
+        public SkillCastData(SkillCastData data, Combatant target)
+        {
+            caster = data.caster;
+            this.target = target;
+            skill = data.skill;
+            timer = new Timer();
         }
 
         public void Tick()
         {
-            previousFrame = currentFrame;
-            currentFrame += Time.deltaTime;
+            timer.Tick();
+        }
+
+        public bool AtTime(float time)
+        {
+            return timer.AtTime(time);
+        }
+
+        public bool PastTime(float time)
+        {
+            return timer.PastTime(time);
         }
     }
 
@@ -33,20 +51,9 @@ namespace SkillSystem
     {
 
         public Combatant caster;
-        private Skill currentSkill;
 
-        public Combatant target;
-
-        private float previousFrame = 0;
-        private float currentFrame = 0;
-
-        private bool isCasting = false;
-
-        private List<SkillAnimation> animations;
-        public int maxSpellObjects = 10;
-
-        public SkillObject soPrefab;
-
+        public Skill currentSkill;
+        public SkillCastData castData;
         public Skill testSkill;
 
         // Start is called before the first frame update
@@ -60,11 +67,9 @@ namespace SkillSystem
         {
             if (IsCasting())
             {
-                Tick();
+                currentSkill.RunSkill(castData);
 
-                RunCurrentSkill();
-
-                if (TimeReached(currentSkill.GetCastTime()))
+                if (currentSkill.IsFinished(castData))
                 {
                     caster.ChangeFlag(StateSystem.Flag.character_is_casting, false);
                     ResetCast();
@@ -75,57 +80,21 @@ namespace SkillSystem
         public void CastSkill(Skill skill) {
             if (currentSkill == null) {
                 currentSkill = skill;
-                animations = skill.GetAnimations();
-                
-                isCasting = true;
+                Combatant target = GetProperTarget(skill.GetTargetType());
+                castData = new SkillCastData(caster, target, skill);
+
                 caster.ChangeFlag(StateSystem.Flag.character_is_casting, true);
-                SetProperTarget(skill.GetTargetType());
             }
         }
 
 
-        public bool IsCasting() { return isCasting; }
-
-        /// <summary>
-        /// Increments the time
-        /// </summary>
-        private void Tick() {
-            previousFrame = currentFrame;
-            currentFrame += Time.deltaTime;
-        }
+        public bool IsCasting() { return currentSkill != null; }
+        
 
         private void ResetCast()
         {
-            previousFrame = 0;
-            currentFrame = 0;
-            isCasting = false;
             currentSkill = null;
-        }
-
-        /// <summary>
-        /// Plays the current skill
-        /// </summary>
-        private void RunCurrentSkill() {
-            for (int i = 0; i < animations.Count; i++) {
-                SkillAnimation anim = animations[i];
-
-                if (TimeReached(anim.startTime))
-                {
-                    switch (anim.animationType)
-                    {
-                        case SkillAnimationType.PlayAnimation:
-                            string animName = anim.animationName;
-                            caster.PlayAnimation(animName);
-                            break;
-                        case SkillAnimationType.PlaySound:
-                            break;
-                        case SkillAnimationType.CreateObject:
-                            SkillObject so = Instantiate(soPrefab);
-                            so.StartSkill(currentSkill, caster, target, anim);
-                            break;
-                    }
-                }
-            }
+            castData = null;
         }
 
 
@@ -136,30 +105,26 @@ namespace SkillSystem
         /// <summary>
         /// Saves the current target to cast at
         /// </summary>
-        private void SetProperTarget(SkillTargetType targetType) {
+        private Combatant GetProperTarget(SkillTargetType targetType) {
+            Combatant target = null;
             switch (targetType)
             {
                 case SkillTargetType.Enemy:
+                    target = caster.GetTarget();
                     break;
                 case SkillTargetType.Ally:
+                    target = caster;
                     break;
                 case SkillTargetType.Self:
+                    target = caster;
                     break;
                 case SkillTargetType.AllyParty:
                     break;
-                case SkillTargetType.EnemyPartn:
+                case SkillTargetType.EnemyParty:
                     break;
             }
 
-            target = caster.GetTarget();
-        }
-
-        public Combatant GetTarget() {
             return target;
-        }
-
-        private bool TimeReached(float startTime) {
-            return startTime < currentFrame && startTime >= previousFrame;
         }
 
     }

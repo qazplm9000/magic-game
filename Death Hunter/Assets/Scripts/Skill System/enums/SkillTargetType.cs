@@ -11,6 +11,6 @@ namespace SkillSystem
         Ally,
         Self,
         AllyParty,
-        EnemyPartn
+        EnemyParty
     }
 }
