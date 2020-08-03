@@ -17,18 +17,32 @@ namespace SkillSystem
         public float castTime;
         public int animationType;
 
-        public virtual List<SkillAnimation> GetAnimations() { return animations; }
+        public List<SkillAnimation> GetAnimations() { return animations; }
         public GameObject GetGameObject(int index) { return skillObjects[index]; }
         public SkillTargetType GetTargetType() { return targetType; }
-        public virtual float GetCastTime() { return castTime; }
+        public float GetCastTime() { return castTime; }
         
 
 
         public void RunSkill(SkillCastData data)
         {
             data.Tick();
+
+            if (data.AtTime(0))
+            {
+                OnStart(data);
+            }
+
+            OnRun(data);
+
             RunAnimations(data);
             RunEffects(data);
+
+            if (data.AtTime(castTime))
+            {
+                OnFinish(data);
+            }
+
         }
         
         public bool IsFinished(SkillCastData data)
@@ -53,7 +67,9 @@ namespace SkillSystem
         }
 
 
-
+        protected abstract void OnStart(SkillCastData data);
+        protected abstract void OnRun(SkillCastData data);
+        protected abstract void OnFinish(SkillCastData data);
 
 
 

@@ -69,19 +69,31 @@ namespace SkillSystem
                     data.caster.PlayAudio(clip);
                     break;
                 case SkillAnimationType.CreateObject:
-                    SkillObject searchedObj = WorldManager.GetSkillObjectByID(objIndex);
-                    if (searchedObj != null)
-                    {
-                        SkillObject temp = GameObject.Instantiate<SkillObject>(searchedObj);
-                        temp.transform.position = data.caster.transform.position + positionOffset;
-                        temp.transform.rotation = data.caster.transform.rotation;
-                        SkillObjectData soData = new SkillObjectData(data, objEffects, lifetime);
-                        temp.StartSkill(soData);
-                    }
+                    SkillObject createdObj = CreateSkillObject(objIndex);
+                    createdObj.transform.position = data.caster.transform.position + positionOffset;
+                    createdObj.transform.rotation = data.caster.transform.rotation;
+                    SkillObjectData soData = new SkillObjectData(data, objEffects, lifetime);
+                    createdObj.StartSkill(soData);
+                    
                     break;
             }
         }
 
+
+        private SkillObject CreateSkillObject(int searchedIndex)
+        {
+            SkillObject searchedObj = WorldManager.GetSkillObjectByID(objIndex);
+            SkillObject result = GameObject.Instantiate<SkillObject>(searchedObj);
+
+            return result;
+        }
+
+
+
+
+        /*
+            Called during serialization
+             */
 
         public void UpdateDescription()
         {

@@ -10,6 +10,19 @@ namespace SkillSystem
     [CreateAssetMenu(fileName = "Bolt Spell", menuName = "Skill/Bolt Spell")]
     public class BoltSkill : Skill
     {
+        protected override void OnFinish(SkillCastData data)
+        {
+            
+        }
 
+        protected override void OnRun(SkillCastData data)
+        {
+            
+        }
+
+        protected override void OnStart(SkillCastData data)
+        {
+            
+        }
     }
 }

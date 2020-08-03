@@ -15,12 +15,8 @@ namespace CombatSystem
     {
 
         public string characterName;
-
-        private bool targetted = false;
-        private bool isDead = false;
-
-        public float nextTurnTime = 0f;
-        public float turnSpeed = 5f;
+        public int currentCombo = 0;
+        public List<string> enemyTags = new List<string>();
 
         private CombatantController controller;
         private MovementManager movement;
@@ -96,13 +92,6 @@ namespace CombatSystem
         }
 
 
-
-
-        public bool IsEnemy(Combatant target) {
-            return true;
-        }
-
-
         /// <summary>
         /// Combatant plays animation
         /// </summary>
@@ -149,6 +138,34 @@ namespace CombatSystem
         public void PlayAudio(AudioClip clip)
         {
             audio.PlayOneShot(clip);
+        }
+
+        public int GetNextCombo()
+        {
+            currentCombo++;
+            return currentCombo;
+        }
+
+        public int GetCurrentCombo()
+        {
+            return currentCombo;
+        }
+
+        public void ResetCurrentCombo()
+        {
+            currentCombo = 0;
+        }
+
+        public bool IsEnemy(Combatant target)
+        {
+            string tag = target.tag;
+
+            return enemyTags.Contains(tag);
+        }
+
+        public bool IsAlly(Combatant target)
+        {
+            return tag == target.tag;
         }
     }
 }

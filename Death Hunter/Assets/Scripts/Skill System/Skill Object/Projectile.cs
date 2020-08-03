@@ -12,7 +12,7 @@ namespace SkillSystem
     {
         protected override void OnCombatantCollision(Combatant target)
         {
-            if (target != objData.castData.caster)
+            if (objData.castData.caster.IsEnemy(target))
             {
                 ApplyEffects(target);
                 ResetCast();

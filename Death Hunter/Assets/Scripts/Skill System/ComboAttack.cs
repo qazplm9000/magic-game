@@ -8,6 +8,7 @@ namespace SkillSystem
     public class ComboAttack : ScriptableObject
     {
         public List<SkillAnimation> animations = new List<SkillAnimation>();
+        public List<SkillEffect> effects = new List<SkillEffect>();
         public float castTime;
     }
 }
