@@ -42,7 +42,6 @@ namespace SkillSystem
         public bool rotateTowardsTarget = true;
         public float rotationSpeed = 100;
         public float scale = 1;
-        public bool destroyOnCollision = false;
         public List<SkillEffect> objEffects = new List<SkillEffect>();
 
         public void RunAnimation(SkillCastData data)
@@ -70,15 +69,56 @@ namespace SkillSystem
                     break;
                 case SkillAnimationType.CreateObject:
                     SkillObject createdObj = CreateSkillObject(objIndex);
-                    createdObj.transform.position = data.caster.transform.position + positionOffset;
-                    createdObj.transform.rotation = data.caster.transform.rotation;
+                    Transform locationTransform = GetLocationTransform(data, location);
+                    SetObjectTransform(locationTransform, createdObj);
+                    SetObjectRotation(locationTransform, createdObj);
+                    SetObjectScale(locationTransform, createdObj);
+
                     SkillObjectData soData = new SkillObjectData(data, objEffects, lifetime);
                     createdObj.StartSkill(soData);
-                    
                     break;
             }
         }
 
+        private void SetObjectTransform(Transform location, SkillObject createdObj){
+            createdObj.transform.position = location.position +
+                                            location.forward * positionOffset.z +
+                                            location.right * positionOffset.x +
+                                            location.up * positionOffset.y;
+        }
+
+        private void SetObjectRotation(Transform location, SkillObject createdObj)
+        {
+            createdObj.transform.rotation = location.transform.rotation *
+                                            Quaternion.Euler(rotationOffset.x, 0, 0) *
+                                            Quaternion.Euler(0, rotationOffset.y, 0) *
+                                            Quaternion.Euler(0, 0, rotationOffset.z);
+        }
+
+        private void SetObjectScale(Transform location, SkillObject createdObj)
+        {
+            createdObj.transform.localScale = new Vector3(scale, scale, scale);
+        }
+
+        private Transform GetLocationTransform(SkillCastData data, SkillObjectLocation location)
+        {
+            Transform result = null;
+
+            switch (location)
+            {
+                case SkillObjectLocation.Creator:
+                    result = data.caster.transform;
+                    break;
+                case SkillObjectLocation.Caster:
+                    result = data.caster.transform;
+                    break;
+                case SkillObjectLocation.Target:
+                    result = data.target.transform;
+                    break;
+            }
+
+            return result;
+        }
 
         private SkillObject CreateSkillObject(int searchedIndex)
         {

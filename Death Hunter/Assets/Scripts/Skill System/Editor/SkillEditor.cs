@@ -190,7 +190,7 @@ namespace SkillSystem
 
                     animation.scale = EditorGUILayout.FloatField("Object Scale", animation.scale);
 
-                    animation.destroyOnCollision = EditorGUILayout.Toggle("Destroy On Collision", animation.destroyOnCollision);
+                    //animation.destroyOnCollision = EditorGUILayout.Toggle("Destroy On Collision", animation.destroyOnCollision);
                     break;
             }
             

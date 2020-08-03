@@ -8,6 +8,7 @@ using CombatSystem.StatSystem;
 using CombatSystem.CastLocationSystem;
 using EffectSystem;
 using StateSystem;
+using TargettingSystem;
 
 namespace CombatSystem
 {
@@ -25,6 +26,7 @@ namespace CombatSystem
         private CastLocationManager skeleton;
         private StateManager state;
         private AudioSource audio;
+        private TargetManager targetter;
 
         private Animator anim;
 
@@ -38,6 +40,7 @@ namespace CombatSystem
             stats = transform.GetComponent<StatManager>();
             state = transform.GetComponent<StateManager>();
             audio = transform.GetComponent<AudioSource>();
+            targetter = transform.GetComponent<TargetManager>();
 
             anim = transform.GetComponentInChildren<Animator>();
         }
@@ -57,6 +60,11 @@ namespace CombatSystem
             if(GetStat(Stat.CurrentHealth) <= 0)
             {
                 gameObject.SetActive(false);
+            }
+
+            if(GetTarget() != null)
+            {
+                transform.LookAt(GetTarget().transform.position);
             }
         }
 
@@ -110,18 +118,7 @@ namespace CombatSystem
         }
 
         public Combatant GetTarget() {
-            Combatant result = null;
-
-            Combatant[] targets = GameObject.FindObjectsOfType<Combatant>();
-
-            for (int i = 0; i < targets.Length; i++) {
-                if (targets[i] != this) {
-                    result = targets[i];
-                    break;
-                }
-            }
-
-            return result;
+            return targetter.currentTarget;
         }
 
 
