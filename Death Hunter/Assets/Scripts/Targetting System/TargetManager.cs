@@ -41,6 +41,11 @@ namespace TargettingSystem
                 currentTarget = GetTargetClosestToLeft(currentTarget);
             }
 
+            if (currentTarget.IsDead())
+            {
+                currentTarget = null;
+            }
+
             if(currentTarget != null)
             {
                 Debug.DrawRay(currentTarget.transform.position, transform.up * 10, Color.blue);
@@ -57,6 +62,12 @@ namespace TargettingSystem
             for(int i = 0; i < targets.Count; i++)
             {
                 Combatant temp = targets[i];
+
+                if (temp.IsDead())
+                {
+                    continue;
+                }
+
                 Vector3 screenPos = cam.WorldToScreenPoint(temp.transform.position);
                 float tempDist = DistanceFromCenterOfScreen(screenPos);
                 //Debug.Log($"{temp.name} - {tempDist} - {screenPos}");
@@ -78,7 +89,7 @@ namespace TargettingSystem
 
             List<Combatant> targets = tracker.targets;
             for (int i = 0; i < targets.Count; i++) {
-                if (targets[i] != currentTarget)
+                if (targets[i] != currentTarget && !targets[i].IsDead())
                 {
                     float tempAngle = AngleBetweenTarget(targets[i]);
                     tempAngle = tempAngle > 0 ? tempAngle : 360 + tempAngle;
@@ -103,7 +114,7 @@ namespace TargettingSystem
             List<Combatant> targets = tracker.targets;
             for (int i = 0; i < targets.Count; i++)
             {
-                if (targets[i] != currentTarget)
+                if (targets[i] != currentTarget && !targets[i].IsDead())
                 {
                     float tempAngle = AngleBetweenTarget(targets[i]);
                     tempAngle = tempAngle > 0 ? 360 - tempAngle : -tempAngle;

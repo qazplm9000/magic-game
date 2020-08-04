@@ -47,6 +47,17 @@ namespace CombatSystem
 
         private void Update()
         {
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                PlayAnimation("New State");
+                anim.SetBool("isGrounded", false);
+            }
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                anim.SetBool("isGrounded", true);
+            }
+
             if (controller != null)
             {
                 controller.ControlCharacter();
@@ -92,6 +103,7 @@ namespace CombatSystem
 
         public void TakeDamage(int damage) {
             stats.AddStat(Stat.CurrentHealth, -damage);
+            WorldManager.world.ShowDamageValue(this, damage);
             Debug.Log($"Character took {damage} damage");
         }
 
@@ -163,6 +175,11 @@ namespace CombatSystem
         public bool IsAlly(Combatant target)
         {
             return tag == target.tag;
+        }
+
+        public bool IsDead()
+        {
+            return GetStat(Stat.CurrentHealth) <= 0;
         }
     }
 }

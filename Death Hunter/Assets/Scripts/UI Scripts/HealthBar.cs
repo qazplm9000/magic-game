@@ -13,25 +13,86 @@ public class HealthBar : MonoBehaviour
     public Slider slider;
     public TextMeshProUGUI healthText;
     public TextMeshProUGUI characterText;
+    public Image background;
 
+    public Color activeColor;
+    public Color inactiveColor;
+
+    public bool isEnabled = true;
 
     // Start is called before the first frame update
     void Start()
     {
-        characterText.text = character.characterName;
-        UpdateHealth(character.GetStat(Stat.CurrentHealth), character.GetStat(Stat.MaxHealth));
+        HideUI();
     }
 
     // Update is called once per frame
     void Update()
     {
+        CheckIfEnabled();
 
-        UpdateHealth(character.GetStat(Stat.CurrentHealth), character.GetStat(Stat.MaxHealth));
+        if (isEnabled)
+        {
+            characterText.text = GetCharacter().name;
+            UpdateHealth();
+        }
     }
 
-    private void UpdateHealth(int currentHealth, int maxHealth)
+    protected void UpdateHealth()
     {
+        Combatant character = GetCharacter();
+
+        int currentHealth = character.GetStat(Stat.CurrentHealth);
+        int maxHealth = character.GetStat(Stat.MaxHealth);
         slider.value = currentHealth / (float)maxHealth;
         healthText.text = $"{currentHealth} / {maxHealth}";
+    }
+
+    protected virtual Combatant GetCharacter()
+    {
+        return character;
+    }
+
+    public void HideUI()
+    {
+        Debug.Log($"{transform.name} UI hidden!");
+        slider.gameObject.SetActive(false);
+        healthText.gameObject.SetActive(false);
+        characterText.gameObject.SetActive(false);
+        background.color = inactiveColor;
+    }
+
+    public void ShowUI()
+    {
+        Debug.Log($"{transform.name} UI shown!");
+        slider.gameObject.SetActive(true);
+        healthText.gameObject.SetActive(true);
+        characterText.gameObject.SetActive(true);
+        background.color = activeColor;
+
+        
+    }
+
+
+    protected void CheckIfEnabled()
+    {
+        if(isEnabled != TargetExists())
+        {
+            isEnabled = TargetExists();
+
+            if (isEnabled)
+            {
+                ShowUI();
+            }
+            else
+            {
+                HideUI();
+            }
+        }
+    }
+
+    protected bool TargetExists()
+    {
+        return GetCharacter() != null;
     }
 }

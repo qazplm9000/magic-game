@@ -35,4 +35,9 @@ public class Timer
     {
         return currentFrame > time;
     }
+
+    public float GetCurrentTime()
+    {
+        return currentFrame;
+    }
 }
