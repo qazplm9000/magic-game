@@ -11,14 +11,12 @@ namespace SkillSystem
         public SkillTargetType targetType;
         public List<bool> animationsFoldouts;
         public List<SkillAnimation> animations = new List<SkillAnimation>();
-        public List<GameObject> skillObjects;
         public List<SkillEffect> effects = new List<SkillEffect>();
         [Range(0,5)]
         public float castTime;
         public int animationType;
 
         public List<SkillAnimation> GetAnimations() { return animations; }
-        public GameObject GetGameObject(int index) { return skillObjects[index]; }
         public SkillTargetType GetTargetType() { return targetType; }
         public float GetCastTime() { return castTime; }
         

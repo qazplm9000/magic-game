@@ -68,11 +68,13 @@ namespace SkillSystem
             if (IsCasting())
             {
                 currentSkill.RunSkill(castData);
+                caster.SetAnimationBool("isCasting", true);
 
                 if (currentSkill.IsFinished(castData))
                 {
                     caster.ChangeFlag(StateSystem.Flag.character_is_casting, false);
                     ResetCast();
+                    caster.SetAnimationBool("isCasting", false);
                 }
             }
         }

@@ -104,6 +104,11 @@ namespace CombatSystem.MovementSystem
             currentRotationSpeed = 0;
         }
 
+        public void LookAt(GameObject target)
+        {
+            Rotate(target.transform.position - transform.position);
+        }
+
 
         public float GetCurrentSpeed() { return currentSpeed; }
     }

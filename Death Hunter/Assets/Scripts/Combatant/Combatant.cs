@@ -73,9 +73,14 @@ namespace CombatSystem
                 gameObject.SetActive(false);
             }
 
-            if(GetTarget() != null)
+            if(HasTarget())
             {
-                transform.LookAt(GetTarget().transform.position);
+                movement.LookAt(GetTarget().gameObject);
+                anim.SetBool("isTargetting", true);
+            }
+            else
+            {
+                anim.SetBool("isTargettng", false);
             }
         }
 
@@ -94,7 +99,12 @@ namespace CombatSystem
             if (state.GetFlag(Flag.character_can_move))
             {
                 movement.Move(direction);
-                movement.Rotate(direction);
+
+                if (!HasTarget())
+                {
+                    movement.Rotate(direction);
+                }
+
                 Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
             }
         }
@@ -116,8 +126,8 @@ namespace CombatSystem
         /// Combatant plays animation
         /// </summary>
         /// <param name="animationName"></param>
-        public void PlayAnimation(string animationName) {
-            anim.Play(animationName);
+        public void PlayAnimation(string animationName, float animCrossFade = 0) {
+            anim.CrossFade(animationName, animCrossFade);
             Debug.Log("Character is playing animation: " + animationName);
         }
 
@@ -180,6 +190,16 @@ namespace CombatSystem
         public bool IsDead()
         {
             return GetStat(Stat.CurrentHealth) <= 0;
+        }
+
+        public void SetAnimationBool(string boolName, bool value)
+        {
+            anim.SetBool(boolName, value);
+        }
+
+        public bool HasTarget()
+        {
+            return GetTarget() != null;
         }
     }
 }

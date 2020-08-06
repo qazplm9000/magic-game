@@ -80,7 +80,10 @@ namespace SkillSystem
 
             if (target != null)
             {
-                OnCombatantCollision(target);
+                if (TargetIsValidTarget(target))
+                {
+                    OnCombatantCollision(target);
+                }
             }
             else
             {
@@ -103,13 +106,7 @@ namespace SkillSystem
         {
             objData = data;
         }
-
-        protected bool IsValidTarget(Combatant target)
-        {
-            Debug.Log("Currently does not check if target is valid");
-            return true;
-        }
-
+        
         protected void ApplyEffects(Combatant target)
         {
             List<SkillEffect> effects = objData.effects;
@@ -119,10 +116,39 @@ namespace SkillSystem
             }
         }
 
+        protected bool TargetIsValidTarget(Combatant target)
+        {
+            SkillTargetType tt = objData.castData.skill.GetTargetType();
+            bool result = false;
+
+            switch (tt)
+            {
+                case SkillTargetType.Enemy:
+                    result = GetCaster().IsEnemy(target);
+                    break;
+                case SkillTargetType.Ally:
+                    result = GetCaster().IsAlly(target);
+                    break;
+                case SkillTargetType.Self:
+                    break;
+                case SkillTargetType.AllyParty:
+                    break;
+                case SkillTargetType.EnemyParty:
+                    break;
+            }
+
+            return result;
+        }
+
+        protected Combatant GetCaster()
+        {
+            return objData.castData.caster;
+        }
+
         protected void ResetCast()
         {
             objData = null;
-            gameObject.SetActive(false);
+            WorldManager.RemoveObject(transform.gameObject);
             OnReset();
         }
 

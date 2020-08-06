@@ -5,11 +5,11 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
 
-    private Dictionary<GameObject, List<GameObject>> _pool;
+    private Dictionary<GameObject, List<GameObject>> _pool = new Dictionary<GameObject, List<GameObject>>();
 
     private void Awake()
     {
-        InitPool();
+        
     }
 
     // Start is called before the first frame update
@@ -37,6 +37,8 @@ public class ObjectPool : MonoBehaviour
 
         for (int i = 0; i < amount; i++) {
             GameObject tempObj = Instantiate(go);
+            tempObj.transform.position = transform.position;
+            tempObj.SetActive(false);
             _pool[go].Add(tempObj);
         }
     }
@@ -72,11 +74,5 @@ public class ObjectPool : MonoBehaviour
         result.SetActive(true);
 
         return result;
-    }
-
-
-
-    private void InitPool() {
-        _pool = new Dictionary<GameObject, List<GameObject>>();
     }
 }

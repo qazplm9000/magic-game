@@ -14,27 +14,35 @@ namespace SkillSystem
 
         protected override void OnCombatantCollision(Combatant target)
         {
-            throw new NotImplementedException();
+            if (!targetsHit.Contains(target))
+            {
+                List<SkillEffect> effects = objData.effects;
+                for(int i = 0; i < effects.Count; i++)
+                {
+                    ApplyEffects(target);
+                }
+                targetsHit.Add(target);
+            }
         }
 
         protected override void OnEnvironmentCollision(GameObject go)
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void OnExpire()
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void OnReset()
         {
-            throw new NotImplementedException();
+            targetsHit = new List<Combatant>();
         }
 
         protected override void OnUpdate()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

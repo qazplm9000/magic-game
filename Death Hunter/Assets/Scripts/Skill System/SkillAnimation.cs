@@ -69,13 +69,14 @@ namespace SkillSystem
                     break;
                 case SkillAnimationType.CreateObject:
                     SkillObject createdObj = CreateSkillObject(objIndex);
+                    
+                    SkillObjectData soData = new SkillObjectData(data, objEffects, lifetime);
+                    createdObj.StartSkill(soData);
+
                     Transform locationTransform = GetLocationTransform(data, location);
                     SetObjectTransform(locationTransform, createdObj);
                     SetObjectRotation(locationTransform, createdObj);
                     SetObjectScale(locationTransform, createdObj);
-
-                    SkillObjectData soData = new SkillObjectData(data, objEffects, lifetime);
-                    createdObj.StartSkill(soData);
                     break;
             }
         }
@@ -122,10 +123,8 @@ namespace SkillSystem
 
         private SkillObject CreateSkillObject(int searchedIndex)
         {
-            SkillObject searchedObj = WorldManager.GetSkillObjectByID(objIndex);
-            SkillObject result = GameObject.Instantiate<SkillObject>(searchedObj);
-
-            return result;
+            Debug.Log("Pulled skill object");
+            return WorldManager.PullSkillObject(searchedIndex);
         }
 
 

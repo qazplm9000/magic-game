@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+[System.Serializable]
 public class Timer
 {
     private float previousFrame = 0;

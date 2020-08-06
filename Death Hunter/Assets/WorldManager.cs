@@ -12,9 +12,10 @@ public class WorldManager : MonoBehaviour
     public static WorldManager world;
     public SkillObjectDatabase skillObjects;
     public TargetTracker trackerPrefab;
-    public DamageValueUI damageUI;
+    public DamageUIManager damageUI;
     public Camera cam;
     public Canvas canvas;
+    public ObjectPool pool;
 
     // Start is called before the first frame update
     void Awake()
@@ -25,6 +26,7 @@ public class WorldManager : MonoBehaviour
             DontDestroyOnLoad(this);
             skillObjects.SetupDictionary();
             cam = Camera.main;
+            pool = transform.GetComponent<ObjectPool>();
         }
         else
         {
@@ -46,8 +48,34 @@ public class WorldManager : MonoBehaviour
 
     public void ShowDamageValue(Combatant target, int damage)
     {
-        DamageValueUI temp = Instantiate<DamageValueUI>(damageUI);
-        temp.transform.parent = canvas.transform;
-        temp.SetupDamage(target, damage);
+        damageUI.ShowDamageValue(target, damage);
+    }
+
+    public static GameObject PullObject(GameObject obj)
+    {
+        return world.pool.PullObject(obj);
+    }
+
+    public static SkillObject PullSkillObject(int id)
+    {
+        SkillObject so = world.skillObjects.GetObjectByID(id);
+        return world.pool.PullObject(so.gameObject).GetComponent<SkillObject>();
+    }
+
+    public static void RemoveObject(GameObject obj)
+    {
+        obj.SetActive(false);
+        obj.transform.position = world.transform.position;
+    }
+
+    public static void AddObject(GameObject obj, int copies = 1)
+    {
+        world.pool.AddObject(obj, copies);
+    }
+
+    public static void AddSkillObject(int id, int copies = 1)
+    {
+        SkillObject so = world.skillObjects.GetObjectByID(id);
+        world.pool.AddObject(so.gameObject, copies);
     }
 }
