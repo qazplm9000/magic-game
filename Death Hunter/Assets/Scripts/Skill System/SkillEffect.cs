@@ -25,11 +25,12 @@ namespace SkillSystem
 
 
     [System.Serializable]
-    public class SkillEffect
+    public class SkillEffect : ISerializationCallbackReceiver
     {
         public string description;
         public Effect effect;
         public float startTime;
+
 
         public void RunEffect(SkillCastData data) {
             if (data.AtTime(startTime))
@@ -40,8 +41,20 @@ namespace SkillSystem
 
         public void UpdateDescription()
         {
-            effect.UpdateDescription();
-            description = effect.description;
+        }
+        
+        public void OnAfterDeserialize()
+        {
+            if (Application.isEditor)
+            {
+                effect.UpdateDescription();
+                description = effect.description;
+            }
+        }
+
+        public void OnBeforeSerialize()
+        {
+
         }
     }
 }

@@ -28,6 +28,9 @@ namespace CombatSystem
         private AudioSource audio;
         private TargetManager targetter;
 
+        public float despawnTime = 5;
+        private Timer despawnTimer;
+
         private Animator anim;
 
 
@@ -41,6 +44,8 @@ namespace CombatSystem
             state = transform.GetComponent<StateManager>();
             audio = transform.GetComponent<AudioSource>();
             targetter = transform.GetComponent<TargetManager>();
+
+            despawnTimer = new Timer();
 
             anim = transform.GetComponentInChildren<Animator>();
         }
@@ -68,11 +73,6 @@ namespace CombatSystem
                 anim.SetFloat("Speed", movement.GetCurrentSpeed());
             }
 
-            if(GetStat(Stat.CurrentHealth) <= 0)
-            {
-                gameObject.SetActive(false);
-            }
-
             if(HasTarget())
             {
                 movement.LookAt(GetTarget().gameObject);
@@ -81,6 +81,16 @@ namespace CombatSystem
             else
             {
                 anim.SetBool("isTargettng", false);
+            }
+
+            if (stats.IsDead())
+            {
+                despawnTimer.Tick();
+
+                if (despawnTimer.AtTime(despawnTime))
+                {
+                    gameObject.SetActive(false);
+                }
             }
         }
 
@@ -112,12 +122,17 @@ namespace CombatSystem
 
 
         public void TakeDamage(int damage) {
-            stats.AddStat(Stat.CurrentHealth, -damage);
+            stats.TakeDamage(damage);
             WorldManager.world.ShowDamageValue(this, damage);
             Debug.Log($"Character took {damage} damage");
         }
 
-        public int GetStat(Stat stat) {
+        public void HealHealth(int healing)
+        {
+            stats.HealHealth(healing);
+        }
+
+        public int GetStat(StatType stat) {
             return stats.GetStat(stat);
         }
 
@@ -140,7 +155,12 @@ namespace CombatSystem
         }
 
         public Combatant GetTarget() {
-            return targetter.currentTarget;
+            Combatant result = null;
+            if (targetter != null)
+            {
+                result = targetter.currentTarget;
+            }
+            return result;
         }
 
 
@@ -189,7 +209,7 @@ namespace CombatSystem
 
         public bool IsDead()
         {
-            return GetStat(Stat.CurrentHealth) <= 0;
+            return GetStat(StatType.CurrentHealth) <= 0;
         }
 
         public void SetAnimationBool(string boolName, bool value)

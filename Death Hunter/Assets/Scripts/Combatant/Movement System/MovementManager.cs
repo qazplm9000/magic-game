@@ -57,15 +57,16 @@ namespace CombatSystem.MovementSystem
             if (direction.magnitude != 0)
             {
                 Quaternion rotation;
+                Vector3 flatDirection = new Vector3(direction.x, 0, direction.z);
 
                 switch (dimension)
                 {
                     case MovementType.Omnidirectional:
-                        rotation = Quaternion.LookRotation(direction, transform.up);
+                        rotation = Quaternion.LookRotation(flatDirection, transform.up);
                         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
                         break;
                     case MovementType.ForwardsOnly:
-                        rotation = Quaternion.LookRotation(direction, transform.up);
+                        rotation = Quaternion.LookRotation(flatDirection, transform.up);
                         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
                         break;
                     case MovementType.SideToSide:

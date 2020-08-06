@@ -41,14 +41,15 @@ namespace TargettingSystem
                 currentTarget = GetTargetClosestToLeft(currentTarget);
             }
 
-            if (currentTarget.IsDead())
-            {
-                currentTarget = null;
-            }
 
             if(currentTarget != null)
             {
                 Debug.DrawRay(currentTarget.transform.position, transform.up * 10, Color.blue);
+
+                if (currentTarget.IsDead())
+                {
+                    currentTarget = null;
+                }
             }
         }
 

@@ -54,7 +54,6 @@ namespace SkillSystem
 
         public Skill currentSkill;
         public SkillCastData castData;
-        public Skill testSkill;
 
         // Start is called before the first frame update
         void Start()

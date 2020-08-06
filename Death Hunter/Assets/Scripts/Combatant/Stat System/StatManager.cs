@@ -7,19 +7,15 @@ using System;
 
 namespace CombatSystem.StatSystem
 {
-    public class StatManager : MonoBehaviour
+    public class StatManager : MonoBehaviour, ISerializationCallbackReceiver
     {
-        public int currentHealth;
-        public int maxHealth;
-        public int strength;
-        public int magic;
-        public int agility;
+        public StatPreset preset = null;
+        public List<Stat> stats = new List<Stat>();
+        public Dictionary<StatType, Stat> _statsDict = new Dictionary<StatType, Stat>();
 
-
-
-        public void Start()
+        private void Awake()
         {
-            
+            StatsToDict();
         }
 
         /// <summary>
@@ -27,33 +23,8 @@ namespace CombatSystem.StatSystem
         /// </summary>
         /// <param name="stat"></param>
         /// <returns></returns>
-        public int GetStat(Stat stat) {
-            int result = 0;
-
-            switch (stat)
-            {
-                case Stat.CurrentHealth:
-                    result = currentHealth;
-                    break;
-                case Stat.MaxHealth:
-                    result = maxHealth;
-                    break;
-                case Stat.CurrentMana:
-                    break;
-                case Stat.MaxMana:
-                    break;
-                case Stat.Strength:
-                    result = strength;
-                    break;
-                case Stat.Magic:
-                    break;
-                case Stat.Defense:
-                    break;
-                case Stat.Speed:
-                    break;
-            }
-
-            return result;
+        public int GetStat(StatType stat) {
+            return _statsDict[stat].GetStatTotal();
         }
         
         
@@ -63,32 +34,89 @@ namespace CombatSystem.StatSystem
         /// </summary>
         /// <param name="stat"></param>
         /// <param name="amount"></param>
-        public void AddStat(Stat stat, int amount) {
-            switch (stat)
+        public void AddStat(StatType stat, int amount) {
+            if(stat == StatType.MaxHealth)
             {
-                case Stat.CurrentHealth:
-                    currentHealth += amount;
-                    break;
-                case Stat.MaxHealth:
-                    maxHealth += amount;
-                    break;
-                case Stat.CurrentMana:
-                    break;
-                case Stat.MaxMana:
-                    break;
-                case Stat.Strength:
-                    strength += amount;
-                    break;
-                case Stat.Magic:
-                    magic += amount;
-                    break;
-                case Stat.Defense:
-                    break;
-                case Stat.Speed:
-                    break;
+                _statsDict[stat].AddStat(amount);
+                _statsDict[StatType.CurrentHealth].AddBaseStat(amount);
+            }else if(stat != StatType.CurrentHealth)
+            {
+                _statsDict[stat].AddStat(amount);
+            }
+        }
+
+        public void RemoveStat(StatType stat, int amount)
+        {
+            if (stat == StatType.MaxHealth)
+            {
+                _statsDict[stat].RemoveStat(amount);
+                _statsDict[StatType.CurrentHealth].RemoveBaseStat(amount);
+            }
+            else if (stat != StatType.CurrentHealth)
+            {
+                _statsDict[stat].RemoveStat(amount);
+            }
+        }
+
+        public void TakeDamage(int amount)
+        {
+            _statsDict[StatType.CurrentHealth].RemoveBaseStat(amount);
+            ClampCurrentHealth();
+        }
+
+        public void HealHealth(int amount)
+        {
+            GetStatObject(StatType.CurrentHealth).AddBaseStat(amount);
+            ClampCurrentHealth();
+        }
+
+        public bool IsDead()
+        {
+            return _statsDict[StatType.CurrentHealth].GetStatTotal() <= 0;
+        }
+
+        private Stat GetStatObject(StatType type)
+        {
+            return _statsDict[type];
+        }
+
+        private void ClampCurrentHealth()
+        {
+            Stat ch = GetStatObject(StatType.CurrentHealth);
+            Stat mh = GetStatObject(StatType.MaxHealth);
+            ch.baseValue = Mathf.Clamp(ch.baseValue, 0, mh.GetStatTotal());
+        }
+
+
+        private void StatsToDict()
+        {
+            for(int i = 0; i < stats.Count; i++)
+            {
+                StatType type = stats[i].type;
+                Stat stat = stats[i];
+
+                _statsDict[type] = stat;
             }
         }
 
 
+        public void OnBeforeSerialize()
+        {
+            if(Application.isEditor && preset != null && preset.stats.Count != stats.Count)
+            {
+                stats = new List<Stat>();
+                List<Stat> presetStats = preset.stats;
+
+                for(int i = 0; i < presetStats.Count; i++)
+                {
+                    stats.Add(presetStats[i].Copy());
+                }
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
+            
+        }
     }
 }

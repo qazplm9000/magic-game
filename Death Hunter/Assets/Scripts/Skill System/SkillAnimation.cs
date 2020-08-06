@@ -15,7 +15,7 @@ namespace SkillSystem
     }
 
     [System.Serializable]
-    public class SkillAnimation
+    public class SkillAnimation : ISerializationCallbackReceiver
     {
         public string description = "";
         public SkillAnimationType animationType;
@@ -33,6 +33,7 @@ namespace SkillSystem
         [Tooltip("Index of object to instantiate")]
         public float lifetime;
         public int objIndex;
+        private int _objIndex = -1;
         public SkillObjectLocation location;
         public SkillObjectParent parent;
         public Vector3 positionOffset;
@@ -145,9 +146,28 @@ namespace SkillSystem
                     description = $"{startTime} - {animationType.ToString()} - {clip.name}";
                     break;
                 case SkillAnimationType.CreateObject:
-                    description = $"{startTime} - {animationType.ToString()} - {objIndex}";
+                    if (objIndex != _objIndex)
+                    {
+                        WorldManager world = GameObject.FindObjectOfType<WorldManager>();
+                        string objName = world.skillObjects.SlowGetObjectNameByID(objIndex);
+                        description = $"{startTime} - {animationType.ToString()} - {objName}";
+                        _objIndex = objIndex;
+                    }
                     break;
             }
+        }
+
+        public void OnBeforeSerialize()
+        {
+            if (Application.isEditor)
+            {
+                UpdateDescription();
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
+            
         }
     }
 }

@@ -79,10 +79,6 @@ namespace SkillSystem
         {
             if (Application.isEditor)
             {
-                for (int i = 0; i < animations.Count; i++)
-                {
-                    animations[i].UpdateDescription();
-                }
                 for (int i = 0; i < effects.Count; i++)
                 {
                     effects[i].UpdateDescription();

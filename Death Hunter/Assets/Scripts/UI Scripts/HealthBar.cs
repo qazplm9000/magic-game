@@ -42,8 +42,8 @@ public class HealthBar : MonoBehaviour
     {
         Combatant character = GetCharacter();
 
-        int currentHealth = character.GetStat(Stat.CurrentHealth);
-        int maxHealth = character.GetStat(Stat.MaxHealth);
+        int currentHealth = character.GetStat(StatType.CurrentHealth);
+        int maxHealth = character.GetStat(StatType.MaxHealth);
         slider.value = currentHealth / (float)maxHealth;
         healthText.text = $"{currentHealth} / {maxHealth}";
     }
