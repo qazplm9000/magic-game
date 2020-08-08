@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CombatSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,11 @@ namespace ItemSystem
     public enum ItemType
     {
         Consumable,
-        Equipment
+        Helmet,
+        Chest,
+        Legs,
+        Accessory,
+        Weapon
     }
 
     public abstract class Item : ScriptableObject
@@ -18,11 +23,15 @@ namespace ItemSystem
         public new string name;
         public Sprite icon;
 
-        public virtual void Use()
+        public virtual void Use(Combatant user)
         {
             Debug.Log("Used item");
         }
 
+        public new ItemType GetType()
+        {
+            return type;
+        }
 
     }
 }

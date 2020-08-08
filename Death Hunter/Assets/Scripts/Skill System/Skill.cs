@@ -11,6 +11,7 @@ namespace SkillSystem
         public SkillTargetType targetType;
         public List<bool> animationsFoldouts;
         public List<SkillAnimation> animations = new List<SkillAnimation>();
+        public List<SkillObjectCreation> skillObjects = new List<SkillObjectCreation>();
         public List<SkillEffect> effects = new List<SkillEffect>();
         [Range(0,5)]
         public float castTime;
@@ -34,6 +35,7 @@ namespace SkillSystem
             OnRun(data);
 
             RunAnimations(data);
+            CreateSkillObjects(data);
             RunEffects(data);
 
             if (data.AtTime(castTime))
@@ -53,6 +55,14 @@ namespace SkillSystem
             for (int i = 0; i < animations.Count; i++)
             {
                 animations[i].RunAnimation(data);
+            }
+        }
+
+        private void CreateSkillObjects(SkillCastData data)
+        {
+            for(int i = 0; i < skillObjects.Count; i++)
+            {
+                skillObjects[i].CreateObject(data);
             }
         }
 

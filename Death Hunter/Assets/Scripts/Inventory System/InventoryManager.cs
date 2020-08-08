@@ -6,10 +6,78 @@ using UnityEngine.UI;
 namespace ItemSystem
 {
     [System.Serializable]
-    public class ItemSlot
+    public class ItemSlot : ISerializationCallbackReceiver
     {
+        public string description;
         public Item item;
+        public bool requiresSpecificItemType = false;
+        public ItemType type;
         public int numberOfItems = 0;
+
+
+
+        public void PutItemInSlot(Item item, int num = 1)
+        {
+            this.item = item;
+            numberOfItems = num;
+        }
+
+        public void IncreaseStack(int num)
+        {
+            numberOfItems += num;
+        }
+
+
+        public Item GetItem()
+        {
+            return item;
+        }
+
+        public bool CanPutInSlot(Item item)
+        {
+            bool result = false;
+
+            if (requiresSpecificItemType)
+            {
+                result = type == item.GetType();
+            }
+            else
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
+        public bool ContainsTheSameItem(Item item)
+        {
+            return item == this.item;
+        }
+
+
+        /*
+            Description
+             */
+
+        public void OnAfterDeserialize()
+        {
+            if (Application.isEditor)
+            {
+                if (!requiresSpecificItemType)
+                {
+                    description = "Generic Item Slot";
+                }
+                else
+                {
+                    description = $"{type.ToString()} Slot";
+                }
+            }
+        }
+
+        public void OnBeforeSerialize()
+        {
+            
+        }
     }
 
 
@@ -73,7 +141,7 @@ namespace ItemSystem
             ItemSlot slot = items[index];
             if (slot.item != null && slot.item.type == ItemType.Consumable)
             {
-                slot.item.Use();
+                //slot.item.Use();
                 slot.numberOfItems--;
                 if(slot.numberOfItems == 0)
                 {
