@@ -5,10 +5,21 @@ using UnityEngine;
 namespace SkillSystem
 {
     [CreateAssetMenu(fileName = "Combo Attack", menuName = "Skill/Combo Attack")]
-    public class ComboAttack : ScriptableObject
+    public class ComboAttack : Skill
     {
-        public List<SkillAnimation> animations = new List<SkillAnimation>();
-        public List<SkillEffect> effects = new List<SkillEffect>();
-        public float castTime;
+        protected override void OnFinish(SkillCastData data)
+        {
+            
+        }
+
+        protected override void OnRun(SkillCastData data)
+        {
+            
+        }
+
+        protected override void OnStart(SkillCastData data)
+        {
+            
+        }
     }
 }

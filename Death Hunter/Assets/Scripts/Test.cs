@@ -3,30 +3,28 @@ using EffectSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
 
-    public Combatant player;
-    public AudioClip audio1;
-    public AudioClip audio2;
+    public static int calls = 0;
+    public Text text;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        text = transform.GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            player.PlayAudio(audio1);
-        }
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            player.PlayAudio(audio2);
-        }
+        text.text = calls.ToString();
+    }
+
+    public static void AddCall()
+    {
+        calls++;
     }
 }

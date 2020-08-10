@@ -16,6 +16,7 @@ namespace SkillSystem
         {
             int currentCombo = data.caster.GetCurrentCombo() % attacks.Count;
             animations = attacks[currentCombo].animations;
+            skillObjects = attacks[currentCombo].skillObjects;
             effects = attacks[currentCombo].effects;
             castTime = attacks[currentCombo].castTime;
         }
