@@ -5,26 +5,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class Test : MonoBehaviour
 {
+    List<int> values = new List<int>();
 
-    public static int calls = 0;
-    public Text text;
 
     // Start is called before the first frame update
     void Start()
     {
-        text = transform.GetComponent<Text>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        text.text = calls.ToString();
+        
+    }
+    
+    public void Record(int value)
+    {
+        values.Add(value);
     }
 
-    public static void AddCall()
+    public int GetLast(int i)
     {
-        calls++;
+        return values[values.Count - i - 1];
     }
 }
