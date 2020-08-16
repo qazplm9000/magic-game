@@ -252,6 +252,16 @@ namespace CombatSystem
             anim.SetBool(boolName, value);
         }
 
+        public void SetAnimationFloat(string floatName, float value)
+        {
+            anim.SetFloat(floatName, value);
+        }
+        
+        public void SetAnimationInt(string intName, int value)
+        {
+            anim.SetInteger(intName, value);
+        }
+
         public bool HasTarget()
         {
             return GetTarget() != null;

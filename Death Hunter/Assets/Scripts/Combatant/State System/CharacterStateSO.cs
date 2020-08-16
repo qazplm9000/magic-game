@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CombatSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -120,16 +121,25 @@ namespace StateSystem
         /// </summary>
         public string stateName;
         public List<StateFlag> flags = new List<StateFlag>();
+        public List<StateAction> enterActions = new List<StateAction>();
+        public List<StateAction> updateActions = new List<StateAction>();
+        public List<StateAction> exitActions = new List<StateAction>();
         public List<StateTransition> transitions = new List<StateTransition>();
 
-        public void RunState(FlagManager characterFlags)
+        public void RunState(Combatant character)
         {
-
+            CallActions(character, updateActions);
         }
 
-        public void EnterState(FlagManager characterFlags)
+        public void EnterState(Combatant character)
         {
-            SetFlags(characterFlags);
+            //SetFlags(characterFlags);
+            CallActions(character, enterActions);
+        }
+
+        public void ExitState(Combatant character)
+        {
+            CallActions(character, exitActions);
         }
 
         public State CheckStateTransitions(StateData sd, List<State> states)
@@ -157,6 +167,14 @@ namespace StateSystem
             for (int i = 0; i < flags.Count; i++)
             {
                 characterFlags.SetFlag(flags[i].flag, flags[i].value);
+            }
+        }
+
+        private void CallActions(Combatant character, List<StateAction> actions)
+        {
+            for(int i = 0; i < actions.Count; i++)
+            {
+                actions[i].CallAction(character);
             }
         }
     }

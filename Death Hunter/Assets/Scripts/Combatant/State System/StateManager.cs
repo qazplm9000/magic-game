@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CombatSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +12,12 @@ namespace StateSystem
     {
         public StateData stateData;
         public CharacterStateSO states;
+        public Combatant character;
 
+        private void Awake()
+        {
+            character = transform.GetComponent<Combatant>();
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -25,6 +31,7 @@ namespace StateSystem
         void Update()
         {
             stateData.currentDuration += Time.deltaTime;
+            stateData.currentState.RunState(character);
             CheckIfStateChanged();
         }
 
@@ -47,7 +54,7 @@ namespace StateSystem
         private void SetupStartState()
         {
             stateData.currentState = states.defaultState;
-            stateData.currentState.EnterState(stateData.characterFlags);
+            stateData.currentState.EnterState(character);
         }
 
         private void CheckIfStateChanged()
@@ -56,9 +63,10 @@ namespace StateSystem
 
             if(newState != null && newState != stateData.currentState)
             {
+                stateData.currentState.ExitState(character);
                 stateData.currentState = newState;
                 stateData.currentDuration = 0;
-                newState.EnterState(stateData.characterFlags);
+                newState.EnterState(character);
             }
         }
     }
