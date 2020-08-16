@@ -11,7 +11,14 @@ namespace StateSystem
         character_is_moving,
         character_can_move,
         character_is_casting,
-        character_can_cast
+        character_can_cast,
+        character_is_dodging,
+        character_can_dodge,
+        character_is_invincible,
+        character_is_guarding,
+        character_can_guard,
+        character_is_grounded,
+        character_can_jump
     }
 
     public class FlagManager : MonoBehaviour, ISerializationCallbackReceiver

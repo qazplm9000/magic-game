@@ -94,10 +94,33 @@ namespace CombatSystem
             }
         }
 
+        public void Jump(Vector3 direction)
+        {
+            if (GetFlag(Flag.character_can_jump))
+            {
+                movement.Jump(direction);
+            }
+        }
+
+        public void Guard()
+        {
+            if (GetFlag(Flag.character_can_guard))
+            {
+                ChangeFlag(Flag.character_is_guarding, true);
+            }
+        }
+
+        public void Unguard()
+        {
+            ChangeFlag(Flag.character_is_guarding, false);
+        }
 
 
         public void Cast(Skill skill) {
-            caster.CastSkill(skill);
+            if (GetFlag(Flag.character_can_cast))
+            {
+                caster.CastSkill(skill);
+            }
         }
 
         public List<Skill> GetSkillList() {
@@ -119,6 +142,13 @@ namespace CombatSystem
             }
         }
 
+        public void Dodge(Vector3 direction)
+        {
+            if (GetFlag(Flag.character_can_dodge))
+            {
+                movement.Dodge(direction);
+            }
+        }
 
 
         public void TakeDamage(int damage) {
@@ -171,6 +201,11 @@ namespace CombatSystem
         public void ChangeFlag(Flag flag, bool flagValue)
         {
             state.ChangeFlag(flag, flagValue);
+        }
+
+        public bool GetFlag(Flag flag)
+        {
+            return state.GetFlag(flag);
         }
 
 

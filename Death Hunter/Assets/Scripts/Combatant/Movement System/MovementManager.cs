@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using StateSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,10 +8,18 @@ namespace CombatSystem.MovementSystem
 {
     public class MovementManager : MonoBehaviour
     {
+        private Combatant character;
+        private Rigidbody rb;
 
         public MovementType dimension = MovementType.Omnidirectional;
         public float speed = 5;
         public float rotationSpeed = 300;
+        [Range(0,2)]
+        public float dodgeTime = 1;
+        public float dodgeInitialSpeed = 5;
+        public float jumpForce = 10;
+
+        public bool isDodging = false;
 
         private Vector3 previousPosition;
         private Vector3 currentPosition;
@@ -18,13 +27,24 @@ namespace CombatSystem.MovementSystem
         private Quaternion currentRotation;
         public float currentSpeed = 0;
         public float currentRotationSpeed = 0;
+        private float dodgeTimer = 0;
 
 
-        private void Start()
+
+        private void Awake()
         {
-            
+            character = transform.GetComponent<Combatant>();
+            rb = transform.GetComponent<Rigidbody>();
         }
-        
+
+
+        private void FixedUpdate()
+        {
+            if (character.GetFlag(Flag.character_is_dodging))
+            {
+                _Dodge();
+            }
+        }
 
         /// <summary>
         /// Moves a character in a certain direction
@@ -75,6 +95,50 @@ namespace CombatSystem.MovementSystem
             }
         }
 
+        public void DisableGravity()
+        {
+            rb.useGravity = false;
+        }
+
+        public void EnableGravity()
+        {
+            rb.useGravity = true;
+        }
+
+        public void Jump(Vector3 direction)
+        {
+            Debug.Log(direction);
+            rb.AddForce(transform.up * jumpForce);
+            //rb.AddForce(direction * jumpForce);
+        }
+
+
+        public void Dodge(Vector3 direction)
+        {
+            Quaternion rotation = Quaternion.LookRotation(direction, transform.up);
+            transform.rotation = rotation;
+            character.ChangeFlag(Flag.character_is_dodging, true);
+            character.ChangeFlag(Flag.character_is_invincible, true);
+        }
+        
+
+        private void _Dodge()
+        {
+            dodgeTimer += Time.fixedDeltaTime;
+            transform.position += transform.forward * Time.fixedDeltaTime * dodgeInitialSpeed;
+
+            if(dodgeTimer > dodgeTime)
+            {
+                ResetDodge();
+            }
+        }
+
+        private void ResetDodge()
+        {
+            character.ChangeFlag(Flag.character_is_dodging, false);
+            character.ChangeFlag(Flag.character_is_invincible, false);
+            dodgeTimer = 0;
+        }
 
 
         public void LateUpdate()

@@ -17,6 +17,8 @@ public class WorldManager : MonoBehaviour
     public Canvas canvas;
     public ObjectPool pool;
 
+    public int groundLayer = 10;
+
     // Start is called before the first frame update
     void Awake()
     {

@@ -13,10 +13,20 @@ namespace StateSystem
     }
 
     [System.Serializable]
-    public class StateFlag
+    public class StateFlag : ISerializationCallbackReceiver
     {
+        public string description = "";
         public Flag flag;
         public bool value;
+
+        public void OnAfterDeserialize()
+        {
+            description = $"{flag.ToString()} = {value.ToString()}";
+        }
+
+        public void OnBeforeSerialize()
+        {
+        }
     }
 
 
@@ -30,8 +40,9 @@ namespace StateSystem
 
 
     [System.Serializable]
-    public class TransitionCondition
+    public class TransitionCondition : ISerializationCallbackReceiver
     {
+        public string description = "";
         public ConditionType type;
         public float duration;
         public StateFlag flag;
@@ -51,6 +62,24 @@ namespace StateSystem
             }
 
             return result;
+        }
+
+        public void OnAfterDeserialize()
+        {
+            switch (type)
+            {
+                case ConditionType.FlagHasValue:
+                    description = $"{flag.flag.ToString()} = {flag.value.ToString()}";
+                    break;
+                case ConditionType.TimeSinceEnterState:
+                    description = $"{duration} seconds in state";
+                    break;
+            }
+        }
+
+        public void OnBeforeSerialize()
+        {
+            
         }
     }
 
@@ -210,7 +239,15 @@ namespace StateSystem
                 
                 if(toIndex >= 0 && toIndex < states.Count)
                 {
-                    transitions[i].toStateName = $"-> {states[toIndex].stateName}";
+                    transitions[i].toStateName = $"-> {states[toIndex].stateName} ~ ";
+                    for(int j = 0; j < transitions[i].stateConditions.Count; j++)
+                    {
+                        transitions[i].toStateName += transitions[i].stateConditions[j].description;
+                        if(j != transitions[i].stateConditions.Count - 1)
+                        {
+                            transitions[i].toStateName += ", ";
+                        }
+                    }
                 }
                 else
                 {

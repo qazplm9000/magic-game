@@ -20,7 +20,10 @@ namespace CombatSystem.AI
         public KeyCode comboKeyboardKey = KeyCode.Return;
         public KeyCode comboControllerKey = KeyCode.Joystick1Button0;
 
-        public override void ControlCharacter(CombatantController controller, Combatant combatant)
+        public KeyCode dodgeKeyboardKey = KeyCode.LeftShift;
+        public KeyCode dodgeControllerKey = KeyCode.Joystick1Button1;
+
+        public override void ControlCharacter(CombatantController controller, Combatant character)
         {
             float horizontal = Mathf.Clamp(Input.GetAxis(horizontalKeyboardAxis) + Input.GetAxis(horizontalControllerAxis), -1, 1);
             float vertical = Mathf.Clamp(Input.GetAxis(verticalKeyboardAxis) + Input.GetAxis(verticalControllerAxis), -1, 1);
@@ -34,15 +37,37 @@ namespace CombatSystem.AI
             }
 
             if (Input.GetKeyDown(castSpellKeyboardKey) || Input.GetKeyDown(castSpellControllerKey)) {
-                combatant.Cast(controller.characterSkill);
+                character.Cast(controller.characterSkill);
             }
 
             if(Input.GetKeyDown(comboKeyboardKey) || Input.GetKeyDown(comboControllerKey))
             {
-                combatant.Cast(controller.characterCombo);
+                character.Cast(controller.characterCombo);
             }
 
-            combatant.Move(direction);
+            if (Input.GetKeyDown(dodgeKeyboardKey) || Input.GetKeyDown(dodgeControllerKey))
+            {
+                if(direction.magnitude > 0)
+                {
+                    character.Dodge(direction);
+                }
+                else
+                {
+                    character.Guard();
+                }
+            }
+
+            if(Input.GetKeyUp(dodgeKeyboardKey) || Input.GetKeyUp(dodgeControllerKey))
+            {
+                character.Unguard();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                character.Jump(direction);
+            }
+
+            character.Move(direction);
         }
 
         /// <summary>
