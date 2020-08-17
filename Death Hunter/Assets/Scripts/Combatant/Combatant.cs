@@ -99,6 +99,8 @@ namespace CombatSystem
             if (GetFlag(Flag.character_can_jump))
             {
                 movement.Jump(direction);
+                ChangeFlag(Flag.character_jumped, true);
+                //ChangeFlag(Flag.character_is_grounded, false);
             }
         }
 
@@ -140,6 +142,11 @@ namespace CombatSystem
 
                 Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
             }
+        }
+
+        public void MoveToGround()
+        {
+            movement.MoveToGround();
         }
 
         public void Dodge(Vector3 direction)

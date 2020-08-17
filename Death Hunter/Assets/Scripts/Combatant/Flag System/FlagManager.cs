@@ -18,7 +18,8 @@ namespace StateSystem
         character_is_guarding,
         character_can_guard,
         character_is_grounded,
-        character_can_jump
+        character_can_jump,
+        character_jumped
     }
 
     public class FlagManager : MonoBehaviour, ISerializationCallbackReceiver

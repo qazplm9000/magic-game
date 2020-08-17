@@ -20,7 +20,14 @@ namespace CombatSystem
             character = transform.GetComponentInParent<Combatant>();
         }
 
-        
+        public void LateUpdate()
+        {
+            if (numOfCollisions == 0)
+            {
+                character.ChangeFlag(Flag.character_is_grounded, false);
+            }
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             numOfCollisions++;
@@ -30,10 +37,6 @@ namespace CombatSystem
         private void OnTriggerExit(Collider other)
         {
             numOfCollisions--;
-            if (numOfCollisions == 0)
-            {
-                character.ChangeFlag(Flag.character_is_grounded, false);
-            }
         }
     }
 }

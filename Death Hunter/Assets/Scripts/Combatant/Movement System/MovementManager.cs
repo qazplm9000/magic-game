@@ -67,7 +67,31 @@ namespace CombatSystem.MovementSystem
                         break;
                 }
             }
+
+            if (character.GetFlag(Flag.character_is_grounded))
+            {
+                MoveToGround();
+            }
         }
+
+        /// <summary>
+        /// Moves character to the ground
+        /// </summary>
+        public void MoveToGround()
+        {
+            RaycastHit hit;
+            float maxDistance = 0.2f;
+            Ray ray = new Ray(transform.position, -transform.up);
+
+            if(Physics.Raycast(ray, out hit, maxDistance))
+            {
+                if(hit.collider.gameObject.layer == WorldManager.world.groundLayer)
+                {
+                    transform.position = hit.point;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Rotates the character to face a direction
