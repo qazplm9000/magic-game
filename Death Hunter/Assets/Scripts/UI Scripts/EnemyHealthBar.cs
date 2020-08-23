@@ -11,7 +11,7 @@ public class EnemyHealthBar : HealthBar
 
     protected override Combatant GetCharacter()
     {
-        Combatant target = character.GetTarget();
+        Combatant target = character.GetCurrentTarget();
 
         return target;
     }

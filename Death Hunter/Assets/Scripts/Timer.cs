@@ -27,6 +27,20 @@ public class Timer
         return previousFrame <= time && currentFrame > time;
     }
 
+    public bool AtInterval(float interval)
+    {
+        int prevDiv = (int)(previousFrame / interval);
+        int currDiv = (int)(currentFrame / interval);
+        return prevDiv != currDiv;
+    }
+
+    public int TotalIntervals(float interval)
+    {
+        int prevDiv = (int)(previousFrame / interval);
+        int currDiv = (int)(currentFrame / interval);
+        return currDiv - prevDiv;
+    }
+
     /// <summary>
     /// Returns true if the current frame is greater than time
     /// </summary>

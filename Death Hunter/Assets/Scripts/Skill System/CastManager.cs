@@ -67,13 +67,13 @@ namespace SkillSystem
             if (IsCasting())
             {
                 currentSkill.RunSkill(castData);
-                caster.SetAnimationBool("isCasting", true);
+                //caster.SetAnimationBool("isCasting", true);
 
                 if (currentSkill.IsFinished(castData))
                 {
                     caster.ChangeFlag(StateSystem.Flag.character_is_casting, false);
                     ResetCast();
-                    caster.SetAnimationBool("isCasting", false);
+                    //caster.SetAnimationBool("isCasting", false);
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace SkillSystem
             switch (targetType)
             {
                 case SkillTargetType.Enemy:
-                    target = caster.GetTarget();
+                    target = caster.GetCurrentTarget();
                     break;
                 case SkillTargetType.Ally:
                     target = caster;

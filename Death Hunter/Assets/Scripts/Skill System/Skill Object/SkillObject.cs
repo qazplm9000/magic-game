@@ -12,7 +12,7 @@ namespace SkillSystem
     public class SkillObjectData
     {
         public SkillCastData castData;
-        public List<SkillEffect> effects = new List<SkillEffect>();
+        public List<Effect> effects = new List<Effect>();
 
         public float lifetime = -1;
         public float fadeTime = 1;
@@ -20,14 +20,14 @@ namespace SkillSystem
 
         public Timer timer;
 
-        public SkillObjectData(SkillCastData castData, List<SkillEffect> effects)
+        public SkillObjectData(SkillCastData castData, List<Effect> effects)
         {
             this.castData = castData;
             this.effects = effects;
             timer = new Timer();
         }
 
-        public SkillObjectData(SkillCastData castData, List<SkillEffect> effects, float lifetime)
+        public SkillObjectData(SkillCastData castData, List<Effect> effects, float lifetime)
         {
             this.castData = castData;
             this.effects = effects;
@@ -121,10 +121,11 @@ namespace SkillSystem
         
         protected void ApplyEffects(Combatant target)
         {
-            List<SkillEffect> effects = objData.effects;
+            List<Effect> effects = objData.effects;
             for (int i = 0; i < effects.Count; i++)
             {
-                target.ApplyEffect(effects[i].effect);
+                EffectData data = new EffectData(objData.castData.caster, target, objData.castData.skill.potency);
+                target.ApplyEffect(effects[i], data);
             }
         }
 

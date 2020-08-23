@@ -9,7 +9,7 @@ namespace SkillSystem
     {
         public string skillName;
         public SkillTargetType targetType;
-        public List<bool> animationsFoldouts;
+        public int potency;
         public List<SkillAnimation> animations = new List<SkillAnimation>();
         public List<SkillObjectCreation> skillObjects = new List<SkillObjectCreation>();
         public List<SkillEffect> effects = new List<SkillEffect>();

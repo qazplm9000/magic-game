@@ -14,7 +14,9 @@ namespace StateSystem
         ChangeFlag,
         SetAnimationBool,
         SetAnimationFloat,
-        SetAnimationInt
+        SetAnimationInt,
+        EnableGravity,
+        DisableGravity
     }
 
     [Serializable]
@@ -44,6 +46,12 @@ namespace StateSystem
                 case StateActionType.SetAnimationInt:
                     description = $"Anim Bool \"{animationVariableName}\" -> {animationIntValue.ToString()}";
                     break;
+                case StateActionType.EnableGravity:
+                    description = $"Gravity -> Enabled";
+                    break;
+                case StateActionType.DisableGravity:
+                    description = $"Gravity -> Disabled";
+                    break;
             }
         }
     }
@@ -70,6 +78,12 @@ namespace StateSystem
                     break;
                 case StateActionType.SetAnimationInt:
                     character.SetAnimationInt(data.animationVariableName, data.animationIntValue);
+                    break;
+                case StateActionType.EnableGravity:
+                    character.EnableGravity();
+                    break;
+                case StateActionType.DisableGravity:
+                    character.DisableGravity();
                     break;
             }
         }

@@ -10,8 +10,7 @@ namespace EffectSystem
         private Combatant user;
 
         public List<Effect> currentEffects = new List<Effect>();
-        public List<float> previousFrames = new List<float>();
-        public List<float> currentFrames = new List<float>();
+        public List<EffectData> currentData = new List<EffectData>();
 
         // Start is called before the first frame update
         void Start()
@@ -24,13 +23,13 @@ namespace EffectSystem
         {
             int index = 0;
 
-            IncrementTime();
+            Tick();
 
             while (index < currentEffects.Count)
             {
-                currentEffects[index].RunEffect(previousFrames[index], currentFrames[index], user);
+                currentEffects[index].RunEffect(currentData[index]);
 
-                if (currentEffects[index].EffectIsFinished(previousFrames[index], currentFrames[index]))
+                if (currentEffects[index].EffectIsFinished(currentData[index]))
                 {
                     RemoveEffectByIndex(index);
                 }
@@ -41,26 +40,23 @@ namespace EffectSystem
             }
         }
 
-        public void AddEffect(Effect effect)
+        public void AddEffect(Effect effect, EffectData data)
         {
             currentEffects.Add(effect);
-            previousFrames.Add(0);
-            currentFrames.Add(0);
+            currentData.Add(data);
         }
 
         private void RemoveEffectByIndex(int index)
         {
             currentEffects.RemoveAt(index);
-            previousFrames.RemoveAt(index);
-            currentFrames.RemoveAt(index);
+            currentData.RemoveAt(index);
         }
 
-        private void IncrementTime()
+        private void Tick()
         {
-            for(int i = 0; i < previousFrames.Count; i++)
+            for(int i = 0; i < currentData.Count; i++)
             {
-                previousFrames[i] = currentFrames[i];
-                currentFrames[i] += Time.deltaTime;
+                currentData[i].Tick();
             }
         }
     }

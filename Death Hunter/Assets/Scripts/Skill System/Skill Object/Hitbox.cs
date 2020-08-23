@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CombatSystem;
+using EffectSystem;
 using UnityEngine;
 
 namespace SkillSystem
@@ -16,7 +17,7 @@ namespace SkillSystem
         {
             if (!targetsHit.Contains(target))
             {
-                List<SkillEffect> effects = objData.effects;
+                List<Effect> effects = objData.effects;
                 for(int i = 0; i < effects.Count; i++)
                 {
                     ApplyEffects(target);

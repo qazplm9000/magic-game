@@ -12,6 +12,8 @@ namespace CombatSystem.AI
         public Skill characterSkill;
         public Skill characterCombo;
         public Combatant currentTarget = null;
+        public float attackDistance = 2;
+        public float timeSinceLastAttack = 0;
 
         public CharacterAI ai;
         
@@ -21,6 +23,10 @@ namespace CombatSystem.AI
             character = transform.GetComponent<Combatant>();
         }
 
+        private void Update()
+        {
+            timeSinceLastAttack += Time.deltaTime;
+        }
 
         public void ControlCharacter() {
             if (ai != null) {
@@ -28,7 +34,10 @@ namespace CombatSystem.AI
             }
         }
 
-        
+        public void ResetTimeSinceLastAttack()
+        {
+            timeSinceLastAttack = 0;
+        }
         
         
     }

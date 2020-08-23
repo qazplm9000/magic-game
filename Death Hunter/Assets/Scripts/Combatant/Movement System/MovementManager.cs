@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CombatSystem.MovementSystem
 {
-    public class MovementManager : MonoBehaviour
+    public class MovementManager : MonoBehaviour, IMovement
     {
         private Combatant character;
         private Rigidbody rb;
@@ -54,18 +54,7 @@ namespace CombatSystem.MovementSystem
         {
             if (direction.magnitude != 0)
             {
-                switch (dimension)
-                {
-                    case MovementType.Omnidirectional:
-                        transform.position = transform.position + (direction * speed * speedFraction * Time.deltaTime);
-                        break;
-                    case MovementType.ForwardsOnly:
-                        transform.position = transform.position + (transform.forward * speed * speedFraction * Time.deltaTime);
-                        break;
-                    case MovementType.SideToSide:
-                        //Would have to figure out which side is closer and go in that direction
-                        break;
-                }
+                transform.position += direction * speed * speedFraction * Time.deltaTime;
             }
 
             if (character.GetFlag(Flag.character_is_grounded))
@@ -197,8 +186,16 @@ namespace CombatSystem.MovementSystem
         {
             Rotate(target.transform.position - transform.position);
         }
+        
 
+        public float GetSpeed()
+        {
+            return currentSpeed;
+        }
 
-        public float GetCurrentSpeed() { return currentSpeed; }
+        public void SetMaxSpeed(float newMaxSpeed)
+        {
+            speed = newMaxSpeed;
+        }
     }
 }

@@ -104,7 +104,7 @@ public class CameraManager : MonoBehaviour
 
     private void LookAtTarget()
     {
-        Combatant targetsTarget = target.GetTarget();
+        Combatant targetsTarget = target.GetCurrentTarget();
         if (targetsTarget != null)
         {
             transform.LookAt(targetsTarget.transform);

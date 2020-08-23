@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EffectSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace SkillSystem
     {
         PlayAnimation,
         PlaySound,
-        CreateObject
+        ActivateWeapon,
+        DeactivateWeapon
     }
 
     [System.Serializable]
@@ -24,26 +26,14 @@ namespace SkillSystem
         //Used for Play Animation
         [Tooltip("Name of animation to play")]
         public string animationName;
+        public float animationCrossfade;
 
         //Used for Play Sound
         [Tooltip("Sound to play")]
         public AudioClip clip;
 
-        //Used for Create Object
-        [Tooltip("Index of object to instantiate")]
-        public float lifetime;
-        public int objIndex;
-        private int _objIndex = -1;
-        public SkillObjectLocation location;
-        public SkillObjectParent parent;
-        public Vector3 positionOffset;
-        public Vector3 rotationOffset;
-        public bool moveForwards = true;
-        public float movementSpeed = 5;
-        public bool rotateTowardsTarget = true;
-        public float rotationSpeed = 100;
-        public float scale = 1;
-        public List<SkillEffect> objEffects = new List<SkillEffect>();
+        public List<Effect> effects = new List<Effect>();
+        
 
         public void RunAnimation(SkillCastData data)
         {
@@ -63,70 +53,20 @@ namespace SkillSystem
             switch (animationType)
             {
                 case SkillAnimationType.PlayAnimation:
-                    data.caster.PlayAnimation(animationName);
+                    data.caster.PlayAnimation(animationName, animationCrossfade);
                     break;
                 case SkillAnimationType.PlaySound:
                     data.caster.PlayAudio(clip);
                     break;
-                case SkillAnimationType.CreateObject:
-                    SkillObject createdObj = CreateSkillObject(objIndex);
-                    
-                    SkillObjectData soData = new SkillObjectData(data, objEffects, lifetime);
-                    createdObj.StartSkill(soData);
-
-                    Transform locationTransform = GetLocationTransform(data, location);
-                    SetObjectTransform(locationTransform, createdObj);
-                    SetObjectRotation(locationTransform, createdObj);
-                    SetObjectScale(locationTransform, createdObj);
+                case SkillAnimationType.ActivateWeapon:
+                    data.caster.ActivateWeaponHitbox(effects, data.skill.potency);
+                    break;
+                case SkillAnimationType.DeactivateWeapon:
+                    data.caster.DeactivateWeaponHitbox();
                     break;
             }
         }
 
-        private void SetObjectTransform(Transform location, SkillObject createdObj){
-            createdObj.transform.position = location.position +
-                                            location.forward * positionOffset.z +
-                                            location.right * positionOffset.x +
-                                            location.up * positionOffset.y;
-        }
-
-        private void SetObjectRotation(Transform location, SkillObject createdObj)
-        {
-            createdObj.transform.rotation = location.transform.rotation *
-                                            Quaternion.Euler(rotationOffset.x, 0, 0) *
-                                            Quaternion.Euler(0, rotationOffset.y, 0) *
-                                            Quaternion.Euler(0, 0, rotationOffset.z);
-        }
-
-        private void SetObjectScale(Transform location, SkillObject createdObj)
-        {
-            createdObj.transform.localScale = new Vector3(scale, scale, scale);
-        }
-
-        private Transform GetLocationTransform(SkillCastData data, SkillObjectLocation location)
-        {
-            Transform result = null;
-
-            switch (location)
-            {
-                case SkillObjectLocation.Creator:
-                    result = data.caster.transform;
-                    break;
-                case SkillObjectLocation.Caster:
-                    result = data.caster.transform;
-                    break;
-                case SkillObjectLocation.Target:
-                    result = data.target.transform;
-                    break;
-            }
-
-            return result;
-        }
-
-        private SkillObject CreateSkillObject(int searchedIndex)
-        {
-            Debug.Log("Pulled skill object");
-            return WorldManager.PullSkillObject(searchedIndex);
-        }
 
 
 
@@ -140,19 +80,16 @@ namespace SkillSystem
             switch (animationType)
             {
                 case SkillAnimationType.PlayAnimation:
-                    description = $"{startTime} - {animationType.ToString()} - {animationName}";
+                    description = $"t={startTime}s - {animationType.ToString()} - {animationName}";
                     break;
                 case SkillAnimationType.PlaySound:
-                    description = $"{startTime} - {animationType.ToString()} - {clip.name}";
+                    description = $"t={startTime}s - {animationType.ToString()} - {clip.name}";
                     break;
-                case SkillAnimationType.CreateObject:
-                    if (objIndex != _objIndex)
-                    {
-                        WorldManager world = GameObject.FindObjectOfType<WorldManager>();
-                        string objName = world.skillObjects.SlowGetObjectNameByID(objIndex);
-                        description = $"{startTime} - {animationType.ToString()} - {objName}";
-                        _objIndex = objIndex;
-                    }
+                case SkillAnimationType.ActivateWeapon:
+                    description = $"t={startTime}s - Activate Weapon";
+                    break;
+                case SkillAnimationType.DeactivateWeapon:
+                    description = $"t={startTime}s - Deactivate Weapon";
                     break;
             }
         }

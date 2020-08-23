@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EffectSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,7 @@ namespace SkillSystem
         public string description = "";
         public float startTime = 0;
         public SkillObjectCreationData creationData;
-        public List<SkillEffect> objEffects = new List<SkillEffect>();
+        public List<Effect> objEffects = new List<Effect>();
 
         public void CreateObject(SkillCastData skillData)
         {

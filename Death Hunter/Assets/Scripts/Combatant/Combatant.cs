@@ -9,6 +9,7 @@ using CombatSystem.CastLocationSystem;
 using EffectSystem;
 using StateSystem;
 using TargettingSystem;
+using WeaponSystem;
 
 namespace CombatSystem
 {
@@ -26,7 +27,10 @@ namespace CombatSystem
         private CastLocationManager skeleton;
         private StateManager state;
         private AudioSource audio;
-        private TargetManager targetter;
+        private EffectManager effects;
+        private ITargetter targetter;
+        public WeaponObject weapon;
+        private Rigidbody rb;
 
         public float despawnTime = 5;
         private Timer despawnTimer;
@@ -43,7 +47,9 @@ namespace CombatSystem
             stats = transform.GetComponent<StatManager>();
             state = transform.GetComponent<StateManager>();
             audio = transform.GetComponent<AudioSource>();
-            targetter = transform.GetComponent<TargetManager>();
+            targetter = transform.GetComponent<ITargetter>();
+            effects = transform.GetComponent<EffectManager>();
+            rb = transform.GetComponent<Rigidbody>();
 
             despawnTimer = new Timer();
 
@@ -52,41 +58,31 @@ namespace CombatSystem
 
         private void Update()
         {
-
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                PlayAnimation("New State");
-                anim.SetBool("isGrounded", false);
-            }
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                anim.SetBool("isGrounded", true);
-            }
-
-            if (controller != null)
+            if (controller != null && !stats.IsDead())
             {
                 controller.ControlCharacter();
             }
 
             if (anim != null)
             {
-                anim.SetFloat("Speed", movement.GetCurrentSpeed());
+                anim.SetFloat("Speed", movement.GetSpeed());
             }
 
             if(HasTarget())
             {
-                movement.LookAt(GetTarget().gameObject);
+                movement.LookAt(GetCurrentTarget().gameObject);
                 anim.SetBool("isTargetting", true);
             }
             else
             {
-                anim.SetBool("isTargettng", false);
+                anim.SetBool("isTargetting", false);
             }
 
             if (stats.IsDead())
             {
+                anim.SetBool("isDead", true);
                 despawnTimer.Tick();
-
+                Debug.Log("Despawning enemy");
                 if (despawnTimer.AtTime(despawnTime))
                 {
                     gameObject.SetActive(false);
@@ -116,6 +112,22 @@ namespace CombatSystem
         {
             ChangeFlag(Flag.character_is_guarding, false);
         }
+
+
+        /* Weapon Hitbox */
+
+        public void ActivateWeaponHitbox(List<Effect> effects, int potency)
+        {
+            weapon.ActivateCollider(effects, potency);
+        }
+
+        public void DeactivateWeaponHitbox()
+        {
+            weapon.DeactivateCollider();
+        }
+
+
+
 
 
         public void Cast(Skill skill) {
@@ -191,18 +203,36 @@ namespace CombatSystem
             return skeleton.GetBodyPart(part);
         }
 
-        public Combatant GetTarget() {
+        public Combatant GetCurrentTarget() {
             Combatant result = null;
             if (targetter != null)
             {
-                result = targetter.currentTarget;
+                result = targetter.GetCurrentTarget();
             }
             return result;
         }
 
+        public Combatant GetNearestTarget()
+        {
+            return targetter.TargetEnemy();
+        }
 
-        public void ApplyEffect(Effect effect) {
-            transform.GetComponent<EffectManager>().AddEffect(effect);
+        public Combatant GetTargetToRight()
+        {
+            return targetter.TargetEnemy(true);
+        }
+
+        public Combatant GetTargetToLeft()
+        {
+            return targetter.TargetEnemy(false);
+        }
+
+
+
+
+
+        public void ApplyEffect(Effect effect, EffectData data) {
+            effects.AddEffect(effect, data);
         }
 
         public void ChangeFlag(Flag flag, bool flagValue)
@@ -271,7 +301,18 @@ namespace CombatSystem
 
         public bool HasTarget()
         {
-            return GetTarget() != null;
+            return GetCurrentTarget() != null;
+        }
+
+        public void EnableGravity()
+        {
+            rb.useGravity = true;
+        }
+
+        public void DisableGravity()
+        {
+            rb.velocity = new Vector3(0, 0, 0);
+            rb.useGravity = false;
         }
     }
 }

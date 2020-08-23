@@ -23,6 +23,8 @@ namespace CombatSystem.AI
         public KeyCode dodgeKeyboardKey = KeyCode.LeftShift;
         public KeyCode dodgeControllerKey = KeyCode.Joystick1Button1;
 
+        public bool autofire = false;
+
         public override void ControlCharacter(CombatantController controller, Combatant character)
         {
             float horizontal = Mathf.Clamp(Input.GetAxis(horizontalKeyboardAxis) + Input.GetAxis(horizontalControllerAxis), -1, 1);
@@ -40,7 +42,7 @@ namespace CombatSystem.AI
                 character.Cast(controller.characterSkill);
             }
 
-            if(Input.GetKeyDown(comboKeyboardKey) || Input.GetKeyDown(comboControllerKey))
+            if(Input.GetKeyDown(comboKeyboardKey) || Input.GetKeyDown(comboControllerKey) || autofire)
             {
                 character.Cast(controller.characterCombo);
             }
