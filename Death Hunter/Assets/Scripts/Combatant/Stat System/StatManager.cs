@@ -75,6 +75,14 @@ namespace CombatSystem.StatSystem
             return _statsDict[StatType.CurrentHealth].GetStatTotal() <= 0;
         }
 
+        public StatSnapshot CreateSnapshot()
+        {
+            return new StatSnapshot(stats);
+        }
+
+
+
+
         private Stat GetStatObject(StatType type)
         {
             return _statsDict[type];

@@ -28,11 +28,18 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        FollowTargetHorizontally();
-        MoveAwayFromTarget();
-        SetCameraHeight();
+        if (target.GetCurrentTarget() == null)
+        {
+            FollowTargetHorizontally();
+            MoveAwayFromTarget();
+            SetCameraHeight();
+            MoveVertically();
+        }
+        else
+        {
+            StayBehindTarget();
+        }
         LookAtTarget();
-        MoveVertically();
     }
     
 
@@ -73,6 +80,16 @@ public class CameraManager : MonoBehaviour
                                         lerpFactor);
         }
     }
+
+    private void StayBehindTarget()
+    {
+        transform.position = target.transform.position - target.transform.forward * maxDistance + target.transform.up * maxHeight;
+    }
+
+
+
+
+
 
     private void MoveVertically()
     {

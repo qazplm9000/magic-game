@@ -10,9 +10,11 @@ namespace SkillSystem
         public string skillName;
         public SkillTargetType targetType;
         public int potency;
+        public Element element;
         public List<SkillAnimation> animations = new List<SkillAnimation>();
         public List<SkillObjectCreation> skillObjects = new List<SkillObjectCreation>();
-        public List<SkillEffect> effects = new List<SkillEffect>();
+        [Tooltip("List of effects to apply")]
+        public List<Effect> effects = new List<Effect>();
         [Range(0,5)]
         public float castTime;
         public int animationType;
@@ -36,7 +38,6 @@ namespace SkillSystem
 
             RunAnimations(data);
             CreateSkillObjects(data);
-            RunEffects(data);
 
             if (data.AtTime(castTime))
             {
@@ -63,14 +64,6 @@ namespace SkillSystem
             for(int i = 0; i < skillObjects.Count; i++)
             {
                 skillObjects[i].CreateObject(data);
-            }
-        }
-
-        private void RunEffects(SkillCastData data)
-        {
-            for(int i = 0; i < effects.Count; i++)
-            {
-                effects[i].RunEffect(data);
             }
         }
 

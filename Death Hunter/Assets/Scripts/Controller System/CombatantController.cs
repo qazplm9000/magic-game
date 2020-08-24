@@ -15,6 +15,7 @@ namespace CombatSystem.AI
         public float attackDistance = 2;
         public float timeSinceLastAttack = 0;
 
+
         public CharacterAI ai;
         
 

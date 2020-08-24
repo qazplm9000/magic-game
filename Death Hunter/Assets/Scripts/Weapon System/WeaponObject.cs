@@ -16,6 +16,7 @@ namespace WeaponSystem
         public List<Combatant> targetsHit = new List<Combatant>();
         public List<Effect> effects = new List<Effect>();
         public int potency;
+        public Element element;
 
         public Vector3 previousPosition;
         public Vector3 currentPosition;
@@ -50,13 +51,15 @@ namespace WeaponSystem
         public void ActivateCollider(List<Effect> effects, int potency)
         {
             collider.enabled = true;
-            this.effects = effects;
+            this.effects.AddRange(effects);
             this.potency = potency;
         }
 
         public void DeactivateCollider()
         {
             collider.enabled = false;
+            effects = new List<Effect>();
+            potency = 0;
             targetsHit = new List<Combatant>();
         }
 
@@ -79,7 +82,7 @@ namespace WeaponSystem
         {
             for(int i = 0; i < effects.Count; i++)
             {
-                EffectData data = new EffectData(caster, target, potency);
+                EffectData data = new EffectData(caster, target, potency, element);
                 target.ApplyEffect(effects[i], data);
             }
         }

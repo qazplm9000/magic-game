@@ -26,7 +26,8 @@ namespace TargettingSystem
         public Combatant TargetEnemy(bool targetNext = true)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            return playerObj.GetComponent<Combatant>();
+            currentTarget = playerObj.GetComponent<Combatant>();
+            return currentTarget;
         }
 
         public void Untarget()

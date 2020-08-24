@@ -9,7 +9,7 @@ namespace SkillSystem
     public class Combo : Skill
     {
 
-        public List<ComboAttack> attacks = new List<ComboAttack>();
+        public List<Skill> attacks = new List<Skill>();
         
         
         protected override void OnStart(SkillCastData data)
@@ -19,6 +19,7 @@ namespace SkillSystem
             skillObjects = attacks[currentCombo].skillObjects;
             effects = attacks[currentCombo].effects;
             castTime = attacks[currentCombo].castTime;
+            potency = attacks[currentCombo].potency;
         }
 
         protected override void OnRun(SkillCastData data)

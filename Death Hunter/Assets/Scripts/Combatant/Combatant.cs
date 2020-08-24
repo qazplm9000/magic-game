@@ -32,6 +32,8 @@ namespace CombatSystem
         public WeaponObject weapon;
         private Rigidbody rb;
 
+        public AudioClip runningClip;
+
         public float despawnTime = 5;
         private Timer despawnTimer;
 
@@ -65,17 +67,26 @@ namespace CombatSystem
 
             if (anim != null)
             {
-                anim.SetFloat("Speed", movement.GetSpeed());
+                //anim.SetFloat("Speed", movement.GetSpeed());
             }
 
             if(HasTarget())
             {
                 movement.LookAt(GetCurrentTarget().gameObject);
-                anim.SetBool("isTargetting", true);
+                //anim.SetBool("isTargetting", true);
             }
             else
             {
-                anim.SetBool("isTargetting", false);
+                //anim.SetBool("isTargetting", false);
+            }
+
+            if(movement.currentSpeed > 2 && !audio.isPlaying)
+            {
+                audio.clip = runningClip;
+                audio.Play();
+            }else if(movement.currentSpeed <= 2)
+            {
+                audio.Stop();
             }
 
             if (stats.IsDead())
@@ -171,9 +182,12 @@ namespace CombatSystem
 
 
         public void TakeDamage(int damage) {
-            stats.TakeDamage(damage);
-            WorldManager.world.ShowDamageValue(this, damage);
-            Debug.Log($"Character took {damage} damage");
+            if (!stats.IsDead())
+            {
+                stats.TakeDamage(damage);
+                WorldManager.world.ShowDamageValue(this, damage);
+                Debug.Log($"Character took {damage} damage");
+            }
         }
 
         public void HealHealth(int healing)
@@ -183,6 +197,16 @@ namespace CombatSystem
 
         public int GetStat(StatType stat) {
             return stats.GetStat(stat);
+        }
+
+        public bool IsDead()
+        {
+            return GetStat(StatType.CurrentHealth) <= 0;
+        }
+
+        public StatSnapshot CreateStatSnapshot()
+        {
+            return stats.CreateSnapshot();
         }
 
 
@@ -226,6 +250,13 @@ namespace CombatSystem
         {
             return targetter.TargetEnemy(false);
         }
+
+        public void Untarget()
+        {
+            targetter.Untarget();
+        }
+
+
 
 
 
@@ -277,11 +308,6 @@ namespace CombatSystem
         public bool IsAlly(Combatant target)
         {
             return tag == target.tag;
-        }
-
-        public bool IsDead()
-        {
-            return GetStat(StatType.CurrentHealth) <= 0;
         }
 
         public void SetAnimationBool(string boolName, bool value)

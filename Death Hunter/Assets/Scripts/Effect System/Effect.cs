@@ -15,15 +15,17 @@ namespace EffectSystem
         public Combatant caster;
         public Combatant target;
         public int potency;
+        public Element element;
         private Timer timer;
 
 
-        public EffectData(Combatant caster, Combatant target, int potency)
+        public EffectData(Combatant caster, Combatant target, int potency, Element element)
         {
             timer = new Timer();
             this.caster = caster;
             this.target = target;
             this.potency = potency;
+            this.element = element;
         }
 
         public void Tick()

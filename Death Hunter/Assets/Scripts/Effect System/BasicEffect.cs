@@ -25,7 +25,7 @@ namespace EffectSystem
     }
 
     
-    [CreateAssetMenu(menuName = "Skill/Effect")]
+    [CreateAssetMenu(menuName = "Skill/Effects/Basic Effect")]
     public class BasicEffect : Effect, ISerializationCallbackReceiver
     {
         public EffectType type;

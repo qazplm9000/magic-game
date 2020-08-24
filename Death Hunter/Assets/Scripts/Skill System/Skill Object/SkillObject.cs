@@ -73,7 +73,7 @@ namespace SkillSystem
 
             if (LifetimeIsUp())
             {
-                FadeOut(objData.fadeSpeed);
+                //FadeOut(objData.fadeSpeed);
 
                 if (FadeTimeIsUp())
                 {
@@ -124,7 +124,7 @@ namespace SkillSystem
             List<Effect> effects = objData.effects;
             for (int i = 0; i < effects.Count; i++)
             {
-                EffectData data = new EffectData(objData.castData.caster, target, objData.castData.skill.potency);
+                EffectData data = new EffectData(objData.castData.caster, target, objData.castData.skill.potency, objData.castData.skill.element);
                 target.ApplyEffect(effects[i], data);
             }
         }
@@ -161,9 +161,9 @@ namespace SkillSystem
         protected void ResetCast()
         {
             objData = null;
-            ResetAlphas();
+            /*ResetAlphas();
             materials = null;
-            alphas = null;
+            alphas = null;*/
             WorldManager.RemoveObject(transform.gameObject);
             OnReset();
         }

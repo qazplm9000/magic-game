@@ -11,7 +11,7 @@ public class DamageValueUI : MonoBehaviour
     public int damage;
     public Combatant target;
 
-    public float lifetime = 1;
+    public float lifetime = 1.5f;
     public Timer timer;
     public float speed = 2000;
     public float maxRNG = 100;

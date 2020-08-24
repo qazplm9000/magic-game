@@ -29,6 +29,7 @@ namespace SkillSystem
         public string description = "";
         public float startTime = 0;
         public SkillObjectCreationData creationData;
+        public bool overrideEffects;
         public List<Effect> objEffects = new List<Effect>();
 
         public void CreateObject(SkillCastData skillData)
@@ -37,7 +38,16 @@ namespace SkillSystem
             {
                 SkillObject createdObj = CreateSkillObject(creationData.objIndex);
 
-                SkillObjectData soData = new SkillObjectData(skillData, objEffects, creationData.lifetime);
+                SkillObjectData soData;
+
+                if (overrideEffects)
+                {
+                    soData = new SkillObjectData(skillData, objEffects, creationData.lifetime);
+                }
+                else
+                {
+                    soData = new SkillObjectData(skillData, skillData.skill.effects, creationData.lifetime);
+                }
                 createdObj.StartSkill(soData);
 
                 Transform locationTransform = GetLocationTransform(skillData, creationData.location);

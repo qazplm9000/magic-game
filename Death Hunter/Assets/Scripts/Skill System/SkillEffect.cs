@@ -35,7 +35,7 @@ namespace SkillSystem
         public void RunEffect(SkillCastData data) {
             if (data.AtTime(startTime))
             {
-                EffectData ed = new EffectData(data.caster, data.target, data.skill.potency);
+                EffectData ed = new EffectData(data.caster, data.target, data.skill.potency, data.skill.element);
                 data.target.ApplyEffect(effect, ed);
             }
         }

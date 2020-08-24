@@ -1,4 +1,5 @@
-﻿using EffectSystem;
+﻿using CombatSystem;
+using EffectSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace SkillSystem
         PlayAnimation,
         PlaySound,
         ActivateWeapon,
-        DeactivateWeapon
+        DeactivateWeapon,
+        ApplyEffect
     }
 
     [System.Serializable]
@@ -24,14 +26,18 @@ namespace SkillSystem
         public float startTime;
 
         //Used for Play Animation
+        [Header("Animation Args")]
         [Tooltip("Name of animation to play")]
         public string animationName;
         public float animationCrossfade;
 
         //Used for Play Sound
+        [Header("Sound Args")]
         [Tooltip("Sound to play")]
         public AudioClip clip;
 
+        [Header("Weapon Args")]
+        public bool overrideEffects;
         public List<Effect> effects = new List<Effect>();
         
 
@@ -59,10 +65,39 @@ namespace SkillSystem
                     data.caster.PlayAudio(clip);
                     break;
                 case SkillAnimationType.ActivateWeapon:
-                    data.caster.ActivateWeaponHitbox(effects, data.skill.potency);
+                    if (overrideEffects)
+                    {
+                        data.caster.ActivateWeaponHitbox(effects, data.skill.potency);
+                    }
+                    else
+                    {
+                        data.caster.ActivateWeaponHitbox(data.skill.effects, data.skill.potency);
+                    }
                     break;
                 case SkillAnimationType.DeactivateWeapon:
                     data.caster.DeactivateWeaponHitbox();
+                    break;
+                case SkillAnimationType.ApplyEffect:
+                    Combatant effectTarget = null;
+                    switch (data.skill.GetTargetType())
+                    {
+                        case SkillTargetType.Enemy:
+                            effectTarget = data.caster.GetCurrentTarget();
+                            break;
+                        case SkillTargetType.Ally:
+                            effectTarget = data.caster.GetCurrentTarget();
+                            break;
+                        case SkillTargetType.Self:
+                            effectTarget = data.caster;
+                            break;
+                    }
+
+                    for(int i = 0; i < data.skill.effects.Count; i++)
+                    {
+                        Effect effect = data.skill.effects[i];
+                        EffectData ed = new EffectData(data.caster, effectTarget, data.skill.potency, data.skill.element);
+                        effectTarget.ApplyEffect(effect, ed);
+                    }
                     break;
             }
         }
