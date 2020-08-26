@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace SkillSystem
 {
-    public abstract class Skill : ScriptableObject, ISerializationCallbackReceiver
+    [CreateAssetMenu(menuName = "Skill/Skill")]
+    public class Skill : ScriptableObject, ISerializationCallbackReceiver
     {
         public string skillName;
         public SkillTargetType targetType;
@@ -19,6 +20,10 @@ namespace SkillSystem
         public float castTime;
         public int animationType;
 
+
+        public List<ISkillComponent> allComponents = new List<ISkillComponent>();
+        public List<AnimationComponent> animationComponents = new List<AnimationComponent>();
+
         public List<SkillAnimation> GetAnimations() { return animations; }
         public SkillTargetType GetTargetType() { return targetType; }
         public float GetCastTime() { return castTime; }
@@ -31,17 +36,17 @@ namespace SkillSystem
 
             if (data.AtTime(0))
             {
-                OnStart(data);
+                //OnStart(data);
             }
 
-            OnRun(data);
+            //OnRun(data);
 
             RunAnimations(data);
             CreateSkillObjects(data);
 
             if (data.AtTime(castTime))
             {
-                OnFinish(data);
+                //OnFinish(data);
             }
 
         }
@@ -66,12 +71,7 @@ namespace SkillSystem
                 skillObjects[i].CreateObject(data);
             }
         }
-
-
-        protected abstract void OnStart(SkillCastData data);
-        protected abstract void OnRun(SkillCastData data);
-        protected abstract void OnFinish(SkillCastData data);
-
+        
 
 
         /*

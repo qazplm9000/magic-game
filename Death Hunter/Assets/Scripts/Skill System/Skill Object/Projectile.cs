@@ -37,7 +37,7 @@ namespace SkillSystem
         protected override void OnUpdate()
         {
             transform.position += transform.forward * 10 * Time.deltaTime;
-            transform.LookAt(objData.castData.target.transform);
+            transform.LookAt(objData.castData.intendedTarget.transform);
         }
     }
 }

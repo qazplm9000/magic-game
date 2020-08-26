@@ -91,7 +91,7 @@ namespace SkillSystem
                     result = data.caster.transform;
                     break;
                 case SkillObjectLocation.Target:
-                    result = data.target.transform;
+                    result = data.intendedTarget.transform;
                     break;
             }
 

@@ -19,7 +19,7 @@ namespace SkillSystem
             bounces++;
             ApplyEffects(target);
 
-            objData.castData.target = GetNearestEnemy();
+            objData.castData.intendedTarget = GetNearestEnemy();
         }
 
         protected override void OnEnvironmentCollision(GameObject go)
@@ -41,7 +41,7 @@ namespace SkillSystem
         protected override void OnUpdate()
         {
             transform.position += transform.forward * Time.deltaTime * 10;
-            transform.LookAt(objData.castData.target.transform.position);
+            transform.LookAt(objData.castData.intendedTarget.transform.position);
         }
 
         private Combatant GetNearestEnemy()
@@ -55,7 +55,7 @@ namespace SkillSystem
             {
                 Combatant tempCombatant = combatants[i];
 
-                if (objData.castData.caster.IsEnemy(tempCombatant) && objData.castData.target != tempCombatant)
+                if (objData.castData.caster.IsEnemy(tempCombatant) && objData.castData.intendedTarget != tempCombatant)
                 {
                     float tempDistance = (transform.position - tempCombatant.transform.position).magnitude;
                     if (targetsHit.Contains(tempCombatant))

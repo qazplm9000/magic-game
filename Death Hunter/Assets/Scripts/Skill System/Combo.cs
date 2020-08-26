@@ -11,7 +11,7 @@ namespace SkillSystem
 
         public List<Skill> attacks = new List<Skill>();
         
-        
+        /*
         protected override void OnStart(SkillCastData data)
         {
             int currentCombo = data.caster.GetCurrentCombo() % attacks.Count;
@@ -30,6 +30,6 @@ namespace SkillSystem
         protected override void OnFinish(SkillCastData data)
         {
             data.caster.GetNextCombo();
-        }
+        }*/
     }
 }

@@ -10,14 +10,14 @@ namespace SkillSystem
     public class SkillCastData
     {
         public Combatant caster;
-        public Combatant target;
+        public Combatant intendedTarget;
         public Skill skill;
         public Timer timer;
 
         public SkillCastData(Combatant caster, Combatant target, Skill skill)
         {
             this.caster = caster;
-            this.target = target;
+            this.intendedTarget = target;
             this.skill = skill;
             timer = new Timer();
         }
@@ -25,7 +25,7 @@ namespace SkillSystem
         public SkillCastData(SkillCastData data, Combatant target)
         {
             caster = data.caster;
-            this.target = target;
+            this.intendedTarget = target;
             skill = data.skill;
             timer = new Timer();
         }
