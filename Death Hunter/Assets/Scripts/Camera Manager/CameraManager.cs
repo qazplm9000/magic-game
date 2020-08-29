@@ -7,7 +7,8 @@ public class CameraManager : MonoBehaviour
 {
 
     public Combatant target;
-    public GameObject focusPoint;
+    //public GameObject focusPoint;
+    public Vector3 focusOffset;
     
     public float offsetHeight = 2;
     public float minDistance = 2;
@@ -43,10 +44,18 @@ public class CameraManager : MonoBehaviour
     }
     
 
+    public void ChangeTarget(Combatant newTarget)
+    {
+        target = newTarget;
+    }
+
+
+
+
 
     private void FollowTargetHorizontally()
     {
-        Vector3 distanceVec = focusPoint.transform.position - transform.position;
+        Vector3 distanceVec = (target.transform.position + focusOffset) - transform.position;
         float distance = distanceVec.magnitude;
         if(distance > maxDistance)
         {
@@ -67,7 +76,7 @@ public class CameraManager : MonoBehaviour
 
     private void MoveAwayFromTarget()
     {
-        Vector3 distanceVec = focusPoint.transform.position - transform.position;
+        Vector3 distanceVec = (target.transform.position + focusOffset) - transform.position;
         float distance = distanceVec.magnitude;
         if (distance < minDistance)
         {
@@ -116,7 +125,7 @@ public class CameraManager : MonoBehaviour
 
     private void SetCameraHeight()
     {
-        transform.position = new Vector3(transform.position.x, focusPoint.transform.position.y + offsetHeight, transform.position.z);
+        transform.position = new Vector3(transform.position.x, (target.transform.position + focusOffset).y + offsetHeight, transform.position.z);
     }
 
     private void LookAtTarget()
@@ -128,7 +137,7 @@ public class CameraManager : MonoBehaviour
         }
         else
         {
-            transform.LookAt(focusPoint.transform);
+            transform.LookAt((target.transform.position + focusOffset));
         }
     }
 }

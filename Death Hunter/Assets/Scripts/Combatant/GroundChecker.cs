@@ -12,7 +12,9 @@ namespace CombatSystem
     {
         private Combatant character;
         private new Collider collider;
-        public int numOfCollisions = 0;
+        public float maxDistance = 0.05f;
+        public LayerMask mask;
+        public bool hitSomething = false;
 
         private void Awake()
         {
@@ -20,23 +22,26 @@ namespace CombatSystem
             character = transform.GetComponentInParent<Combatant>();
         }
 
+
+
         public void LateUpdate()
         {
-            if (numOfCollisions == 0)
+            RaycastHit hit;
+            Ray ray = new Ray(transform.position, -transform.up);
+
+            bool rayHit = Physics.Raycast(ray, out hit, maxDistance, mask);
+
+            if (rayHit)
+            {
+                character.ChangeFlag(Flag.character_is_grounded, true);
+                hitSomething = true;
+            }
+            else
             {
                 character.ChangeFlag(Flag.character_is_grounded, false);
+                hitSomething = false;
             }
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            numOfCollisions++;
-            character.ChangeFlag(Flag.character_is_grounded, true);
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            numOfCollisions--;
-        }
     }
 }

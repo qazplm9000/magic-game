@@ -32,6 +32,10 @@ namespace StateSystem
         {
             stateData.currentDuration += Time.deltaTime;
             stateData.currentState.RunState(character);
+        }
+
+        private void LateUpdate()
+        {
             CheckIfStateChanged();
         }
 
@@ -45,6 +49,10 @@ namespace StateSystem
             return stateData.characterFlags.GetFlag(flag);
         }
 
+        public void ResetState()
+        {
+            ChangeState(states.defaultState);
+        }
 
 
         /*
@@ -53,20 +61,27 @@ namespace StateSystem
 
         private void SetupStartState()
         {
-            stateData.currentState = states.defaultState;
-            stateData.currentState.EnterState(character);
+            ChangeState(states.defaultState);
         }
 
         private void CheckIfStateChanged()
         {
             State newState = states.CheckStateTransitions(stateData);
 
-            if(newState != null && newState != stateData.currentState)
+            ChangeState(newState);
+        }
+
+        private void ChangeState(State state)
+        {
+            if (state != stateData.currentState && state != null)
             {
-                stateData.currentState.ExitState(character);
-                stateData.currentState = newState;
+                if (stateData.currentState != null)
+                {
+                    stateData.currentState.ExitState(character);
+                }
+                stateData.currentState = state;
                 stateData.currentDuration = 0;
-                newState.EnterState(character);
+                state.EnterState(character);
             }
         }
     }
