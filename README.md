@@ -1,1 +1,1 @@
-# magic-game
+# death-hunter
