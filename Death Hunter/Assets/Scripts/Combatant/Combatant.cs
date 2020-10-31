@@ -13,7 +13,7 @@ using WeaponSystem;
 
 namespace CombatSystem
 {
-    public class Combatant : MonoBehaviour
+    public class Combatant : MonoBehaviour, IDamageable
     {
 
         public string characterName;
@@ -22,7 +22,7 @@ namespace CombatSystem
 
         private CombatantController controller;
         private MovementManager movement;
-        private CastManager caster;
+        private Caster caster;
         private StatManager stats;
         private CastLocationManager skeleton;
         private StateManager state;
@@ -31,6 +31,7 @@ namespace CombatSystem
         private ITargetter targetter;
         public WeaponObject weapon;
         private Rigidbody rb;
+        private CharacterSwapper swapper;
 
         public AudioClip runningClip;
 
@@ -45,13 +46,14 @@ namespace CombatSystem
         {
             controller = transform.GetComponent<CombatantController>();
             movement = transform.GetComponent<MovementManager>();
-            caster = transform.GetComponent<CastManager>();
+            caster = transform.GetComponent<Caster>();
             stats = transform.GetComponent<StatManager>();
             state = transform.GetComponent<StateManager>();
             audio = transform.GetComponent<AudioSource>();
             targetter = transform.GetComponent<ITargetter>();
             effects = transform.GetComponent<EffectManager>();
             rb = transform.GetComponent<Rigidbody>();
+            swapper = transform.GetComponent<CharacterSwapper>();
 
             despawnTimer = new Timer();
 
@@ -144,7 +146,7 @@ namespace CombatSystem
         public void Cast(Skill skill) {
             if (GetFlag(Flag.character_can_cast))
             {
-                caster.CastSkill(skill);
+                //caster.CastSkill(skill, GetCurrentTarget());
             }
         }
 
@@ -185,7 +187,7 @@ namespace CombatSystem
             if (!stats.IsDead())
             {
                 stats.TakeDamage(damage);
-                WorldManager.world.ShowDamageValue(this, damage);
+                //WorldManager.world.ShowDamageValue(this, damage);
                 Debug.Log($"Character took {damage} damage");
             }
         }
@@ -258,6 +260,12 @@ namespace CombatSystem
 
 
 
+
+
+        public void ChangeCharacter()
+        {
+            swapper.ChangeCharacter();
+        }
 
 
 

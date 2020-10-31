@@ -74,7 +74,7 @@ namespace CombatSystem.MovementSystem
 
             if(Physics.Raycast(ray, out hit, maxDistance))
             {
-                if(hit.collider.gameObject.layer == WorldManager.world.groundLayer)
+                if(hit.collider.gameObject.layer == WorldManager.GetGroundLayer())
                 {
                     transform.position = hit.point;
                 }

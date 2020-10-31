@@ -4,9 +4,12 @@ using UnityEngine;
 
 
 
-public abstract class DamageFormula : ScriptableObject
+namespace SkillSystem
 {
-    public string description;
+    public abstract class DamageFormula : ScriptableObject
+    {
+        public string description;
 
-    public abstract int CalculateDamage(AttackData data);
+        public abstract int CalculateDamage(AttackData data);
+    }
 }

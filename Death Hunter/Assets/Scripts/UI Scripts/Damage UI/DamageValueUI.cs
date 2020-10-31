@@ -60,7 +60,7 @@ public class DamageValueUI : MonoBehaviour
 
     private void SetPosition(Vector3 targetPosition)
     {
-        transform.position = WorldManager.world.cam.WorldToScreenPoint(targetPosition);
+        //transform.position = WorldManager.world.cam.WorldToScreenPoint(targetPosition);
         transform.position += offset;
         transform.position += timer.GetCurrentTime() * new Vector3(0, 1, 0) * speed;
     }
@@ -79,7 +79,9 @@ public class DamageValueUI : MonoBehaviour
 
     private float GetDistanceFromCamera(Vector3 position)
     {
-        return (WorldManager.world.cam.transform.position - position).magnitude;
+        Camera cam = WorldManager.GetCamera();
+        Vector3 camPosition = cam.transform.position;
+        return (camPosition - position).magnitude;
     }
 
     private void ScaleBasedOnDistance(Vector3 position)

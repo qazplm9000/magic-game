@@ -23,7 +23,7 @@ namespace TargettingSystem
 
             if(tracker == null)
             {
-                tracker = Instantiate<TargetTracker>(WorldManager.world.trackerPrefab);
+                tracker = Instantiate(WorldManager.GetTrackerPrefab());
                 tracker.transform.position = character.transform.position;
                 tracker.transform.SetParent(character.transform);
                 tracker.InitTracker(character);
