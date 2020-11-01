@@ -10,29 +10,44 @@ namespace TargettingSystem
 {
     public class EnemyTargetter : MonoBehaviour, ITargetter
     {
-        public Combatant currentTarget;
+        public ITargettable currentTarget;
 
+        private ITargettable player;
 
-        public Combatant GetCurrentTarget()
+        private void Start()
+        {
+            FindPlayer();
+        }
+
+        public ITargettable GetCurrentTarget()
         {
             return currentTarget;
         }
 
-        public Combatant TargetAlly(bool targetNext = true)
+        public ITargettable TargetAlly(bool targetNext = true)
         {
             return null;
         }
 
-        public Combatant TargetEnemy(bool targetNext = true)
+        public ITargettable TargetEnemy(bool targetNext = true)
         {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            currentTarget = playerObj.GetComponent<Combatant>();
+            currentTarget = player;
             return currentTarget;
         }
 
         public void Untarget()
         {
             currentTarget = null;
+        }
+
+
+
+
+
+        private void FindPlayer()
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            player = playerObj.GetComponent<ITargettable>();
         }
     }
 }

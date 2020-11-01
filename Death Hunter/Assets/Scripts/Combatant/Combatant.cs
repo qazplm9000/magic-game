@@ -13,7 +13,7 @@ using WeaponSystem;
 
 namespace CombatSystem
 {
-    public class Combatant : MonoBehaviour, IDamageable
+    public class Combatant : MonoBehaviour, ITargettable
     {
 
         public string characterName;
@@ -39,6 +39,16 @@ namespace CombatSystem
         private Timer despawnTimer;
 
         private Animator anim;
+
+        [Space(20)]
+        [SerializeField]
+        private KeyCode castButton;
+        [SerializeField]
+        private Skill skill;
+
+        [Space(20)]
+        [SerializeField]
+        private KeyCode targetKey;
 
 
         // Start is called before the first frame update
@@ -72,9 +82,12 @@ namespace CombatSystem
                 //anim.SetFloat("Speed", movement.GetSpeed());
             }
 
-            if(HasTarget())
+            if (Input.GetKeyDown(castButton)) Cast(skill);
+            if (Input.GetKeyDown(targetKey)) targetter.TargetEnemy();
+
+            if(HasTarget() && movement != null)
             {
-                movement.LookAt(GetCurrentTarget().gameObject);
+                movement.LookAt(GetCurrentTarget().GetGameObject());
                 //anim.SetBool("isTargetting", true);
             }
             else
@@ -82,16 +95,16 @@ namespace CombatSystem
                 //anim.SetBool("isTargetting", false);
             }
 
-            if(movement.currentSpeed > 2 && !audio.isPlaying)
+            if(movement != null && movement.currentSpeed > 2 && !audio.isPlaying)
             {
                 audio.clip = runningClip;
                 audio.Play();
-            }else if(movement.currentSpeed <= 2)
+            }else if(movement != null && movement.currentSpeed <= 2)
             {
                 audio.Stop();
             }
 
-            if (stats.IsDead())
+            if (stats != null && stats.IsDead())
             {
                 anim.SetBool("isDead", true);
                 despawnTimer.Tick();
@@ -144,10 +157,11 @@ namespace CombatSystem
 
 
         public void Cast(Skill skill) {
-            if (GetFlag(Flag.character_can_cast))
-            {
+            caster.CastSkill(skill, GetCurrentTarget());
+            //if (GetFlag(Flag.character_can_cast))
+            //{
                 //caster.CastSkill(skill, GetCurrentTarget());
-            }
+            //}
         }
 
         public List<Skill> GetSkillList() {
@@ -229,8 +243,8 @@ namespace CombatSystem
             return skeleton.GetBodyPart(part);
         }
 
-        public Combatant GetCurrentTarget() {
-            Combatant result = null;
+        public ITargettable GetCurrentTarget() {
+            ITargettable result = null;
             if (targetter != null)
             {
                 result = targetter.GetCurrentTarget();
@@ -238,17 +252,17 @@ namespace CombatSystem
             return result;
         }
 
-        public Combatant GetNearestTarget()
+        public ITargettable GetNearestTarget()
         {
             return targetter.TargetEnemy();
         }
 
-        public Combatant GetTargetToRight()
+        public ITargettable GetTargetToRight()
         {
             return targetter.TargetEnemy(true);
         }
 
-        public Combatant GetTargetToLeft()
+        public ITargettable GetTargetToLeft()
         {
             return targetter.TargetEnemy(false);
         }
@@ -354,6 +368,27 @@ namespace CombatSystem
         public void ResetState()
         {
             state.ResetState();
+        }
+
+
+
+
+
+        //Targetter functions
+
+        public Transform GetTransform()
+        {
+            return transform;
+        }
+
+        public GameObject GetGameObject()
+        {
+            return gameObject;
+        }
+
+        public string GetName()
+        {
+            return characterName;
         }
     }
 }

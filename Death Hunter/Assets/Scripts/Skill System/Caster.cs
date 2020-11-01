@@ -1,6 +1,7 @@
 ﻿using CombatSystem;
 using System.Collections;
 using System.Collections.Generic;
+using TargettingSystem;
 using UnityEngine;
 
 namespace SkillSystem
@@ -16,7 +17,6 @@ namespace SkillSystem
         private SkillCastData castData;
         private bool isCasting = false;
 
-        public KeyCode castKey = KeyCode.Return;
         // Start is called before the first frame update
         void Start()
         {
@@ -27,11 +27,6 @@ namespace SkillSystem
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(castKey))
-            {
-                CastSkill(testSkill, null);
-            }
-
             if(isCasting && !currSkill.IsRunning(castData))
             {
                 ResetCast();
@@ -40,7 +35,7 @@ namespace SkillSystem
 
 
 
-        public void CastSkill(Skill skill, IDamageable target)
+        public void CastSkill(Skill skill, ITargettable target)
         {
             if (!isCasting && skill != null)
             {

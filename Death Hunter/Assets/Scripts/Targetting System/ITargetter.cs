@@ -7,9 +7,9 @@ namespace TargettingSystem
 {
     public interface ITargetter
     {
-        Combatant TargetEnemy(bool targetNext = true);
-        Combatant TargetAlly(bool targetNext = true);
-        Combatant GetCurrentTarget();
+        ITargettable TargetEnemy(bool targetNext = true);
+        ITargettable TargetAlly(bool targetNext = true);
+        ITargettable GetCurrentTarget();
         void Untarget();
     }
 }

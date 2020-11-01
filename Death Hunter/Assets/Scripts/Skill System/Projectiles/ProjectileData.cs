@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
-using JetBrains.Annotations;
+using TargettingSystem;
 
 namespace SkillSystem
 {
@@ -11,7 +10,7 @@ namespace SkillSystem
         [HideInInspector]
         public Caster caster;
         [HideInInspector]
-        public IDamageable target;
+        public ITargettable target;
         [HideInInspector]
         public GameObject offsetObject;
         public Vector3 offset;

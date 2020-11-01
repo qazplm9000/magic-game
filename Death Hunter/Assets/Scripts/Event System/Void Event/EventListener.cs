@@ -1,35 +1,58 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace SOEventSystem
 {
-    public class EventListener : MonoBehaviour
+    [Serializable]
+    public class EventListenObject
     {
         public EventSO eventSO;
         public UnityEvent unityEvent;
 
+        public void SetupEvent()
+        {
+            eventSO?.SubscribeToEvent(unityEvent.Invoke);
+        }
+
+        public void RemoveEvent()
+        {
+            eventSO?.UnsubscribeFromEvent(unityEvent.Invoke);
+        }
+    }
+
+    public class EventListener : MonoBehaviour
+    {
+        public List<EventListenObject> eventObjects = new List<EventListenObject>();
+
         // Start is called before the first frame update
         void Start()
         {
-            if(eventSO != null)
-            {
-                eventSO.SubscribeToEvent(CallEvent);
-            }
+            SetupEventObjects();
         }
 
         private void OnDestroy()
         {
-            if(eventSO != null)
+            CancelEventObjects();
+        }
+
+
+        private void SetupEventObjects()
+        {
+            for(int i = 0; i < eventObjects.Count; i++)
             {
-                eventSO.UnsubscribeFromEvent(CallEvent);
+                eventObjects[i].SetupEvent();
             }
         }
 
-        private void CallEvent()
+        private void CancelEventObjects()
         {
-            unityEvent.Invoke();
+            for(int i = 0; i < eventObjects.Count; i++)
+            {
+                eventObjects[i].RemoveEvent();
+            }
         }
     }
 }

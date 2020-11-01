@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TargettingSystem;
 using UnityEngine;
 
 namespace CombatSystem.AI
@@ -13,7 +14,7 @@ namespace CombatSystem.AI
 
         public override void ControlCharacter(CombatantController controller, Combatant character)
         {
-            Combatant target = character.GetCurrentTarget();
+            ITargettable target = character.GetCurrentTarget();
 
             if (target != null) {
                 if (!TargetIsWithinDistance(character, target, controller.attackDistance))
@@ -33,7 +34,7 @@ namespace CombatSystem.AI
             else
             {
                 target = character.GetNearestTarget();
-                Debug.Log($"Targetting {target.name}");
+                Debug.Log($"Targetting {target.GetName()}");
                 if(!TargetIsInLineOfSight(character, target, aggroDistance, aggroAngle))
                 {
                     character.Untarget();
@@ -42,11 +43,14 @@ namespace CombatSystem.AI
         }
 
 
-        private void MoveTowardsTarget(Combatant character, Combatant target)
+        private void MoveTowardsTarget(ITargettable character, ITargettable target)
         {
-            Vector3 direction = target.transform.position - character.transform.position;
-            Debug.DrawRay(character.transform.position, direction.normalized);
-            character.Move(direction.normalized);
+            var charTrans = character.GetTransform();
+            var tarTrans = target.GetTransform();
+            Vector3 direction = UnityUtilities.GetVectorBetween(charTrans.position, tarTrans.position);
+            Debug.DrawRay(charTrans.up, direction.normalized);
+            //character.Move(direction.normalized);
+            Debug.Log("Connect enemy movement here");
         }
 
         private void Attack(Combatant character, CombatantController controller)
@@ -55,26 +59,30 @@ namespace CombatSystem.AI
             controller.ResetTimeSinceLastAttack();
         }
 
-        private bool TargetIsWithinDistance(Combatant character, Combatant target, float attackDistance)
+        private bool TargetIsWithinDistance(ITargettable character, ITargettable target, float attackDistance)
         {
-            return (character.transform.position - target.transform.position).magnitude < attackDistance;
+            var charPos = character.GetTransform().position;
+            var tarPos = target.GetTransform().position;
+            return (charPos - tarPos).magnitude < attackDistance;
         }
 
-        private bool IsReadyToAttack(Combatant character, float timeSinceLastAttack)
+        private bool IsReadyToAttack(ITargettable character, float timeSinceLastAttack)
         {
             return timeSinceLastAttack > attackCooldown && character.GetFlag(StateSystem.Flag.character_can_cast);
         }
 
-        private bool TargetIsInLineOfSight(Combatant character, Combatant target, float maxDistance, float maxAngle)
+        private bool TargetIsInLineOfSight(ITargettable character, ITargettable target, float maxDistance, float maxAngle)
         {
-            bool withinDistance = (character.transform.position - target.transform.position).magnitude < maxDistance;
+            var charTrans = character.GetTransform();
+            var tarTrans = target.GetTransform();
+            bool withinDistance = (charTrans.position - tarTrans.position).magnitude < maxDistance;
 
             if (withinDistance)
             {
                 //Debug.Log("Within distance");
-                float angleBetween = Vector3.SignedAngle(character.transform.forward,
-                                                        target.transform.position - character.transform.position,
-                                                        character.transform.up);
+                float angleBetween = Vector3.SignedAngle(charTrans.forward,
+                                                        tarTrans.position - charTrans.position,
+                                                        charTrans.up);
                 bool withinAngle = Mathf.Abs(angleBetween) < maxAngle;
                 withinDistance &= withinAngle;
                 //Debug.Log($"Within angle: {withinDistance}");

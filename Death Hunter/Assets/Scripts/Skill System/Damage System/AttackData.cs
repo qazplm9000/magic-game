@@ -6,14 +6,14 @@ namespace SkillSystem
 {
     public class AttackData
     {
-        public Combatant caster;
+        public IDamageable caster;
         public StatSnapshot casterSnapshot;
-        public Combatant target;
+        public IDamageable target;
         public int potency;
         public Element element;
         public bool isHealing;
 
-        public AttackData(Combatant caster, Combatant target, int potency, Element element, bool isHealing)
+        public AttackData(IDamageable caster, IDamageable target, int potency, Element element, bool isHealing)
         {
             this.caster = caster;
             casterSnapshot = caster.CreateStatSnapshot();

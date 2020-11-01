@@ -5,31 +5,55 @@ using UnityEngine.Events;
 
 namespace SOEventSystem
 {
-    public class VarEventListener<T> : MonoBehaviour
+    public class VarEventObject<T>
     {
         public VarEventSO<T> eventSO;
         public UnityEvent<T> unityEvent;
 
+        public void SetupEvent()
+        {
+            eventSO?.SubscribeToEvent(unityEvent.Invoke);
+        }
+
+        public void DestroyEvent()
+        {
+            eventSO?.UnsubscribeFromEvent(unityEvent.Invoke);
+        }
+    }
+
+
+    public class VarEventListener<T> : MonoBehaviour
+    {
+        public List<VarEventObject<T>> eventObjs = new List<VarEventObject<T>>();
+
         // Start is called before the first frame update
         void Start()
         {
-            if(eventSO != null)
-            {
-                eventSO.SubscribeToEvent(CallEvent);
-            }
+            SetupEvents();
         }
 
         private void OnDestroy()
         {
-            if(eventSO != null)
+            DestroyEvents();
+        }
+
+
+
+
+        private void SetupEvents()
+        {
+            for(int i = 0; i < eventObjs.Count; i++)
             {
-                eventSO.UnsubscribeFromEvent(CallEvent);
+                eventObjs[i].SetupEvent();
             }
         }
 
-        private void CallEvent(T var)
+        private void DestroyEvents()
         {
-            unityEvent.Invoke(var);
+            for(int i = 0; i < eventObjs.Count; i++)
+            {
+                eventObjs[i].DestroyEvent();
+            }
         }
     }
 }

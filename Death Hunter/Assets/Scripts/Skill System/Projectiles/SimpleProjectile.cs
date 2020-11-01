@@ -2,6 +2,7 @@
 using System.Collections;
 using SkillSystem;
 using DG.Tweening;
+using TargettingSystem;
 
 namespace SkillSystem
 {
@@ -28,12 +29,12 @@ namespace SkillSystem
         {
             hasCollided = false;
             transform.localScale = Vector3.one; 
-            rb.velocity = transform.forward * data.speed;
         }
 
         protected override void UpdateProjectile()
         {
-            
+            rb.velocity = transform.forward * data.speed;
+            if (data.rotationSpeed != 0 && HasTarget()) TurnTowardsTarget();
         }
         
         protected override void OnFadeProjectile()
@@ -110,9 +111,26 @@ namespace SkillSystem
             return particleObject;
         }
 
+        private void TurnTowardsTarget()
+        {
+            ITargettable target = data.target;
 
+            Vector3 tarPos = target.GetTransform().position;
+            Vector3 distanceVector = UnityUtilities.GetVectorBetween(transform.position, tarPos);
+            Vector3 forward = transform.forward;
 
+            Vector3 cross = Vector3.Cross(forward, distanceVector);
+            Debug.DrawRay(transform.position, cross, Color.blue);
+            float angleBetween = Vector3.SignedAngle(forward, distanceVector, cross);
+            float rotateAngle = Mathf.Min(angleBetween, data.rotationSpeed * Time.deltaTime);
+            
+            transform.RotateAround(transform.position, cross, rotateAngle);
+        }
 
+        private bool HasTarget()
+        {
+            return data.target != null;
+        }
 
     }
 }

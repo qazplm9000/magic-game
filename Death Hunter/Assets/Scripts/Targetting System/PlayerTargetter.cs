@@ -1,50 +1,61 @@
 ﻿using CombatSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace TargettingSystem
 {
     public class PlayerTargetter : MonoBehaviour, ITargetter
     {
-        public TargetTracker tracker;
-        private Combatant character;
-        public KeyCode targetButton = KeyCode.Tab;
-        public Combatant currentTarget = null;
-        public Camera cam;
+        private ITargettable player;
+        //public TargetTracker tracker;
+        private ITargettable currentTarget
+        {   
+            get 
+            { 
+                return _currentTarget; 
+            } 
+            set 
+            { 
+                _currentTarget = value; 
+                onTargetChanged.Invoke(value); 
+            } 
+        }
+        private ITargettable _currentTarget;
+
+        private Camera cam;
         private Vector3 screenCenter;
+
+        [SerializeField]
+        private GameObject targetReference;
+
+        [SerializeField]
+        private float targetterRange = 10f;
+
+
+        private UnityEvent<ITargettable> onTargetChanged;
+
 
         // Start is called before the first frame update
         void Start()
         {
-            character = transform.GetComponent<Combatant>();
             cam = Camera.main;
             screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-
-            if(tracker == null)
-            {
-                tracker = Instantiate(WorldManager.GetTrackerPrefab());
-                tracker.transform.position = character.transform.position;
-                tracker.transform.SetParent(character.transform);
-                tracker.InitTracker(character);
-            }
+            player = GetComponent<ITargettable>();
+            onTargetChanged = new UnityEvent<ITargettable>();
+            onTargetChanged.AddListener(SetTargetObject);
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(targetButton) && currentTarget == null)
-            {
-                currentTarget = GetTargetClosestToScreen();
-            }else if (Input.GetKeyDown(targetButton))
-            {
-                currentTarget = GetTargetClosestToLeft(currentTarget);
-            }
-
-
             if(currentTarget != null)
             {
-                Debug.DrawRay(currentTarget.transform.position, transform.up * 10, Color.blue);
+                var currentTarPos = currentTarget.GetTransform().position;
+                Debug.DrawRay(currentTarPos, transform.up * 10, Color.blue);
 
                 if (currentTarget.IsDead())
                 {
@@ -56,10 +67,9 @@ namespace TargettingSystem
 
         /* ITargetter functions */
 
-        public Combatant TargetEnemy(bool targetNext = true)
+        public ITargettable TargetEnemy(bool targetNext = true)
         {
-            Combatant currentTarget = character.GetCurrentTarget();
-            Combatant result = null;
+            ITargettable result = null;
 
             if(currentTarget == null)
             {
@@ -78,13 +88,13 @@ namespace TargettingSystem
             return result;
         }
 
-        public Combatant TargetAlly(bool targetNext = true)
+        public ITargettable TargetAlly(bool targetNext = true)
         {
             return null;
         }
 
 
-        public Combatant GetCurrentTarget()
+        public ITargettable GetCurrentTarget()
         {
             return currentTarget;
         }
@@ -104,41 +114,42 @@ namespace TargettingSystem
         /* Helper functions */
 
 
-        private Combatant GetTargetClosestToScreen()
+        private ITargettable GetTargetClosestToScreen()
         {
-            Combatant result = null;
+            ITargettable result = null;
             float dist = float.PositiveInfinity;
+            var targets = GetAllTargetsInRange(targetterRange);
 
-            List<Combatant> targets = tracker.targets;
             for(int i = 0; i < targets.Count; i++)
             {
-                Combatant temp = targets[i];
+                ITargettable tempTarget = targets[i];
 
-                if (temp.IsDead())
+                if (tempTarget.IsDead())
                 {
                     continue;
                 }
 
-                Vector3 screenPos = cam.WorldToScreenPoint(temp.transform.position);
+                Vector3 screenPos = cam.WorldToScreenPoint(tempTarget.GetTransform().position);
                 float tempDist = DistanceFromCenterOfScreen(screenPos);
                 //Debug.Log($"{temp.name} - {tempDist} - {screenPos}");
 
                 if(tempDist < dist)
                 {
                     dist = tempDist;
-                    result = temp;
+                    result = tempTarget;
                 }
             }
 
             return result;
         }
 
-        private Combatant GetTargetClosestToRight(Combatant currentTarget)
+        private ITargettable GetTargetClosestToRight(ITargettable currentTarget)
         {
-            Combatant result = null;
+            ITargettable result = null;
             float angleBetween = float.PositiveInfinity;
 
-            List<Combatant> targets = tracker.targets;
+            var targets = GetAllTargetsInRange(targetterRange);
+
             for (int i = 0; i < targets.Count; i++) {
                 if (targets[i] != currentTarget && !targets[i].IsDead())
                 {
@@ -157,12 +168,13 @@ namespace TargettingSystem
         }
 
 
-        private Combatant GetTargetClosestToLeft(Combatant currentTarget)
+        private ITargettable GetTargetClosestToLeft(ITargettable currentTarget)
         {
-            Combatant result = null;
+            ITargettable result = null;
             float angleBetween = float.PositiveInfinity;
 
-            List<Combatant> targets = tracker.targets;
+            var targets = GetAllTargetsInRange(targetterRange);
+
             for (int i = 0; i < targets.Count; i++)
             {
                 if (targets[i] != currentTarget && !targets[i].IsDead())
@@ -182,17 +194,59 @@ namespace TargettingSystem
         }
 
 
+
+        private List<ITargettable> GetAllTargetsInRange(float range)
+        {
+            var allTargets = FindObjectsOfType<MonoBehaviour>()
+                .OfType<ITargettable>()
+                .Where(x =>
+                        UnityUtilities.GetVectorBetween(
+                            x.GetTransform().position,
+                            transform.position)
+                        .magnitude < range)
+                .Where(x => x != player);
+            List<ITargettable> targets = new List<ITargettable>();
+            targets.AddRange(allTargets);
+
+            return targets;
+        }
+
+
         private float DistanceFromCenterOfScreen(Vector3 screenPos)
         {
             return (screenPos - screenCenter).magnitude;
         }
 
-        private float AngleBetweenTarget(Combatant target)
+        private float AngleBetweenTarget(ITargettable target)
         {
-            Vector3 directionVec = currentTarget.transform.position - transform.position;
-            Vector3 targetVec = target.transform.position - transform.position;
+            Vector3 directionVec = currentTarget.GetTransform().position - transform.position;
+            Vector3 targetVec = target.GetTransform().position - transform.position;
             return Vector3.SignedAngle(directionVec, targetVec, transform.up);
         }
 
+        private void SetTargetObject(ITargettable target)
+        {
+            if(target != null)
+            {
+                targetReference = target.GetGameObject();
+            }
+            else
+            {
+                targetReference = null;
+            }
+        }
+
+
+
+        //Event subscriptions
+
+        public void SubscribeToOnTargetChanged(UnityAction<ITargettable> action)
+        {
+            onTargetChanged.AddListener(action);
+        }
+        public void ClearAllListeners()
+        {
+            onTargetChanged.RemoveAllListeners();
+        }
     }
 }

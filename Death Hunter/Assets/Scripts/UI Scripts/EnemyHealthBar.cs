@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using TargettingSystem;
 
 public class EnemyHealthBar : HealthBar
 {
 
-    protected override Combatant GetCharacter()
+    protected override ITargettable GetCharacter()
     {
-        Combatant target = character.GetCurrentTarget();
+        ITargettable target = character.GetCurrentTarget();
 
         return target;
     }

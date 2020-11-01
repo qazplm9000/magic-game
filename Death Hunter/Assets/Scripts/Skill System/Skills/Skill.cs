@@ -1,6 +1,7 @@
 ﻿using EffectSystem;
 using System.Collections;
 using System.Collections.Generic;
+using TargettingSystem;
 using UnityEngine;
 
 namespace SkillSystem
@@ -8,11 +9,11 @@ namespace SkillSystem
     public class SkillCastData
     {
         public Caster caster;
-        public IDamageable target;
+        public ITargettable target;
         public Timer timer;
         public List<Effect> effects;
 
-        public SkillCastData(Caster caster, IDamageable target)
+        public SkillCastData(Caster caster, ITargettable target)
         {
             this.caster = caster;
             this.target = target;

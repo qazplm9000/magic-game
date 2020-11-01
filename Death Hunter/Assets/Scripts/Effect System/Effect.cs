@@ -13,14 +13,14 @@ namespace EffectSystem
     [Serializable]
     public class EffectData
     {
-        public Combatant caster;
-        public Combatant target;
+        public IDamageable caster;
+        public IDamageable target;
         public int potency;
         public Element element;
         private Timer timer;
 
 
-        public EffectData(Combatant caster, Combatant target, int potency, Element element)
+        public EffectData(IDamageable caster, IDamageable target, int potency, Element element)
         {
             timer = new Timer();
             this.caster = caster;

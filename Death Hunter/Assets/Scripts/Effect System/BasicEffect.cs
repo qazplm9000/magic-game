@@ -1,4 +1,5 @@
 ﻿using CombatSystem;
+using SkillSystem;
 using StateSystem;
 using System;
 using System.Collections;
@@ -84,7 +85,7 @@ namespace EffectSystem
 
 
         private void ApplyEffect(EffectData data) {
-            Combatant target = null;
+            IDamageable target = null;
 
             if (applyToCaster)
             {

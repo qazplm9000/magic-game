@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using CombatSystem.StatSystem;
+using TargettingSystem;
 
 public class HealthBar : MonoBehaviour
 {
@@ -33,14 +34,14 @@ public class HealthBar : MonoBehaviour
 
         if (isEnabled)
         {
-            characterText.text = GetCharacter().name;
+            characterText.text = GetCharacter().GetName();
             UpdateHealth();
         }
     }
 
     protected void UpdateHealth()
     {
-        Combatant character = GetCharacter();
+        ITargettable character = GetCharacter();
 
         int currentHealth = character.GetStat(StatType.CurrentHealth);
         int maxHealth = character.GetStat(StatType.MaxHealth);
@@ -48,7 +49,7 @@ public class HealthBar : MonoBehaviour
         healthText.text = $"{currentHealth} / {maxHealth}";
     }
 
-    protected virtual Combatant GetCharacter()
+    protected virtual ITargettable GetCharacter()
     {
         return character;
     }

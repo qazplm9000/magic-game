@@ -1,6 +1,7 @@
 ﻿using CombatSystem;
 using System.Collections;
 using System.Collections.Generic;
+using TargettingSystem;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
@@ -130,10 +131,10 @@ public class CameraManager : MonoBehaviour
 
     private void LookAtTarget()
     {
-        Combatant targetsTarget = target.GetCurrentTarget();
+        ITargettable targetsTarget = target.GetCurrentTarget();
         if (targetsTarget != null)
         {
-            transform.LookAt(targetsTarget.transform);
+            transform.LookAt(targetsTarget.GetTransform());
         }
         else
         {
